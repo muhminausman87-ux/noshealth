@@ -11,29 +11,20 @@ export interface DemoUser {
   title: string;
 }
 
-export const DEMO_USERS: DemoUser[] = [
-  { username: "admin",   password: "admin123", name: "Dr. R. Menon",   role: "admin",   title: "Nursing Director" },
-  { username: "achen",   password: "nurse123", name: "RN A. Chen",     role: "staff", assignedDept: "ed",        title: "ED Nurse" },
-  { username: "spriya",  password: "nurse123", name: "RN S. Priya",    role: "staff", assignedDept: "icu",       title: "ICU Nurse" },
-  { username: "jthomas", password: "nurse123", name: "RN J. Thomas",   name as any: undefined as any, // placeholder removed below
-} as any,
-].filter(Boolean) as DemoUser[];
-
-// Cleaner explicit list (overrides the placeholder above):
 export const STAFF: DemoUser[] = [
-  { username: "admin",     password: "admin123", name: "Dr. R. Menon",     role: "admin",                              title: "Nursing Director" },
-  { username: "achen",     password: "nurse123", name: "RN A. Chen",       role: "staff", assignedDept: "ed",          title: "ED Nurse" },
-  { username: "spriya",    password: "nurse123", name: "RN S. Priya",      role: "staff", assignedDept: "icu",         title: "ICU Nurse" },
-  { username: "jthomas",   password: "nurse123", name: "RN J. Thomas",     role: "staff", assignedDept: "medsurg",     title: "Med-Surg Nurse" },
-  { username: "mfatima",   password: "nurse123", name: "RN M. Fatima",     role: "staff", assignedDept: "maternity",   title: "Maternity Nurse" },
-  { username: "kraj",      password: "nurse123", name: "RN K. Raj",        role: "staff", assignedDept: "cardiac",     title: "Cardiac Nurse" },
-  { username: "lpaul",     password: "nurse123", name: "RN L. Paul",       role: "staff", assignedDept: "labour",      title: "Labour Room Nurse" },
-  { username: "nsingh",    password: "nurse123", name: "RN N. Singh",      role: "staff", assignedDept: "pediatric",   title: "Pediatric Nurse" },
-  { username: "rjoseph",   password: "nurse123", name: "RN R. Joseph",     role: "staff", assignedDept: "medical",     title: "Medical Ward Nurse" },
-  { username: "ddas",      password: "nurse123", name: "RN D. Das",        role: "staff", assignedDept: "surgical",    title: "Surgical Ward Nurse" },
-  { username: "anair",     password: "nurse123", name: "RN A. Nair",       role: "staff", assignedDept: "opd",         title: "OPD Nurse" },
-  { username: "pgeorge",   password: "nurse123", name: "RN P. George",     role: "staff", assignedDept: "daycare",     title: "Day Care Nurse" },
-  { username: "tkurian",   password: "nurse123", name: "RN T. Kurian",     role: "staff", assignedDept: "ot",          title: "OT Scrub Nurse" },
+  { username: "admin",   password: "admin123", name: "Dr. R. Menon",  role: "admin", title: "Nursing Director" },
+  { username: "achen",   password: "nurse123", name: "RN A. Chen",    role: "staff", assignedDept: "ed",        title: "ED Nurse" },
+  { username: "spriya",  password: "nurse123", name: "RN S. Priya",   role: "staff", assignedDept: "icu",       title: "ICU Nurse" },
+  { username: "jthomas", password: "nurse123", name: "RN J. Thomas",  role: "staff", assignedDept: "medsurg",   title: "Med-Surg Nurse" },
+  { username: "mfatima", password: "nurse123", name: "RN M. Fatima",  role: "staff", assignedDept: "maternity", title: "Maternity Nurse" },
+  { username: "kraj",    password: "nurse123", name: "RN K. Raj",     role: "staff", assignedDept: "cardiac",   title: "Cardiac Nurse" },
+  { username: "lpaul",   password: "nurse123", name: "RN L. Paul",    role: "staff", assignedDept: "labour",    title: "Labour Room Nurse" },
+  { username: "nsingh",  password: "nurse123", name: "RN N. Singh",   role: "staff", assignedDept: "pediatric", title: "Pediatric Nurse" },
+  { username: "rjoseph", password: "nurse123", name: "RN R. Joseph",  role: "staff", assignedDept: "medical",   title: "Medical Ward Nurse" },
+  { username: "ddas",    password: "nurse123", name: "RN D. Das",     role: "staff", assignedDept: "surgical",  title: "Surgical Ward Nurse" },
+  { username: "anair",   password: "nurse123", name: "RN A. Nair",    role: "staff", assignedDept: "opd",       title: "OPD Nurse" },
+  { username: "pgeorge", password: "nurse123", name: "RN P. George",  role: "staff", assignedDept: "daycare",   title: "Day Care Nurse" },
+  { username: "tkurian", password: "nurse123", name: "RN T. Kurian",  role: "staff", assignedDept: "ot",        title: "OT Scrub Nurse" },
 ];
 
 export interface Session {
