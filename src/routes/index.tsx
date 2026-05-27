@@ -1,11 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { TopNav } from "@/components/TopNav";
-import { PatientBanner } from "@/components/PatientBanner";
 import { EDView } from "@/components/views/EDView";
 import { MedSurgView } from "@/components/views/MedSurgView";
 import { ICUView } from "@/components/views/ICUView";
 import { GenericView } from "@/components/views/GenericView";
+import { StaffDashboard } from "@/components/StaffDashboard";
 import { AIAssistant } from "@/components/AIAssistant";
 import { getDept, type Department } from "@/lib/departments";
 import { getSession, setSession, type Session } from "@/lib/auth";
@@ -30,7 +30,6 @@ function Index() {
   const [session, setSess] = useState<Session | null>(null);
   const [dept, setDept] = useState<Department>("ed");
 
-  // Client-side auth gate
   useEffect(() => {
     const s = getSession();
     if (!s) {
@@ -53,7 +52,7 @@ function Index() {
   const isAdmin = session.role === "admin";
 
   const handleChangeDept = (d: Department) => {
-    if (!isAdmin) return; // staff is locked to their active dept
+    if (!isAdmin) return;
     setDept(d);
     setSession({ ...session, activeDept: d });
   };
@@ -64,12 +63,7 @@ function Index() {
   };
 
   return (
-    <div
-      className="min-h-screen bg-background"
-      style={{
-        backgroundImage: `linear-gradient(to bottom, ${meta.tint}55, transparent 220px)`,
-      }}
-    >
+    <div className="min-h-screen">
       <TopNav active={dept} onChange={handleChangeDept} session={session} onLogout={handleLogout} />
 
       {session.pulled && session.assignedDept && (
@@ -84,24 +78,22 @@ function Index() {
         </div>
       )}
 
-      <PatientBanner />
-
       <main className="mx-auto max-w-[1400px] px-6 py-6">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: meta.color }} />
-              Active unit {isAdmin && "· admin view"}
+              {isAdmin ? "Admin view" : "Your workspace"}
             </div>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
-              {meta.name}
+              {isAdmin ? meta.name : `${meta.short} dashboard`}
             </h1>
             <p className="text-sm text-muted-foreground">
               {isAdmin
                 ? "Admin can switch between any unit from the top navigation."
                 : session.pulled
                   ? "Pulled-staff view — limited to this covering unit for the shift."
-                  : "Filtered, role-aware view — only what your unit needs to see."}
+                  : "Only your assigned patients and shift snapshot."}
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -110,10 +102,16 @@ function Index() {
           </div>
         </div>
 
-        {dept === "ed" && <EDView />}
-        {dept === "medsurg" && <MedSurgView />}
-        {dept === "icu" && <ICUView />}
-        {dept !== "ed" && dept !== "medsurg" && dept !== "icu" && <GenericView dept={dept} />}
+        {isAdmin ? (
+          <>
+            {dept === "ed" && <EDView />}
+            {dept === "medsurg" && <MedSurgView />}
+            {dept === "icu" && <ICUView />}
+            {dept !== "ed" && dept !== "medsurg" && dept !== "icu" && <GenericView dept={dept} />}
+          </>
+        ) : (
+          <StaffDashboard session={session} />
+        )}
       </main>
 
       <AIAssistant />
