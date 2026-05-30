@@ -109,6 +109,7 @@ function Index() {
             {dept === "medsurg" && <MedSurgView />}
             {dept === "icu" && <ICUView />}
             {dept !== "ed" && dept !== "medsurg" && dept !== "icu" && <GenericView dept={dept} />}
+            <AdminWorkforce />
           </>
         ) : (
           <StaffDashboard session={session} />
