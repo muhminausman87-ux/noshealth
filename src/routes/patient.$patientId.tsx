@@ -41,6 +41,7 @@ function PatientPage() {
   }
 
   const meta = getDept(patient.dept);
+  const extras = getClinicalExtras(patient);
   const gcsTotal = patient.gcs.eye + patient.gcs.verbal + patient.gcs.motor;
   const gcsTone =
     gcsTotal >= 13 ? "var(--color-tone-mint)"
