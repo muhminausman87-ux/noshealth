@@ -244,19 +244,246 @@ function PatientPage() {
             </ul>
           </Box>
 
-          {/* Shift quick notes */}
-          <Box title="Shift quick note" icon={ClipboardList} accent="var(--color-tone-sky)" className="md:col-span-2 xl:col-span-3">
-            <textarea
-              placeholder="Type SBAR handover note here…"
-              className="h-28 w-full resize-none rounded-lg border border-border bg-background/60 p-3 text-sm outline-none focus:border-primary"
-            />
-          </Box>
+        </div>
+
+        {/* Clinical tabs */}
+        <div className="mt-6">
+          <Tabs defaultValue="labs" className="w-full">
+            <TabsList className="flex w-full flex-wrap gap-1 bg-card/60 p-1">
+              <TabsTrigger value="labs" className="gap-1.5"><FlaskConical className="h-3.5 w-3.5" />Labs</TabsTrigger>
+              <TabsTrigger value="io" className="gap-1.5"><Droplet className="h-3.5 w-3.5" />I / O chart</TabsTrigger>
+              <TabsTrigger value="notes" className="gap-1.5"><NotebookPen className="h-3.5 w-3.5" />Nursing notes</TabsTrigger>
+              <TabsTrigger value="careplan" className="gap-1.5"><ListChecks className="h-3.5 w-3.5" />Care plan</TabsTrigger>
+              <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />SBAR handover</TabsTrigger>
+            </TabsList>
+
+            {/* LABS */}
+            <TabsContent value="labs" className="mt-4">
+              <Box title="Latest results" icon={FlaskConical} accent="var(--color-tone-sky)">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                        <th className="py-2 pr-3">Panel</th>
+                        <th className="py-2 pr-3">Test</th>
+                        <th className="py-2 pr-3">Value</th>
+                        <th className="py-2 pr-3">Unit</th>
+                        <th className="py-2 pr-3">Reference</th>
+                        <th className="py-2 pr-3">Flag</th>
+                        <th className="py-2 pr-3">Taken</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {extras.labs.map((l, i) => (
+                        <tr key={i}>
+                          <td className="py-2 pr-3 text-muted-foreground">{l.panel}</td>
+                          <td className="py-2 pr-3 font-medium text-foreground">{l.test}</td>
+                          <td className="py-2 pr-3 font-semibold" style={{ color: labFlagColor(l.flag) }}>{l.value}</td>
+                          <td className="py-2 pr-3 text-muted-foreground">{l.unit}</td>
+                          <td className="py-2 pr-3 text-muted-foreground">{l.ref}</td>
+                          <td className="py-2 pr-3">
+                            <span
+                              className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                              style={{ background: `color-mix(in oklab, ${labFlagColor(l.flag)} 18%, transparent)`, color: labFlagColor(l.flag) }}
+                            >
+                              {l.flag}
+                            </span>
+                          </td>
+                          <td className="py-2 pr-3 text-muted-foreground">{l.takenAt}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Box>
+            </TabsContent>
+
+            {/* I/O */}
+            <TabsContent value="io" className="mt-4">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                <Box title="Intake" icon={Droplet} accent="var(--color-tone-sky)">
+                  <div className="text-3xl font-semibold text-foreground">{extras.io.totals.intake} <span className="text-sm font-normal text-muted-foreground">mL</span></div>
+                  <div className="mt-1 text-xs text-muted-foreground">Since shift start ({extras.io.shiftStart})</div>
+                </Box>
+                <Box title="Output" icon={Droplet} accent="var(--color-tone-amber)">
+                  <div className="text-3xl font-semibold text-foreground">{extras.io.totals.output} <span className="text-sm font-normal text-muted-foreground">mL</span></div>
+                  <div className="mt-1 text-xs text-muted-foreground">Urine + drains + losses</div>
+                </Box>
+                <Box title="Balance" icon={Activity} accent={extras.io.totals.balance >= 0 ? "var(--color-tone-mint)" : "var(--color-tone-rose)"}>
+                  <div
+                    className="text-3xl font-semibold"
+                    style={{ color: extras.io.totals.balance >= 0 ? "var(--color-tone-mint)" : "var(--color-tone-rose)" }}
+                  >
+                    {extras.io.totals.balance > 0 ? "+" : ""}{extras.io.totals.balance} <span className="text-sm font-normal text-muted-foreground">mL</span>
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">{extras.io.totals.balance >= 0 ? "Positive balance" : "Negative balance"}</div>
+                </Box>
+              </div>
+              <div className="mt-5">
+                <Box title="Hourly entries" icon={ClipboardList} accent="var(--color-tone-teal)">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                          <th className="py-2 pr-3">Time</th>
+                          <th className="py-2 pr-3">Intake</th>
+                          <th className="py-2 pr-3 text-right">mL in</th>
+                          <th className="py-2 pr-3">Output</th>
+                          <th className="py-2 pr-3 text-right">mL out</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {extras.io.entries.map((e) => {
+                          const intakeMl = e.intake.reduce((s, x) => s + x.ml, 0);
+                          const outputMl = e.output.reduce((s, x) => s + x.ml, 0);
+                          return (
+                            <tr key={e.time}>
+                              <td className="py-2 pr-3 font-medium text-foreground">{e.time}</td>
+                              <td className="py-2 pr-3 text-muted-foreground">{e.intake.map((i) => `${i.route} ${i.item}`).join(", ")}</td>
+                              <td className="py-2 pr-3 text-right font-semibold" style={{ color: "var(--color-tone-sky)" }}>{intakeMl}</td>
+                              <td className="py-2 pr-3 text-muted-foreground">{e.output.map((o) => `${o.route} ${o.item}`).join(", ")}</td>
+                              <td className="py-2 pr-3 text-right font-semibold" style={{ color: "var(--color-tone-amber)" }}>{outputMl}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </Box>
+              </div>
+            </TabsContent>
+
+            {/* NOTES */}
+            <TabsContent value="notes" className="mt-4">
+              <Box title="Nursing notes — this shift" icon={NotebookPen} accent="var(--color-tone-violet)">
+                <ul className="space-y-3">
+                  {extras.notes.map((n, i) => (
+                    <li key={i} className="rounded-xl border border-border bg-background/60 p-3">
+                      <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+                        <span className="font-semibold text-foreground">{n.time}</span>
+                        <span>·</span>
+                        <span>{n.author}</span>
+                        <span
+                          className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                          style={{ background: "color-mix(in oklab, var(--color-tone-violet) 18%, transparent)", color: "var(--color-tone-violet)" }}
+                        >
+                          {n.type}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed text-foreground">{n.body}</p>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4">
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Add note</label>
+                  <textarea
+                    placeholder="Type a new nursing note…"
+                    className="mt-1 h-24 w-full resize-none rounded-lg border border-border bg-background/60 p-3 text-sm outline-none focus:border-primary"
+                  />
+                </div>
+              </Box>
+            </TabsContent>
+
+            {/* CARE PLAN */}
+            <TabsContent value="careplan" className="mt-4">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {extras.carePlan.map((cp, i) => {
+                  const tone =
+                    cp.status === "active" ? "var(--color-tone-amber)"
+                    : cp.status === "resolved" ? "var(--color-tone-mint)"
+                    : "var(--color-tone-teal)";
+                  return (
+                    <Box key={i} title={cp.problem} icon={ListChecks} accent={tone}>
+                      <div className="space-y-3 text-sm">
+                        <KV k="Goal" v={cp.goal} />
+                        <div>
+                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Interventions</div>
+                          <ul className="mt-1 list-disc space-y-1 pl-5 text-foreground">
+                            {cp.interventions.map((iv, k) => <li key={k}>{iv}</li>)}
+                          </ul>
+                        </div>
+                        <KV k="Evaluation" v={cp.evaluation} />
+                        <div>
+                          <span
+                            className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                            style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
+                          >
+                            {cp.status}
+                          </span>
+                        </div>
+                      </div>
+                    </Box>
+                  );
+                })}
+              </div>
+            </TabsContent>
+
+            {/* HANDOVER */}
+            <TabsContent value="handover" className="mt-4">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <Box title="Situation" icon={AlertTriangle} accent="var(--color-tone-rose)">
+                  <p className="text-sm leading-relaxed text-foreground">{extras.handover.situation}</p>
+                </Box>
+                <Box title="Background" icon={BookOpen} accent="var(--color-tone-teal)">
+                  <p className="text-sm leading-relaxed text-foreground">{extras.handover.background}</p>
+                </Box>
+                <Box title="Assessment" icon={Stethoscope} accent="var(--color-tone-sky)">
+                  <p className="text-sm leading-relaxed text-foreground">{extras.handover.assessment}</p>
+                </Box>
+                <Box title="Recommendation" icon={Send} accent="var(--color-tone-mint)">
+                  <p className="text-sm leading-relaxed text-foreground">{extras.handover.recommendation}</p>
+                </Box>
+                <Box title="Pending tasks" icon={ListChecks} accent="var(--color-tone-amber)" className="md:col-span-2">
+                  <ul className="divide-y divide-border">
+                    {extras.handover.pendingTasks.map((t, i) => {
+                      const tone =
+                        t.priority === "high" ? "var(--color-destructive)"
+                        : t.priority === "med" ? "var(--color-tone-amber)"
+                        : "var(--color-tone-sky)";
+                      return (
+                        <li key={i} className="flex items-center justify-between gap-3 py-2.5">
+                          <div className="flex items-center gap-3">
+                            <input type="checkbox" className="h-4 w-4 rounded border-border" />
+                            <div>
+                              <div className="text-sm font-medium text-foreground">{t.task}</div>
+                              <div className="text-xs text-muted-foreground">Due {t.due}</div>
+                            </div>
+                          </div>
+                          <span
+                            className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                            style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
+                          >
+                            {t.priority}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Box>
+                <Box title="Free-text handover" icon={ClipboardList} accent="var(--color-tone-violet)" className="md:col-span-2">
+                  <textarea
+                    defaultValue={`S: ${extras.handover.situation}\n\nB: ${extras.handover.background}\n\nA: ${extras.handover.assessment}\n\nR: ${extras.handover.recommendation}`}
+                    className="h-44 w-full resize-none rounded-lg border border-border bg-background/60 p-3 text-sm leading-relaxed outline-none focus:border-primary"
+                  />
+                </Box>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
       <AIAssistant />
     </div>
   );
+}
+
+function labFlagColor(flag: Lab["flag"]) {
+  switch (flag) {
+    case "critical": return "var(--color-destructive)";
+    case "high":     return "var(--color-tone-amber)";
+    case "low":      return "var(--color-tone-sky)";
+    default:         return "var(--color-tone-mint)";
+  }
 }
 
 function Box({
