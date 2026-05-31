@@ -25,6 +25,7 @@ function PatientPage() {
   const { patientId } = useParams({ from: "/patient/$patientId" });
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
+  const [handoverType, setHandoverType] = useState<HandoverType>("shift");
 
   useEffect(() => {
     const s = getSession();
