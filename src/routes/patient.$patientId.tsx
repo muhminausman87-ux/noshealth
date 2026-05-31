@@ -446,7 +446,9 @@ function PatientPage() {
 
             {/* HANDOVER */}
             <TabsContent value="handover" className="mt-4">
+              <HandoverTypeSelector value={handoverType} onChange={setHandoverType} />
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <HandoverExtraForm type={handoverType} patient={patient} />
                 <Box title="Situation" icon={AlertTriangle} accent="var(--color-tone-rose)">
                   <p className="text-sm leading-relaxed text-foreground">{extras.handover.situation}</p>
                 </Box>
