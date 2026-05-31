@@ -2,14 +2,18 @@ import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, ClipboardList,
-  Droplet, FlaskConical, HeartPulse, ListChecks, NotebookPen, Pill,
-  Send, ShieldAlert, Stethoscope, Thermometer, User,
+  Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
+  Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
 } from "lucide-react";
 import { getPatient } from "@/lib/patients";
 import { getClinicalExtras, type Lab } from "@/lib/patient-extras";
 import { getSession, type Session } from "@/lib/auth";
 import { getDept } from "@/lib/departments";
 import { AIAssistant } from "@/components/AIAssistant";
+import {
+  VitalsTrend, GcsTrend, LabEntry, EHRModules, CPRSheet,
+  HandoverTypeSelector, HandoverExtraForm, type HandoverType,
+} from "@/components/PatientEntry";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/patient/$patientId")({
