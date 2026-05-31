@@ -329,7 +329,7 @@ export function CPRSheet({ patient }: { patient: PatientFull }) {
 /* ============ HANDOVER TYPE SELECTOR ============ */
 export type HandoverType = "shift" | "transfer" | "discharge" | "death";
 export function HandoverTypeSelector({ value, onChange }: { value: HandoverType; onChange: (v: HandoverType) => void }) {
-  const opts: { v: HandoverType; label: string; icon: React.ComponentType<{ className?: string }>; accent: string }[] = [
+  const opts: { v: HandoverType; label: string; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; accent: string }[] = [
     { v: "shift", label: "Shift handover", icon: ArrowRightLeft, accent: "var(--color-tone-teal)" },
     { v: "transfer", label: "Department transfer", icon: Send, accent: "var(--color-tone-sky)" },
     { v: "discharge", label: "Discharge", icon: LogOut, accent: "var(--color-tone-mint)" },
