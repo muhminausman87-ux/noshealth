@@ -2,14 +2,18 @@ import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, ClipboardList,
-  Droplet, FlaskConical, HeartPulse, ListChecks, NotebookPen, Pill,
-  Send, ShieldAlert, Stethoscope, Thermometer, User,
+  Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
+  Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
 } from "lucide-react";
 import { getPatient } from "@/lib/patients";
 import { getClinicalExtras, type Lab } from "@/lib/patient-extras";
 import { getSession, type Session } from "@/lib/auth";
 import { getDept } from "@/lib/departments";
 import { AIAssistant } from "@/components/AIAssistant";
+import {
+  VitalsTrend, GcsTrend, LabEntry, EHRModules, CPRSheet,
+  HandoverTypeSelector, HandoverExtraForm, type HandoverType,
+} from "@/components/PatientEntry";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/patient/$patientId")({
@@ -21,6 +25,7 @@ function PatientPage() {
   const { patientId } = useParams({ from: "/patient/$patientId" });
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
+  const [handoverType, setHandoverType] = useState<HandoverType>("shift");
 
   useEffect(() => {
     const s = getSession();
@@ -251,11 +256,32 @@ function PatientPage() {
           <Tabs defaultValue="labs" className="w-full">
             <TabsList className="flex w-full flex-wrap gap-1 bg-card/60 p-1">
               <TabsTrigger value="labs" className="gap-1.5"><FlaskConical className="h-3.5 w-3.5" />Labs</TabsTrigger>
+              <TabsTrigger value="trends" className="gap-1.5"><LineChart className="h-3.5 w-3.5" />Trends & entry</TabsTrigger>
               <TabsTrigger value="io" className="gap-1.5"><Droplet className="h-3.5 w-3.5" />I / O chart</TabsTrigger>
               <TabsTrigger value="notes" className="gap-1.5"><NotebookPen className="h-3.5 w-3.5" />Nursing notes</TabsTrigger>
               <TabsTrigger value="careplan" className="gap-1.5"><ListChecks className="h-3.5 w-3.5" />Care plan</TabsTrigger>
-              <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />SBAR handover</TabsTrigger>
+              <TabsTrigger value="cpr" className="gap-1.5"><HeartCrack className="h-3.5 w-3.5" />CPR</TabsTrigger>
+              <TabsTrigger value="ehr" className="gap-1.5"><Network className="h-3.5 w-3.5" />EHR modules</TabsTrigger>
+              <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />Handover</TabsTrigger>
             </TabsList>
+
+            {/* TRENDS & ENTRY */}
+            <TabsContent value="trends" className="mt-4 space-y-5">
+              <VitalsTrend patient={patient} />
+              <GcsTrend patient={patient} />
+              <LabEntry />
+            </TabsContent>
+
+            {/* CPR */}
+            <TabsContent value="cpr" className="mt-4">
+              <CPRSheet patient={patient} />
+            </TabsContent>
+
+            {/* EHR */}
+            <TabsContent value="ehr" className="mt-4">
+              <EHRModules />
+            </TabsContent>
+
 
             {/* LABS */}
             <TabsContent value="labs" className="mt-4">
@@ -420,7 +446,9 @@ function PatientPage() {
 
             {/* HANDOVER */}
             <TabsContent value="handover" className="mt-4">
+              <HandoverTypeSelector value={handoverType} onChange={setHandoverType} />
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <HandoverExtraForm type={handoverType} patient={patient} />
                 <Box title="Situation" icon={AlertTriangle} accent="var(--color-tone-rose)">
                   <p className="text-sm leading-relaxed text-foreground">{extras.handover.situation}</p>
                 </Box>
