@@ -255,11 +255,32 @@ function PatientPage() {
           <Tabs defaultValue="labs" className="w-full">
             <TabsList className="flex w-full flex-wrap gap-1 bg-card/60 p-1">
               <TabsTrigger value="labs" className="gap-1.5"><FlaskConical className="h-3.5 w-3.5" />Labs</TabsTrigger>
+              <TabsTrigger value="trends" className="gap-1.5"><LineChart className="h-3.5 w-3.5" />Trends & entry</TabsTrigger>
               <TabsTrigger value="io" className="gap-1.5"><Droplet className="h-3.5 w-3.5" />I / O chart</TabsTrigger>
               <TabsTrigger value="notes" className="gap-1.5"><NotebookPen className="h-3.5 w-3.5" />Nursing notes</TabsTrigger>
               <TabsTrigger value="careplan" className="gap-1.5"><ListChecks className="h-3.5 w-3.5" />Care plan</TabsTrigger>
-              <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />SBAR handover</TabsTrigger>
+              <TabsTrigger value="cpr" className="gap-1.5"><HeartCrack className="h-3.5 w-3.5" />CPR</TabsTrigger>
+              <TabsTrigger value="ehr" className="gap-1.5"><Network className="h-3.5 w-3.5" />EHR modules</TabsTrigger>
+              <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />Handover</TabsTrigger>
             </TabsList>
+
+            {/* TRENDS & ENTRY */}
+            <TabsContent value="trends" className="mt-4 space-y-5">
+              <VitalsTrend patient={patient} />
+              <GcsTrend patient={patient} />
+              <LabEntry />
+            </TabsContent>
+
+            {/* CPR */}
+            <TabsContent value="cpr" className="mt-4">
+              <CPRSheet patient={patient} />
+            </TabsContent>
+
+            {/* EHR */}
+            <TabsContent value="ehr" className="mt-4">
+              <EHRModules />
+            </TabsContent>
+
 
             {/* LABS */}
             <TabsContent value="labs" className="mt-4">
