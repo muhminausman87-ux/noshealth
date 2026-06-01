@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, ClipboardList,
+  Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, Calculator, ClipboardList,
   Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
   Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
 } from "lucide-react";
@@ -264,8 +264,16 @@ function PatientPage() {
               <TabsTrigger value="careplan" className="gap-1.5"><ListChecks className="h-3.5 w-3.5" />Care plan</TabsTrigger>
               <TabsTrigger value="cpr" className="gap-1.5"><HeartCrack className="h-3.5 w-3.5" />CPR</TabsTrigger>
               <TabsTrigger value="ehr" className="gap-1.5"><Network className="h-3.5 w-3.5" />EHR modules</TabsTrigger>
+              <TabsTrigger value="ebp" className="gap-1.5"><Calculator className="h-3.5 w-3.5" />EBP & Tools</TabsTrigger>
               <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />Handover</TabsTrigger>
             </TabsList>
+
+            {/* EBP & TOOLS */}
+            <TabsContent value="ebp" className="mt-4 space-y-5">
+              <EBPSearch patient={patient} />
+              <DoseCalculator patient={patient} />
+              <ProcedureGuides />
+            </TabsContent>
 
             {/* TRENDS & ENTRY */}
             <TabsContent value="trends" className="mt-4 space-y-5">
