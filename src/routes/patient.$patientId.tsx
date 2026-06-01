@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, ClipboardList,
+  Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, Calculator, ClipboardList,
   Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
   Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
 } from "lucide-react";
@@ -14,6 +14,7 @@ import {
   VitalsTrend, GcsTrend, LabEntry, EHRModules, CPRSheet,
   HandoverTypeSelector, HandoverExtraForm, type HandoverType,
 } from "@/components/PatientEntry";
+import { EBPSearch, DoseCalculator, ProcedureGuides, NewDrugBadge, isNewDrug } from "@/components/EBPReferences";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/patient/$patientId")({
@@ -229,8 +230,9 @@ function PatientPage() {
                         <Pill className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-foreground">
-                          {m.name} <span className="text-muted-foreground">· {m.dose}</span>
+                        <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
+                          <span>{m.name} <span className="text-muted-foreground">· {m.dose}</span></span>
+                          {isNewDrug(m.name) && <NewDrugBadge name={m.name} />}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {m.route} · {m.freq} · next {m.nextDue}
@@ -262,8 +264,16 @@ function PatientPage() {
               <TabsTrigger value="careplan" className="gap-1.5"><ListChecks className="h-3.5 w-3.5" />Care plan</TabsTrigger>
               <TabsTrigger value="cpr" className="gap-1.5"><HeartCrack className="h-3.5 w-3.5" />CPR</TabsTrigger>
               <TabsTrigger value="ehr" className="gap-1.5"><Network className="h-3.5 w-3.5" />EHR modules</TabsTrigger>
+              <TabsTrigger value="ebp" className="gap-1.5"><Calculator className="h-3.5 w-3.5" />EBP & Tools</TabsTrigger>
               <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />Handover</TabsTrigger>
             </TabsList>
+
+            {/* EBP & TOOLS */}
+            <TabsContent value="ebp" className="mt-4 space-y-5">
+              <EBPSearch patient={patient} />
+              <DoseCalculator patient={patient} />
+              <ProcedureGuides />
+            </TabsContent>
 
             {/* TRENDS & ENTRY */}
             <TabsContent value="trends" className="mt-4 space-y-5">
