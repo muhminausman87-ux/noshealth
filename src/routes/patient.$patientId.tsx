@@ -14,6 +14,7 @@ import {
   VitalsTrend, GcsTrend, LabEntry, EHRModules, CPRSheet,
   HandoverTypeSelector, HandoverExtraForm, type HandoverType,
 } from "@/components/PatientEntry";
+import { EBPSearch, DoseCalculator, ProcedureGuides, NewDrugBadge, isNewDrug } from "@/components/EBPReferences";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/patient/$patientId")({
@@ -229,8 +230,9 @@ function PatientPage() {
                         <Pill className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-foreground">
-                          {m.name} <span className="text-muted-foreground">· {m.dose}</span>
+                        <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
+                          <span>{m.name} <span className="text-muted-foreground">· {m.dose}</span></span>
+                          {isNewDrug(m.name) && <NewDrugBadge name={m.name} />}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {m.route} · {m.freq} · next {m.nextDue}
