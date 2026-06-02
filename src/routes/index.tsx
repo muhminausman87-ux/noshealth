@@ -6,6 +6,7 @@ import { MedSurgView } from "@/components/views/MedSurgView";
 import { ICUView } from "@/components/views/ICUView";
 import { GenericView } from "@/components/views/GenericView";
 import { StaffDashboard } from "@/components/StaffDashboard";
+import { StaffSupportHub } from "@/components/StaffSupportHub";
 import { AIAssistant } from "@/components/AIAssistant";
 import { AdminWorkforce } from "@/components/AdminWorkforce";
 import { getDept, type Department } from "@/lib/departments";
@@ -112,7 +113,10 @@ function Index() {
             <AdminWorkforce />
           </>
         ) : (
-          <StaffDashboard session={session} />
+          <>
+            <StaffDashboard session={session} />
+            <StaffSupportHub session={session} />
+          </>
         )}
       </main>
 
