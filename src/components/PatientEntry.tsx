@@ -411,3 +411,99 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+
+/* ============ CUSTOM PARAMETERS ============ */
+interface CustomParam {
+  id: string;
+  name: string;
+  unit: string;
+  normal: string;
+  entries: { time: string; value: string; by: string }[];
+}
+
+export function CustomParams() {
+  const [params, setParams] = useState<CustomParam[]>([
+    { id: "cbg", name: "Capillary blood glucose", unit: "mmol/L", normal: "4–7", entries: [] },
+  ]);
+  const [newName, setNewName] = useState("");
+  const [newUnit, setNewUnit] = useState("");
+  const [newNormal, setNewNormal] = useState("");
+
+  const addParam = () => {
+    if (!newName.trim()) return;
+    setParams([
+      ...params,
+      { id: Math.random().toString(36).slice(2, 8), name: newName, unit: newUnit, normal: newNormal, entries: [] },
+    ]);
+    setNewName(""); setNewUnit(""); setNewNormal("");
+  };
+  const addEntry = (id: string, e: { time: string; value: string; by: string }) =>
+    setParams((p) => p.map((x) => (x.id === id ? { ...x, entries: [...x.entries, e] } : x)));
+  const removeParam = (id: string) => setParams((p) => p.filter((x) => x.id !== id));
+
+  return (
+    <Box title="Custom parameters — define & log anything" icon={Activity} accent="var(--color-tone-teal)">
+      <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-4">
+        <input className={inputCls} placeholder="Parameter name (e.g. CVP)" value={newName} onChange={(e) => setNewName(e.target.value)} />
+        <input className={inputCls} placeholder="Unit (e.g. mmHg)" value={newUnit} onChange={(e) => setNewUnit(e.target.value)} />
+        <input className={inputCls} placeholder="Normal range" value={newNormal} onChange={(e) => setNewNormal(e.target.value)} />
+        <button className={btnPrimary} onClick={addParam}><Plus className="h-3.5 w-3.5" />Add parameter</button>
+      </div>
+
+      <div className="space-y-4">
+        {params.map((p) => (
+          <ParamCard key={p.id} param={p} onAdd={(e) => addEntry(p.id, e)} onRemove={() => removeParam(p.id)} />
+        ))}
+        {params.length === 0 && (
+          <p className="text-xs text-muted-foreground">No custom parameters yet — add one above.</p>
+        )}
+      </div>
+    </Box>
+  );
+}
+
+function ParamCard({
+  param, onAdd, onRemove,
+}: {
+  param: CustomParam;
+  onAdd: (e: { time: string; value: string; by: string }) => void;
+  onRemove: () => void;
+}) {
+  const [d, setD] = useState({ time: now(), value: "", by: "" });
+  return (
+    <div className="rounded-xl border border-border bg-background/40 p-3">
+      <div className="mb-2 flex items-center justify-between">
+        <div>
+          <div className="text-sm font-semibold text-foreground">{param.name}</div>
+          <div className="text-[11px] text-muted-foreground">
+            {param.unit && <>Unit: {param.unit} · </>}{param.normal && <>Normal: {param.normal}</>}
+          </div>
+        </div>
+        <button className={btn} onClick={onRemove}><Trash2 className="h-3.5 w-3.5" />Remove</button>
+      </div>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-[120px_1fr_1fr_auto]">
+        <input type="time" className={inputCls} value={d.time} onChange={(e) => setD({ ...d, time: e.target.value })} />
+        <input className={inputCls} placeholder={`Value ${param.unit && `(${param.unit})`}`} value={d.value} onChange={(e) => setD({ ...d, value: e.target.value })} />
+        <input className={inputCls} placeholder="Recorded by" value={d.by} onChange={(e) => setD({ ...d, by: e.target.value })} />
+        <button className={btnPrimary} onClick={() => { if (d.value) { onAdd(d); setD({ time: now(), value: "", by: "" }); } }}>
+          <Save className="h-3.5 w-3.5" />Log
+        </button>
+      </div>
+      {param.entries.length > 0 && (
+        <table className="mt-3 w-full text-sm">
+          <thead>
+            <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+              <th className="py-1 pr-3">Time</th><th className="py-1 pr-3">Value</th><th className="py-1 pr-3">By</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {param.entries.map((e, i) => (
+              <tr key={i}><td className="py-1 pr-3">{e.time}</td><td className="py-1 pr-3 font-medium text-foreground">{e.value} {param.unit}</td><td className="py-1 pr-3 text-muted-foreground">{e.by}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+

@@ -9,6 +9,7 @@ import { StaffDashboard } from "@/components/StaffDashboard";
 import { StaffSupportHub } from "@/components/StaffSupportHub";
 import { AIAssistant } from "@/components/AIAssistant";
 import { AdminWorkforce } from "@/components/AdminWorkforce";
+import { AdminPerformance } from "@/components/AdminPerformance";
 import { getDept, type Department } from "@/lib/departments";
 import { getSession, setSession, type Session } from "@/lib/auth";
 import { AlertTriangle } from "lucide-react";
@@ -111,6 +112,7 @@ function Index() {
             {dept === "icu" && <ICUView />}
             {dept !== "ed" && dept !== "medsurg" && dept !== "icu" && <GenericView dept={dept} />}
             <AdminWorkforce />
+            <AdminPerformance />
           </>
         ) : (
           <>
