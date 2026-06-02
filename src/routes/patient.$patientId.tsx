@@ -11,7 +11,7 @@ import { getSession, type Session } from "@/lib/auth";
 import { getDept } from "@/lib/departments";
 import { AIAssistant } from "@/components/AIAssistant";
 import {
-  VitalsTrend, GcsTrend, LabEntry, EHRModules, CPRSheet,
+  VitalsTrend, GcsTrend, LabEntry, EHRModules, CPRSheet, CustomParams,
   HandoverTypeSelector, HandoverExtraForm, type HandoverType,
 } from "@/components/PatientEntry";
 import { EBPSearch, DoseCalculator, ProcedureGuides, NewDrugBadge, isNewDrug } from "@/components/EBPReferences";
@@ -280,6 +280,7 @@ function PatientPage() {
               <VitalsTrend patient={patient} />
               <GcsTrend patient={patient} />
               <LabEntry />
+              <CustomParams />
             </TabsContent>
 
             {/* CPR */}
