@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import {
   Phone, Languages, ShieldAlert, HeartPulse, GraduationCap, Sparkles,
   LogOut, BookOpen, Award, Compass, Brain, AlertTriangle, ArrowRightLeft,
-  CheckCircle2, ClipboardCheck, Users, X,
+  CheckCircle2, ClipboardCheck, Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
