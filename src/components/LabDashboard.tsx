@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlaskConical, Inbox, CheckCircle2, Clock, FileBarChart, Send } from "lucide-react";
+import { Inbox, CheckCircle2, Clock, FileBarChart, Send } from "lucide-react";
 import type { Session } from "@/lib/auth";
 
 type Tab = "queue" | "inprogress" | "results" | "qc";
