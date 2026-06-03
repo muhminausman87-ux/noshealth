@@ -12,6 +12,10 @@ import { HospitalAudits } from "@/components/HospitalAudits";
 import { AIAssistant } from "@/components/AIAssistant";
 import { AdminWorkforce } from "@/components/AdminWorkforce";
 import { AdminPerformance } from "@/components/AdminPerformance";
+import { DoctorDashboard } from "@/components/DoctorDashboard";
+import { LabDashboard } from "@/components/LabDashboard";
+import { RadiologyDashboard } from "@/components/RadiologyDashboard";
+import { EmergencyBanner } from "@/components/EmergencyBanner";
 import { getDept, type Department } from "@/lib/departments";
 import { getSession, setSession, type Session } from "@/lib/auth";
 import { AlertTriangle } from "lucide-react";
@@ -19,12 +23,8 @@ import { AlertTriangle } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SyncCare EHR — Clinical Workspace for Nurses" },
-      {
-        name: "description",
-        content:
-          "Department-aware EHR dashboard for nurses across ED, ICU, Med-Surg, Maternity, Cardiac, Pediatric, OPD, OT and more.",
-      },
+      { title: "SyncCare EHR — Clinical Workspace" },
+      { name: "description", content: "Role-aware EHR for nurses, doctors, lab, radiology and admin." },
     ],
   }),
   component: Index,
@@ -37,20 +37,13 @@ function Index() {
 
   useEffect(() => {
     const s = getSession();
-    if (!s) {
-      navigate({ to: "/login" });
-      return;
-    }
+    if (!s) { navigate({ to: "/login" }); return; }
     setSess(s);
     setDept(s.activeDept);
   }, [navigate]);
 
   if (!session) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
-        Loading workspace…
-      </div>
-    );
+    return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">Loading workspace…</div>;
   }
 
   const meta = getDept(dept);
@@ -62,14 +55,18 @@ function Index() {
     setSession({ ...session, activeDept: d });
   };
 
-  const handleLogout = () => {
-    setSession(null);
-    navigate({ to: "/login" });
-  };
+  const handleLogout = () => { setSession(null); navigate({ to: "/login" }); };
+
+  const heading =
+    session.role === "doctor"    ? "Physician workspace" :
+    session.role === "lab"       ? "Laboratory workspace" :
+    session.role === "radiology" ? "Radiology workspace" :
+    isAdmin ? meta.name : `${meta.short} dashboard`;
 
   return (
     <div className="min-h-screen">
       <TopNav active={dept} onChange={handleChangeDept} session={session} onLogout={handleLogout} />
+      <EmergencyBanner canToggle={isAdmin} />
 
       {session.pulled && session.assignedDept && (
         <div className="border-b border-warning/30 bg-warning/15">
@@ -90,16 +87,7 @@ function Index() {
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: meta.color }} />
               {isAdmin ? "Admin view" : "Your workspace"}
             </div>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
-              {isAdmin ? meta.name : `${meta.short} dashboard`}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {isAdmin
-                ? "Admin can switch between any unit from the top navigation."
-                : session.pulled
-                  ? "Pulled-staff view — limited to this covering unit for the shift."
-                  : "Only your assigned patients and shift snapshot."}
-            </p>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">{heading}</h1>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="h-2 w-2 animate-pulse rounded-full bg-success" />
@@ -107,7 +95,7 @@ function Index() {
           </div>
         </div>
 
-        {isAdmin ? (
+        {isAdmin && (
           <>
             {dept === "ed" && <EDView />}
             {dept === "medsurg" && <MedSurgView />}
@@ -117,7 +105,9 @@ function Index() {
             <AdminPerformance />
             <HospitalAudits />
           </>
-        ) : (
+        )}
+
+        {session.role === "staff" && (
           <>
             <StaffDashboard session={session} />
             <BreaksWellbeing />
@@ -125,6 +115,10 @@ function Index() {
             <HospitalAudits />
           </>
         )}
+
+        {session.role === "doctor"    && <DoctorDashboard session={session} />}
+        {session.role === "lab"       && <LabDashboard session={session} />}
+        {session.role === "radiology" && <RadiologyDashboard session={session} />}
       </main>
 
       <AIAssistant />
