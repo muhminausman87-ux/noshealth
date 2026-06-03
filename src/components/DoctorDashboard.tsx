@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Stethoscope, ClipboardList, FlaskConical, Scan, Syringe, Scissors,
-  FileText, LogOut, Plus, AlertTriangle, Calendar, Pill,
+  FileText, LogOut, Plus, Calendar, Pill,
 } from "lucide-react";
 import type { Session } from "@/lib/auth";
 
@@ -277,4 +277,4 @@ function Phase({ color, title, items }: { color: string; title: string; items: s
   );
 }
 
-export function _u() { return <AlertTriangle />; } // keep import used in some builds
+

@@ -143,4 +143,4 @@ function QC() {
   );
 }
 
-export const _icon = FlaskConical;
+
