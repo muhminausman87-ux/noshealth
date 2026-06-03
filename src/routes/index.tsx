@@ -115,6 +115,7 @@ function Index() {
             {dept !== "ed" && dept !== "medsurg" && dept !== "icu" && <GenericView dept={dept} />}
             <AdminWorkforce />
             <AdminPerformance />
+            <HospitalAudits />
           </>
         ) : (
           <>
