@@ -7,6 +7,8 @@ import { ICUView } from "@/components/views/ICUView";
 import { GenericView } from "@/components/views/GenericView";
 import { StaffDashboard } from "@/components/StaffDashboard";
 import { StaffSupportHub } from "@/components/StaffSupportHub";
+import { BreaksWellbeing } from "@/components/BreaksWellbeing";
+import { HospitalAudits } from "@/components/HospitalAudits";
 import { AIAssistant } from "@/components/AIAssistant";
 import { AdminWorkforce } from "@/components/AdminWorkforce";
 import { AdminPerformance } from "@/components/AdminPerformance";
@@ -117,7 +119,9 @@ function Index() {
         ) : (
           <>
             <StaffDashboard session={session} />
+            <BreaksWellbeing />
             <StaffSupportHub session={session} />
+            <HospitalAudits />
           </>
         )}
       </main>
