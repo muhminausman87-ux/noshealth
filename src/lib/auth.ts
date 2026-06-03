@@ -1,18 +1,20 @@
 import type { Department } from "./departments";
 
-export type Role = "staff" | "admin";
+export type Role = "staff" | "admin" | "doctor" | "lab" | "radiology";
 
 export interface DemoUser {
   username: string;
   password: string;
   name: string;
   role: Role;
-  assignedDept?: Department; // staff only
+  assignedDept?: Department;
   title: string;
 }
 
 export const STAFF: DemoUser[] = [
   { username: "admin",   password: "admin123", name: "Dr. R. Menon",  role: "admin", title: "Nursing Director" },
+
+  // Nurses
   { username: "achen",   password: "nurse123", name: "RN A. Chen",    role: "staff", assignedDept: "ed",        title: "ED Nurse" },
   { username: "spriya",  password: "nurse123", name: "RN S. Priya",   role: "staff", assignedDept: "icu",       title: "ICU Nurse" },
   { username: "jthomas", password: "nurse123", name: "RN J. Thomas",  role: "staff", assignedDept: "medsurg",   title: "Med-Surg Nurse" },
@@ -25,6 +27,21 @@ export const STAFF: DemoUser[] = [
   { username: "anair",   password: "nurse123", name: "RN A. Nair",    role: "staff", assignedDept: "opd",       title: "OPD Nurse" },
   { username: "pgeorge", password: "nurse123", name: "RN P. George",  role: "staff", assignedDept: "daycare",   title: "Day Care Nurse" },
   { username: "tkurian", password: "nurse123", name: "RN T. Kurian",  role: "staff", assignedDept: "ot",        title: "OT Scrub Nurse" },
+
+  // Doctors (login by username only — designation is separate)
+  { username: "dpatel",  password: "doc123",   name: "Dr. P. Patel",  role: "doctor", assignedDept: "medical",  title: "Internal Medicine" },
+  { username: "dkhan",   password: "doc123",   name: "Dr. A. Khan",   role: "doctor", assignedDept: "ed",       title: "ED Physician" },
+  { username: "drao",    password: "doc123",   name: "Dr. V. Rao",    role: "doctor", assignedDept: "icu",      title: "Intensivist" },
+  { username: "dshah",   password: "doc123",   name: "Dr. M. Shah",   role: "doctor", assignedDept: "ot",       title: "Surgeon" },
+  { username: "diyer",   password: "doc123",   name: "Dr. K. Iyer",   role: "doctor", assignedDept: "daycare",  title: "Day-Care Consultant" },
+
+  // Lab technicians
+  { username: "lab1",    password: "lab123",   name: "Tech S. Roy",   role: "lab",    title: "Lab Technician (Biochem)" },
+  { username: "lab2",    password: "lab123",   name: "Tech H. Ali",   role: "lab",    title: "Lab Technician (Haem)" },
+
+  // Radiology
+  { username: "rad1",    password: "rad123",   name: "Rad. T. Bose",  role: "radiology", title: "Radiology Technologist" },
+  { username: "rad2",    password: "rad123",   name: "Dr. N. Verma",  role: "radiology", title: "Radiologist" },
 ];
 
 export interface Session {
@@ -33,11 +50,12 @@ export interface Session {
   title: string;
   role: Role;
   assignedDept?: Department;
-  activeDept: Department; // current dept (own or pulled-to)
+  activeDept: Department;
   pulled: boolean;
 }
 
 const KEY = "synccare.session";
+const EMERG_KEY = "synccare.emergency";
 
 export function getSession(): Session | null {
   if (typeof window === "undefined") return null;
@@ -64,6 +82,19 @@ export function findUser(username: string, password: string, role: Role): DemoUs
         u.role === role,
     ) ?? null
   );
+}
+
+// Hospital-wide healthcare emergency mode (Code Yellow / mass casualty / outbreak).
+// When ON: surge protocol banner shown, staff get emergency-pay (+50%) and comp-off note.
+export function getEmergency(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(EMERG_KEY) === "1";
+}
+export function setEmergency(on: boolean) {
+  if (typeof window === "undefined") return;
+  if (on) localStorage.setItem(EMERG_KEY, "1");
+  else localStorage.removeItem(EMERG_KEY);
+  window.dispatchEvent(new CustomEvent("synccare-emergency"));
 }
 
 export const SUPPORT_PHONE = "+918075918850";
