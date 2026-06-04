@@ -120,3 +120,60 @@ function Index() {
     </div>
   );
 }
+
+type Portal = "care" | "wellbeing" | "schedule";
+
+const PORTALS: { id: Portal; label: string; sub: string; icon: any; tone: string }[] = [
+  { id: "care",      label: "Patient care",       sub: "Your assigned patients",    icon: Stethoscope,    tone: "var(--color-tone-sky)" },
+  { id: "wellbeing", label: "Wellbeing & growth", sub: "Breaks, support, learning", icon: HeartHandshake, tone: "var(--color-tone-mint)" },
+  { id: "schedule",  label: "Schedule & admin",   sub: "Roster, leave, absence",    icon: CalendarDays,   tone: "var(--color-tone-violet)" },
+];
+
+function StaffPortals({ session }: { session: Session }) {
+  const [portal, setPortal] = useState<Portal>("care");
+
+  return (
+    <div className="space-y-6">
+      <nav className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {PORTALS.map((p) => {
+          const Icon = p.icon;
+          const on = portal === p.id;
+          return (
+            <button
+              key={p.id}
+              onClick={() => setPortal(p.id)}
+              className={`flex items-center gap-3 rounded-2xl border p-3 text-left transition ${
+                on ? "shadow-md" : "border-border bg-card hover:border-primary/30"
+              }`}
+              style={on ? { background: `color-mix(in oklab, ${p.tone} 14%, var(--color-card))`, borderColor: p.tone } : undefined}
+            >
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-xl"
+                style={{ background: `color-mix(in oklab, ${p.tone} 20%, transparent)`, color: p.tone }}
+              >
+                <Icon className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-foreground">{p.label}</div>
+                <div className="text-[11px] text-muted-foreground">{p.sub}</div>
+              </div>
+            </button>
+          );
+        })}
+      </nav>
+
+      {portal === "care" && <StaffDashboard session={session} />}
+
+      {portal === "wellbeing" && (
+        <div className="space-y-5">
+          <BreaksWellbeing />
+          <CompetencyCenter />
+          <StaffSupportHub session={session} />
+          <HospitalAudits />
+        </div>
+      )}
+
+      {portal === "schedule" && <ScheduleLeave session={session} />}
+    </div>
+  );
+}
