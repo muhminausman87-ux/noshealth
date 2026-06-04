@@ -9,6 +9,8 @@ import { StaffDashboard } from "@/components/StaffDashboard";
 import { StaffSupportHub } from "@/components/StaffSupportHub";
 import { BreaksWellbeing } from "@/components/BreaksWellbeing";
 import { HospitalAudits } from "@/components/HospitalAudits";
+import { CompetencyCenter } from "@/components/CompetencyCenter";
+import { ScheduleLeave } from "@/components/ScheduleLeave";
 import { AIAssistant } from "@/components/AIAssistant";
 import { AdminWorkforce } from "@/components/AdminWorkforce";
 import { AdminPerformance } from "@/components/AdminPerformance";
@@ -18,7 +20,7 @@ import { RadiologyDashboard } from "@/components/RadiologyDashboard";
 import { EmergencyBanner } from "@/components/EmergencyBanner";
 import { getDept, type Department } from "@/lib/departments";
 import { getSession, setSession, type Session } from "@/lib/auth";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Stethoscope, HeartHandshake, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -107,14 +109,7 @@ function Index() {
           </>
         )}
 
-        {session.role === "staff" && (
-          <>
-            <StaffDashboard session={session} />
-            <BreaksWellbeing />
-            <StaffSupportHub session={session} />
-            <HospitalAudits />
-          </>
-        )}
+        {session.role === "staff" && <StaffPortals session={session} />}
 
         {session.role === "doctor"    && <DoctorDashboard session={session} />}
         {session.role === "lab"       && <LabDashboard session={session} />}
