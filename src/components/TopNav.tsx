@@ -117,10 +117,52 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
         </div>
 
         <div className="ml-auto flex items-center gap-3">
-          <div className="hidden items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-muted-foreground md:flex">
-            <Search className="h-4 w-4" />
-            <span>Search patient, order, note…</span>
+          <div ref={searchRef} className="relative hidden md:block">
+            <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-sm">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input
+                value={q}
+                onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
+                onFocus={() => setSearchOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && results[0]) goTo(results[0].id);
+                  if (e.key === "Escape") setSearchOpen(false);
+                }}
+                placeholder="Search patient, MRN, room…"
+                className="w-64 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+            </div>
+            {searchOpen && q.trim() && (
+              <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+                {results.length === 0 ? (
+                  <div className="px-3 py-4 text-center text-sm text-muted-foreground">No matches</div>
+                ) : (
+                  <ul className="max-h-80 overflow-y-auto py-1">
+                    {results.map((p) => {
+                      const m = getDept(p.dept);
+                      return (
+                        <li key={p.id}>
+                          <button
+                            onClick={() => goTo(p.id)}
+                            className="flex w-full items-start gap-2.5 px-3 py-2 text-left hover:bg-secondary"
+                          >
+                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: m.color }} />
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate text-sm font-medium text-foreground">{p.name}</div>
+                              <div className="truncate text-[11px] text-muted-foreground">
+                                MRN {p.mrn} · {p.room} · {m.short}
+                              </div>
+                            </div>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
+
           <button className="relative rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground">
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
