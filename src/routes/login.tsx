@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Lock, Phone, User, AlertCircle } from "lucide-react";
+import { Lock, Phone, User, AlertCircle, Linkedin, KeyRound } from "lucide-react";
 import {
   findUserAny, setSession,
   SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY,
+  DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
 } from "@/lib/auth";
 import logo from "@/assets/nos-logo.png.asset.json";
 
@@ -46,12 +47,16 @@ function LoginPage() {
     navigate({ to: "/" });
   };
 
+  const fillDemo = (u: string, p: string) => { setUsername(u); setPassword(p); setError(""); };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-secondary via-background to-accent/40 px-4 py-10">
-      <div className="relative z-10 mx-auto flex max-w-md flex-col items-center gap-6">
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6">
         <img src={logo.url} alt="NOS Ecosystems" className="h-16 w-auto" />
 
-        <div className="w-full rounded-2xl border border-border bg-card/95 p-6 shadow-sm md:p-8">
+        <div className="grid w-full gap-5 md:grid-cols-2">
+          <div className="rounded-2xl border border-border bg-card/95 p-6 shadow-sm md:p-8">
+            <h1 className="mb-4 text-lg font-semibold text-foreground">Sign in</h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <Field icon={User} label="Username">
               <input
