@@ -1,6 +1,12 @@
 import { Activity, ClipboardList, Pill, Users } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
+import { AcuityScoring } from "@/components/AcuityScoring";
 import { getDept, type Department } from "@/lib/departments";
+
+const ACUITY_DEPTS: Department[] = [
+  "medsurg", "medical", "surgical", "cardiac", "pediatric",
+  "maternity", "labour", "daycare", "ed", "icu",
+];
 
 interface Patient {
   name: string;
@@ -136,6 +142,10 @@ export function GenericView({ dept }: { dept: Department }) {
           </div>
         )}
       </Widget>
+
+      {ACUITY_DEPTS.includes(dept) && (
+        <AcuityScoring mode={dept === "icu" ? "icu" : "ward"} className="lg:col-span-3" />
+      )}
     </div>
   );
 }

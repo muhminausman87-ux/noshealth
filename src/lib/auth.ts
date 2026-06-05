@@ -108,5 +108,18 @@ export function setEmergency(on: boolean) {
   window.dispatchEvent(new CustomEvent("synccare-emergency"));
 }
 
-export const SUPPORT_PHONE = "+918075918850";
-export const SUPPORT_PHONE_DISPLAY = "+91 80759 18850";
+export const SUPPORT_PHONE = "+852685497";
+export const SUPPORT_PHONE_DISPLAY = "852 685 497";
+
+export const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/muhmina-usman-a9b54557";
+
+// Demo accounts to show on the login screen (passwords intentionally visible for demo).
+export const DEMO_ACCOUNTS: { role: string; username: string; password: string; name: string }[] = [
+  { role: "Admin / Nursing Director", username: "admin",  password: "admin123", name: "Dr. R. Menon" },
+  { role: "Nurse (ED)",               username: "achen",  password: "nurse123", name: "RN A. Chen" },
+  { role: "Nurse (ICU)",              username: "spriya", password: "nurse123", name: "RN S. Priya" },
+  { role: "Doctor (Medicine)",        username: "dpatel", password: "doc123",   name: "Dr. P. Patel" },
+  { role: "Doctor (Surgeon)",         username: "dshah",  password: "doc123",   name: "Dr. M. Shah" },
+  { role: "Lab Technician",           username: "lab1",   password: "lab123",   name: "Tech S. Roy" },
+  { role: "Radiology",                username: "rad1",   password: "rad123",   name: "Rad. T. Bose" },
+];

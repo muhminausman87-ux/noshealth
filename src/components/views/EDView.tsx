@@ -1,5 +1,6 @@
 import { AlertCircle, Activity, FlaskConical, Siren } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
+import { AcuityScoring } from "@/components/AcuityScoring";
 
 const vitals = [
   { t: "Now", hr: 112, bp: "148/92", rr: 22, o2: 94, temp: "37.8" },
@@ -75,6 +76,8 @@ export function EDView() {
           <LabRow name="BMP" detail="Green tube" status="completed" result="Within range" />
         </div>
       </Widget>
+
+      <AcuityScoring mode="ward" className="lg:col-span-2" />
     </div>
   );
 }
