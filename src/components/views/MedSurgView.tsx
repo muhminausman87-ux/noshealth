@@ -79,6 +79,8 @@ export function MedSurgView() {
           <span className="font-semibold text-foreground">+320 mL</span>
         </div>
       </Widget>
+
+      <AcuityScoring mode="ward" className="lg:col-span-2" />
     </div>
   );
 }

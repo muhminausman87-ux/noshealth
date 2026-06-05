@@ -76,6 +76,8 @@ export function EDView() {
           <LabRow name="BMP" detail="Green tube" status="completed" result="Within range" />
         </div>
       </Widget>
+
+      <AcuityScoring mode="ward" className="lg:col-span-2" />
     </div>
   );
 }

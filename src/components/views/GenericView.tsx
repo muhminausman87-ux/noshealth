@@ -142,6 +142,10 @@ export function GenericView({ dept }: { dept: Department }) {
           </div>
         )}
       </Widget>
+
+      {ACUITY_DEPTS.includes(dept) && (
+        <AcuityScoring mode={dept === "icu" ? "icu" : "ward"} className="lg:col-span-3" />
+      )}
     </div>
   );
 }
