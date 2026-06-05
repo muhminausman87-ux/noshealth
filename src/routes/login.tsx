@@ -107,6 +107,54 @@ function LoginPage() {
             </a>
           </div>
         </div>
+
+        {/* Demo accounts + founder */}
+        <aside className="space-y-4">
+          <div className="rounded-2xl border border-border bg-card/95 p-5 shadow-sm">
+            <div className="mb-3 flex items-center gap-2">
+              <KeyRound className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-semibold text-foreground">Demo accounts</h2>
+            </div>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Click any role to auto-fill the form. The system detects role automatically — no role tab needed.
+            </p>
+            <ul className="space-y-1.5">
+              {DEMO_ACCOUNTS.map((d) => (
+                <li key={d.username}>
+                  <button
+                    type="button"
+                    onClick={() => fillDemo(d.username, d.password)}
+                    className="flex w-full items-center justify-between gap-3 rounded-md border border-border bg-background px-3 py-2 text-left text-xs transition hover:border-primary/40 hover:bg-accent"
+                  >
+                    <span>
+                      <span className="block font-medium text-foreground">{d.role}</span>
+                      <span className="block text-[10px] text-muted-foreground">{d.name}</span>
+                    </span>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      {d.username} / {d.password}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <a
+            href={FOUNDER_LINKEDIN}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 rounded-2xl border border-border bg-card/95 p-4 text-sm shadow-sm transition hover:border-primary/40"
+          >
+            <Linkedin className="h-5 w-5 text-primary" />
+            <div className="min-w-0">
+              <div className="font-medium text-foreground">Built on the vision of Muhmina Usman</div>
+              <div className="truncate text-[11px] text-muted-foreground">
+                Right Patient · Right Nurse · Right Care · Right Outcome
+              </div>
+            </div>
+          </a>
+        </aside>
+        </div>
       </div>
     </div>
   );
