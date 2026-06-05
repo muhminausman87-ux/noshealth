@@ -1,5 +1,6 @@
 import { HeartPulse, Syringe, Wind, FlaskConical } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
+import { AcuityScoring } from "@/components/AcuityScoring";
 
 export function ICUView() {
   return (
@@ -67,6 +68,8 @@ export function ICUView() {
           </table>
         </div>
       </Widget>
+
+      <AcuityScoring mode="icu" className="lg:col-span-2" />
     </div>
   );
 }

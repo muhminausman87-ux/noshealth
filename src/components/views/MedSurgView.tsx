@@ -1,5 +1,6 @@
 import { Pill, ClipboardList, LineChart, Droplets } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
+import { AcuityScoring } from "@/components/AcuityScoring";
 
 const meds = [
   { name: "Metoprolol 25 mg PO", time: "08:00", status: "due" as const },
