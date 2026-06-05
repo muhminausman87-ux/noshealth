@@ -15,8 +15,39 @@ interface Props {
 
 export function TopNav({ active, onChange, session, onLogout }: Props) {
   const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const activeMeta = getDept(active);
   const isAdmin = session.role === "admin";
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  const results = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return [];
+    return PATIENTS.filter(
+      (p) =>
+        p.name.toLowerCase().includes(term) ||
+        p.mrn.toLowerCase().includes(term) ||
+        p.room.toLowerCase().includes(term) ||
+        p.id.toLowerCase().includes(term),
+    ).slice(0, 8);
+  }, [q]);
+
+  const goTo = (id: string) => {
+    setSearchOpen(false);
+    setQ("");
+    navigate({ to: "/patient/$patientId", params: { patientId: id } });
+  };
+
 
   return (
     <header
