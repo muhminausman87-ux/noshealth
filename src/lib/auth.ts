@@ -84,6 +84,17 @@ export function findUser(username: string, password: string, role: Role): DemoUs
   );
 }
 
+/** Auto-detect role from username + password (no role tab required at login). */
+export function findUserAny(username: string, password: string): DemoUser | null {
+  return (
+    STAFF.find(
+      (u) =>
+        u.username.toLowerCase() === username.trim().toLowerCase() &&
+        u.password === password,
+    ) ?? null
+  );
+}
+
 // Hospital-wide healthcare emergency mode (Code Yellow / mass casualty / outbreak).
 // When ON: surge protocol banner shown, staff get emergency-pay (+50%) and comp-off note.
 export function getEmergency(): boolean {
