@@ -115,8 +115,8 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
           )}
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
-          <div ref={searchRef} className="relative hidden md:block">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <div ref={searchRef} className="relative hidden sm:block">
             <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-sm">
               <Search className="h-4 w-4 text-muted-foreground" />
               <input
