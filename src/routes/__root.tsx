@@ -114,16 +114,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Global NOS logo watermark — sits behind all page content */}
+      {/* Global NOS logo watermark — full-screen shadow behind every page */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center"
+        className="pointer-events-none fixed inset-0 z-0"
         style={{
           backgroundImage: `url(${logo.url})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
-          backgroundSize: "min(60vw, 720px) auto",
-          opacity: 0.04,
+          backgroundSize: "min(95vw, 95vh) auto",
+          opacity: 0.06,
         }}
       />
       <div className="relative z-10">
