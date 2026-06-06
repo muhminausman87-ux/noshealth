@@ -166,7 +166,7 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
           </button>
-          <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1.5">
+          <div className="hidden items-center gap-2 rounded-md border border-border px-3 py-1.5 sm:flex">
             {isAdmin ? (
               <ShieldCheck className="h-4 w-4 text-primary" />
             ) : (
