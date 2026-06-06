@@ -1,10 +1,11 @@
-import { Activity, Bell, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import type { Department } from "@/lib/departments";
 import { DEPARTMENTS, getDept } from "@/lib/departments";
 import { PATIENTS } from "@/lib/patients";
 import type { Session } from "@/lib/auth";
+import logo from "@/assets/nos-logo.png.asset.json";
 
 interface Props {
   active: Department;
@@ -54,17 +55,15 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
       className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur"
       style={{ borderTop: `3px solid ${activeMeta.color}` }}
     >
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-4 px-6 py-3">
+      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Activity className="h-5 w-5" />
-          </div>
+          <img src={logo.url} alt="NOS Ecosystem" className="h-9 w-9 rounded-md object-contain" />
           <div>
-            <div className="text-base font-semibold leading-tight text-foreground">
-              SyncCare <span className="text-primary">EHR</span>
+            <div className="text-sm font-semibold leading-tight text-foreground sm:text-base">
+              NOS <span className="text-primary">Ecosystem</span>
             </div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Clinical workspace
+              Patient · Nurse · Care · Outcome
             </div>
           </div>
         </div>
@@ -116,8 +115,8 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
           )}
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
-          <div ref={searchRef} className="relative hidden md:block">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <div ref={searchRef} className="relative hidden sm:block">
             <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-sm">
               <Search className="h-4 w-4 text-muted-foreground" />
               <input
@@ -129,7 +128,7 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
                   if (e.key === "Escape") setSearchOpen(false);
                 }}
                 placeholder="Search patient, MRN, room…"
-                className="w-64 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                className="w-44 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-64"
               />
             </div>
             {searchOpen && q.trim() && (
@@ -167,7 +166,7 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
           </button>
-          <div className="flex items-center gap-2 rounded-md border border-border px-3 py-1.5">
+          <div className="hidden items-center gap-2 rounded-md border border-border px-3 py-1.5 sm:flex">
             {isAdmin ? (
               <ShieldCheck className="h-4 w-4 text-primary" />
             ) : (
