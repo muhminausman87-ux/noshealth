@@ -1,10 +1,11 @@
-import { Activity, Bell, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import type { Department } from "@/lib/departments";
 import { DEPARTMENTS, getDept } from "@/lib/departments";
 import { PATIENTS } from "@/lib/patients";
 import type { Session } from "@/lib/auth";
+import logo from "@/assets/nos-logo.png.asset.json";
 
 interface Props {
   active: Department;
