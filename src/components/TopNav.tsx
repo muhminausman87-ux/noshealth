@@ -128,7 +128,7 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
                   if (e.key === "Escape") setSearchOpen(false);
                 }}
                 placeholder="Search patient, MRN, room…"
-                className="w-64 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                className="w-44 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-64"
               />
             </div>
             {searchOpen && q.trim() && (
