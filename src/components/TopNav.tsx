@@ -55,17 +55,15 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
       className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur"
       style={{ borderTop: `3px solid ${activeMeta.color}` }}
     >
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-4 px-6 py-3">
+      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Activity className="h-5 w-5" />
-          </div>
+          <img src={logo.url} alt="NOS Ecosystem" className="h-9 w-9 rounded-md object-contain" />
           <div>
-            <div className="text-base font-semibold leading-tight text-foreground">
-              SyncCare <span className="text-primary">EHR</span>
+            <div className="text-sm font-semibold leading-tight text-foreground sm:text-base">
+              NOS <span className="text-primary">Ecosystem</span>
             </div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Clinical workspace
+              Patient · Nurse · Care · Outcome
             </div>
           </div>
         </div>
