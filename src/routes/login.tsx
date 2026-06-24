@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Lock, Phone, User, AlertCircle, Linkedin, KeyRound } from "lucide-react";
 import {
-  findUserAny, setSession,
+  signInWithEmail,
   SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY,
   DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
 } from "@/lib/auth";
@@ -24,27 +24,20 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const user = findUserAny(username, password);
-    if (!user) {
-      setError("Invalid username or password.");
-      return;
+    setLoading(true);
+    try {
+      await signInWithEmail(username.trim(), password);
+      navigate({ to: "/" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
-    if (user.role === "admin") {
-      setSession({ username: user.username, name: user.name, title: user.title, role: "admin", activeDept: "ed", pulled: false });
-    } else if (user.role === "staff") {
-      setSession({ username: user.username, name: user.name, title: user.title, role: "staff", assignedDept: user.assignedDept, activeDept: user.assignedDept!, pulled: false });
-    } else {
-      setSession({
-        username: user.username, name: user.name, title: user.title,
-        role: user.role, assignedDept: user.assignedDept,
-        activeDept: user.assignedDept ?? "medical",
-        pulled: false,
-      });
-    }
-    navigate({ to: "/" });
   };
 
   const fillDemo = (u: string, p: string) => { setUsername(u); setPassword(p); setError(""); };

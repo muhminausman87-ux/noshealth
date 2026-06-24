@@ -19,7 +19,7 @@ import { LabDashboard } from "@/components/LabDashboard";
 import { RadiologyDashboard } from "@/components/RadiologyDashboard";
 import { EmergencyBanner } from "@/components/EmergencyBanner";
 import { getDept, type Department } from "@/lib/departments";
-import { getSession, setSession, type Session } from "@/lib/auth";
+import { getSession, setSession, signOut, type Session } from "@/lib/auth";
 import { AlertTriangle, Stethoscope, HeartHandshake, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -57,7 +57,7 @@ function Index() {
     setSession({ ...session, activeDept: d });
   };
 
-  const handleLogout = () => { setSession(null); navigate({ to: "/login" }); };
+  const handleLogout = async () => { await signOut(); navigate({ to: "/login" }); };
 
   const heading =
     session.role === "doctor"    ? "Physician workspace" :
