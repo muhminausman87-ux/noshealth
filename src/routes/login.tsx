@@ -6,8 +6,6 @@ import {
   SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY,
   DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
 } from "@/lib/auth";
-  DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
-} from "@/lib/auth";
 import logo from "@/assets/nos-logo.png.asset.json";
 
 export const Route = createFileRoute("/login")({
