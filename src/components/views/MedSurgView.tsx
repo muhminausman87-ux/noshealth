@@ -84,6 +84,15 @@ export function MedSurgView() {
         </div>
       </Widget>
 
+      <RiskScoresPanel className="lg:col-span-2" />
+      <PainAssessment className="lg:col-span-2" />
+      <BodySystemAssessment className="lg:col-span-2" />
+      <IntakeOutputDetailed className="lg:col-span-2" />
+      <SurgicalPostOp className="lg:col-span-2" />
+      <HighAlertMeds />
+      <InfectionControl />
+      <SBARHandover className="lg:col-span-2" />
+
       <AcuityScoring mode="ward" className="lg:col-span-2" />
     </div>
   );
