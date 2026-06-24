@@ -115,7 +115,9 @@ function PatientPage() {
       codeStatus: dbPatient.code_status,
       vitals,
       pain: { score: 0, site: "—", character: "—", lastDose: "—", plan: "—" },
-      gcs: { eye: 4, verbal: 5, motor: 6 },
+      gcs: dbGcs
+        ? { eye: dbGcs.eye_score ?? 0, verbal: dbGcs.verbal_score ?? 0, motor: dbGcs.motor_score ?? 0 }
+        : { eye: 4, verbal: 5, motor: 6 },
       medications: [],
       shortNote: dbPatient.short_note ?? "",
     };
@@ -253,15 +255,21 @@ function PatientPage() {
 
           {/* GCS */}
           <Box title="Glasgow Coma Scale" icon={Brain} accent={gcsTone}>
-            <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-semibold" style={{ color: gcsTone }}>{gcsTotal}</span>
-              <span className="text-sm text-muted-foreground">/ 15</span>
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-              <Mini label="Eye" value={`${patient.gcs.eye}/4`} />
-              <Mini label="Verbal" value={`${patient.gcs.verbal}/5`} />
-              <Mini label="Motor" value={`${patient.gcs.motor}/6`} />
-            </div>
+            {dbPatient && !dbGcs ? (
+              <p className="text-sm text-muted-foreground">No GCS recorded</p>
+            ) : (
+              <>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-5xl font-semibold" style={{ color: gcsTone }}>{gcsTotal}</span>
+                  <span className="text-sm text-muted-foreground">/ 15</span>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                  <Mini label="Eye" value={`${patient.gcs.eye}/4`} />
+                  <Mini label="Verbal" value={`${patient.gcs.verbal}/5`} />
+                  <Mini label="Motor" value={`${patient.gcs.motor}/6`} />
+                </div>
+              </>
+            )}
           </Box>
 
           {/* Vital signs */}
