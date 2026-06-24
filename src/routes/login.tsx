@@ -2,8 +2,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Lock, Phone, User, AlertCircle, Linkedin, KeyRound } from "lucide-react";
 import {
-  findUserAny, setSession,
+  signInWithEmail,
   SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY,
+  DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
+} from "@/lib/auth";
   DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
 } from "@/lib/auth";
 import logo from "@/assets/nos-logo.png.asset.json";
