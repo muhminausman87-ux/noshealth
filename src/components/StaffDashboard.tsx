@@ -161,7 +161,7 @@ export function StaffDashboard({ session }: Props) {
       <BoxCard accent="var(--color-tone-violet)">
         <Stat
           label="Meds due now"
-          value={patients.reduce((a, p) => a + p.medications.filter((m) => m.status === "due").length, 0)}
+          value={0}
           hint="next 30 min"
         />
       </BoxCard>
