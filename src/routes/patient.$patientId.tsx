@@ -82,6 +82,19 @@ function PatientPage() {
     },
     enabled: !isMock,
   });
+  const { data: dbNotes } = useQuery({
+    queryKey: ["nursing_notes", patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("nursing_notes")
+        .select("*, profiles(full_name)")
+        .eq("patient_id", patientId)
+        .order("recorded_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !isMock,
+  });
 
   let patient: PatientFull | undefined = getPatient(patientId);
   if (!patient && dbPatient) {
