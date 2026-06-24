@@ -1,6 +1,10 @@
 import { HeartPulse, Syringe, Wind, FlaskConical } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
 import { AcuityScoring } from "@/components/AcuityScoring";
+import {
+  VentilatorAdvanced, RiskScoresPanel, BodySystemAssessment,
+  IntakeOutputDetailed, HighAlertMeds, InfectionControl, SBARHandover, PainAssessment,
+} from "@/components/clinical/ClinicalParameters";
 
 export function ICUView() {
   return (
@@ -68,6 +72,15 @@ export function ICUView() {
           </table>
         </div>
       </Widget>
+
+      <VentilatorAdvanced className="lg:col-span-2" />
+      <RiskScoresPanel className="lg:col-span-2" />
+      <BodySystemAssessment className="lg:col-span-2" />
+      <IntakeOutputDetailed className="lg:col-span-2" />
+      <HighAlertMeds />
+      <InfectionControl />
+      <PainAssessment className="lg:col-span-2" />
+      <SBARHandover className="lg:col-span-2" />
 
       <AcuityScoring mode="icu" className="lg:col-span-2" />
     </div>

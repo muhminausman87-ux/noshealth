@@ -1,6 +1,10 @@
 import { Pill, ClipboardList, LineChart, Droplets } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
 import { AcuityScoring } from "@/components/AcuityScoring";
+import {
+  RiskScoresPanel, BodySystemAssessment, PainAssessment,
+  IntakeOutputDetailed, SBARHandover, HighAlertMeds, InfectionControl, SurgicalPostOp,
+} from "@/components/clinical/ClinicalParameters";
 
 const meds = [
   { name: "Metoprolol 25 mg PO", time: "08:00", status: "due" as const },
@@ -79,6 +83,15 @@ export function MedSurgView() {
           <span className="font-semibold text-foreground">+320 mL</span>
         </div>
       </Widget>
+
+      <RiskScoresPanel className="lg:col-span-2" />
+      <PainAssessment className="lg:col-span-2" />
+      <BodySystemAssessment className="lg:col-span-2" />
+      <IntakeOutputDetailed className="lg:col-span-2" />
+      <SurgicalPostOp className="lg:col-span-2" />
+      <HighAlertMeds />
+      <InfectionControl />
+      <SBARHandover className="lg:col-span-2" />
 
       <AcuityScoring mode="ward" className="lg:col-span-2" />
     </div>

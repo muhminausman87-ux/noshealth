@@ -2,6 +2,11 @@ import { Activity, ClipboardList, Pill, Users } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
 import { AcuityScoring } from "@/components/AcuityScoring";
 import { getDept, type Department } from "@/lib/departments";
+import {
+  RiskScoresPanel, BodySystemAssessment, PainAssessment, IntakeOutputDetailed,
+  SBARHandover, HighAlertMeds, InfectionControl, CardiacTelemetry,
+  FetalMonitoring, PediatricVitals, SurgicalPostOp,
+} from "@/components/clinical/ClinicalParameters";
 
 const ACUITY_DEPTS: Department[] = [
   "medsurg", "medical", "surgical", "cardiac", "pediatric",
@@ -143,8 +148,22 @@ export function GenericView({ dept }: { dept: Department }) {
         )}
       </Widget>
 
+      {(dept === "cardiac") && <CardiacTelemetry className="lg:col-span-3" />}
+      {(dept === "maternity" || dept === "labour") && <FetalMonitoring className="lg:col-span-3" />}
+      {dept === "pediatric" && <PediatricVitals className="lg:col-span-3" />}
+      {dept === "surgical" && <SurgicalPostOp className="lg:col-span-3" />}
+
       {ACUITY_DEPTS.includes(dept) && (
-        <AcuityScoring mode={dept === "icu" ? "icu" : "ward"} className="lg:col-span-3" />
+        <>
+          <RiskScoresPanel className="lg:col-span-3" />
+          <PainAssessment className="lg:col-span-3" />
+          <BodySystemAssessment className="lg:col-span-3" />
+          <IntakeOutputDetailed className="lg:col-span-3" />
+          <HighAlertMeds className="lg:col-span-2" />
+          <InfectionControl />
+          <SBARHandover className="lg:col-span-3" />
+          <AcuityScoring mode={dept === "icu" ? "icu" : "ward"} className="lg:col-span-3" />
+        </>
       )}
     </div>
   );

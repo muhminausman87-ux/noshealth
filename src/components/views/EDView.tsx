@@ -1,6 +1,10 @@
 import { AlertCircle, Activity, FlaskConical, Siren } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
 import { AcuityScoring } from "@/components/AcuityScoring";
+import {
+  RiskScoresPanel, BodySystemAssessment, PainAssessment,
+  IntakeOutputDetailed, SBARHandover, HighAlertMeds, InfectionControl,
+} from "@/components/clinical/ClinicalParameters";
 
 const vitals = [
   { t: "Now", hr: 112, bp: "148/92", rr: 22, o2: 94, temp: "37.8" },
@@ -76,6 +80,14 @@ export function EDView() {
           <LabRow name="BMP" detail="Green tube" status="completed" result="Within range" />
         </div>
       </Widget>
+
+      <RiskScoresPanel className="lg:col-span-2" />
+      <PainAssessment className="lg:col-span-2" />
+      <BodySystemAssessment className="lg:col-span-2" />
+      <IntakeOutputDetailed className="lg:col-span-2" />
+      <HighAlertMeds />
+      <InfectionControl />
+      <SBARHandover className="lg:col-span-2" />
 
       <AcuityScoring mode="ward" className="lg:col-span-2" />
     </div>
