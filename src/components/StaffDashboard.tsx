@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Brain, Clock, Quote, Sparkles, Users, ChevronRight, Flame } from "lucide-react";
-import { patientsByDept } from "@/lib/patients";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { getDept } from "@/lib/departments";
 import type { Session } from "@/lib/auth";
 
@@ -11,11 +12,43 @@ const QUOTES = [
   { q: "Constant attention by a good nurse may be just as important as a major operation by a surgeon.", a: "Dag Hammarskjöld" },
 ];
 
+interface DeptPatient {
+  id: string;
+  name: string;
+  age: number;
+  sex: string;
+  mrn: string;
+  room: string | null;
+  status: "stable" | "watch" | "critical";
+  shortNote: string;
+}
+
 interface Props { session: Session }
 
 export function StaffDashboard({ session }: Props) {
   const meta = getDept(session.activeDept);
-  const patients = patientsByDept(session.activeDept);
+  const { data: patients = [] } = useQuery<DeptPatient[]>({
+    queryKey: ["patients", "by-dept", session.activeDept],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("patients")
+        .select("id, full_name, age, sex, mrn, room, status, short_note, admitted_on")
+        .eq("dept", session.activeDept)
+        .is("discharged_on", null)
+        .order("admitted_on", { ascending: false });
+      if (error) throw error;
+      return (data ?? []).map((p) => ({
+        id: p.id,
+        name: p.full_name,
+        age: p.age,
+        sex: p.sex,
+        mrn: p.mrn,
+        room: p.room,
+        status: p.status as "stable" | "watch" | "critical",
+        shortNote: p.short_note ?? "",
+      }));
+    },
+  });
 
   // Mock shift metrics
   const shiftStart = 7; // 07:00
@@ -128,7 +161,7 @@ export function StaffDashboard({ session }: Props) {
       <BoxCard accent="var(--color-tone-violet)">
         <Stat
           label="Meds due now"
-          value={patients.reduce((a, p) => a + p.medications.filter((m) => m.status === "due").length, 0)}
+          value={0}
           hint="next 30 min"
         />
       </BoxCard>
@@ -147,7 +180,7 @@ export function StaffDashboard({ session }: Props) {
 
         {patients.length === 0 ? (
           <BoxCard accent="var(--color-tone-teal)">
-            <p className="text-sm text-muted-foreground">No patients assigned to you right now.</p>
+            <p className="text-sm text-muted-foreground">No patients found.</p>
           </BoxCard>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
