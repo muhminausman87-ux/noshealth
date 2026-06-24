@@ -67,6 +67,21 @@ function PatientPage() {
     },
     enabled: !isMock,
   });
+  const { data: dbGcs } = useQuery({
+    queryKey: ["gcs", patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gcs_scores")
+        .select("*")
+        .eq("patient_id", patientId)
+        .order("recorded_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !isMock,
+  });
 
   let patient: PatientFull | undefined = getPatient(patientId);
   if (!patient && dbPatient) {
