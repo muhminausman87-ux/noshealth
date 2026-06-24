@@ -57,7 +57,7 @@ function Index() {
     setSession({ ...session, activeDept: d });
   };
 
-  const handleLogout = () => { setSession(null); navigate({ to: "/login" }); };
+  const handleLogout = async () => { await signOut(); navigate({ to: "/login" }); };
 
   const heading =
     session.role === "doctor"    ? "Physician workspace" :
