@@ -51,11 +51,11 @@ function LoginPage() {
           <div className="rounded-2xl border border-border bg-card/95 p-6 shadow-sm md:p-8">
             <h1 className="mb-4 text-lg font-semibold text-foreground">Sign in</h1>
           <form onSubmit={handleLogin} className="space-y-4">
-            <Field icon={User} label="Username">
+            <Field icon={User} label="Email">
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="username"
+                placeholder="email@example.com"
                 className="w-full bg-transparent text-sm outline-none"
                 autoFocus
               />
