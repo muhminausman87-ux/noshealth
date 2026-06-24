@@ -1,6 +1,60 @@
 import type { Department } from "./departments";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 export type Role = "staff" | "admin" | "doctor" | "lab" | "radiology";
+type DbRole = Database["public"]["Enums"]["app_role"];
+
+// DB stores 'nurse'; the UI uses 'staff'. Map between them.
+const dbRoleToSession = (r: DbRole): Role => (r === "nurse" ? "staff" : r);
+
+/**
+ * Sign in with Supabase using email + password, then hydrate the local Session
+ * from profiles + user_roles. Returns the Session or throws an Error on failure.
+ */
+export async function signInWithEmail(email: string, password: string): Promise<Session> {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data.user) throw new Error(error?.message ?? "Sign in failed");
+
+  const userId = data.user.id;
+
+  const [{ data: profile, error: pErr }, { data: roles, error: rErr }] = await Promise.all([
+    supabase.from("profiles").select("full_name, title, assigned_dept, username").eq("id", userId).maybeSingle(),
+    supabase.from("user_roles").select("role").eq("user_id", userId),
+  ]);
+  if (pErr) throw new Error(pErr.message);
+  if (rErr) throw new Error(rErr.message);
+
+  const dbRoles = (roles ?? []).map((r) => r.role as DbRole);
+  // Pick highest-privilege role available.
+  const priority: DbRole[] = ["admin", "doctor", "nurse", "lab", "radiology"];
+  const picked = priority.find((p) => dbRoles.includes(p)) ?? "nurse";
+  const role = dbRoleToSession(picked);
+
+  const assignedDept = (profile?.assigned_dept ?? undefined) as Department | undefined;
+  const activeDept: Department = assignedDept ?? "ed";
+  const name = profile?.full_name || data.user.email || "User";
+  const title = profile?.title || "";
+  const username = profile?.username || data.user.email || "";
+
+  const session: Session = {
+    username,
+    name,
+    title,
+    role,
+    assignedDept,
+    activeDept,
+    pulled: false,
+  };
+  setSession(session);
+  return session;
+}
+
+/** Sign out of Supabase and clear the local session. */
+export async function signOut(): Promise<void> {
+  try { await supabase.auth.signOut(); } catch { /* ignore */ }
+  setSession(null);
+}
 
 export interface DemoUser {
   username: string;
