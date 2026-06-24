@@ -61,6 +61,59 @@ export type Database = {
           },
         ]
       }
+      medications: {
+        Row: {
+          created_at: string
+          dose: string
+          frequency: string
+          id: string
+          medication_name: string
+          next_due: string | null
+          patient_id: string
+          prescribed_at: string
+          prescribed_by: string | null
+          route: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dose: string
+          frequency: string
+          id?: string
+          medication_name: string
+          next_due?: string | null
+          patient_id: string
+          prescribed_at?: string
+          prescribed_by?: string | null
+          route: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dose?: string
+          frequency?: string
+          id?: string
+          medication_name?: string
+          next_due?: string | null
+          patient_id?: string
+          prescribed_at?: string
+          prescribed_by?: string | null
+          route?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medications_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nursing_notes: {
         Row: {
           author_id: string | null
