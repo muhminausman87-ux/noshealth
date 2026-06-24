@@ -14,6 +14,94 @@ export type Database = {
   }
   public: {
     Tables: {
+      patients: {
+        Row: {
+          admitted_on: string
+          age: number
+          attending_doctor_id: string | null
+          code_status: string
+          created_at: string
+          created_by: string | null
+          dept: Database["public"]["Enums"]["dept_code"]
+          discharged_on: string | null
+          full_name: string
+          history_summary: string | null
+          id: string
+          mrn: string
+          primary_nurse_id: string | null
+          reason_for_admission: string
+          room: string | null
+          sex: string
+          short_note: string | null
+          status: Database["public"]["Enums"]["patient_status"]
+          updated_at: string
+        }
+        Insert: {
+          admitted_on?: string
+          age: number
+          attending_doctor_id?: string | null
+          code_status?: string
+          created_at?: string
+          created_by?: string | null
+          dept: Database["public"]["Enums"]["dept_code"]
+          discharged_on?: string | null
+          full_name: string
+          history_summary?: string | null
+          id?: string
+          mrn: string
+          primary_nurse_id?: string | null
+          reason_for_admission: string
+          room?: string | null
+          sex: string
+          short_note?: string | null
+          status?: Database["public"]["Enums"]["patient_status"]
+          updated_at?: string
+        }
+        Update: {
+          admitted_on?: string
+          age?: number
+          attending_doctor_id?: string | null
+          code_status?: string
+          created_at?: string
+          created_by?: string | null
+          dept?: Database["public"]["Enums"]["dept_code"]
+          discharged_on?: string | null
+          full_name?: string
+          history_summary?: string | null
+          id?: string
+          mrn?: string
+          primary_nurse_id?: string | null
+          reason_for_admission?: string
+          room?: string | null
+          sex?: string
+          short_note?: string | null
+          status?: Database["public"]["Enums"]["patient_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patients_attending_doctor_id_fkey"
+            columns: ["attending_doctor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patients_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patients_primary_nurse_id_fkey"
+            columns: ["primary_nurse_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           assigned_dept: Database["public"]["Enums"]["dept_code"] | null
@@ -93,6 +181,7 @@ export type Database = {
         | "opd"
         | "daycare"
         | "ot"
+      patient_status: "stable" | "watch" | "critical"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -235,6 +324,7 @@ export const Constants = {
         "daycare",
         "ot",
       ],
+      patient_status: ["stable", "watch", "critical"],
     },
   },
 } as const
