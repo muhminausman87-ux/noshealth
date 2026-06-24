@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      gcs_scores: {
+        Row: {
+          created_at: string
+          eye_score: number | null
+          id: string
+          motor_score: number | null
+          patient_id: string
+          recorded_at: string
+          recorded_by: string | null
+          total_score: number | null
+          updated_at: string
+          verbal_score: number | null
+        }
+        Insert: {
+          created_at?: string
+          eye_score?: number | null
+          id?: string
+          motor_score?: number | null
+          patient_id: string
+          recorded_at?: string
+          recorded_by?: string | null
+          total_score?: number | null
+          updated_at?: string
+          verbal_score?: number | null
+        }
+        Update: {
+          created_at?: string
+          eye_score?: number | null
+          id?: string
+          motor_score?: number | null
+          patient_id?: string
+          recorded_at?: string
+          recorded_by?: string | null
+          total_score?: number | null
+          updated_at?: string
+          verbal_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gcs_scores_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patients: {
         Row: {
           admitted_on: string
