@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
-  Activity, AlertTriangle, Baby, Brain, ClipboardList, Droplets, FileText,
-  HeartPulse, Pill, Ruler, Shield, Smile, Stethoscope, Thermometer, Wind,
+  AlertTriangle, Baby, ClipboardList, Droplets, FileText,
+  HeartPulse, Pill, Ruler, Shield, Smile, Stethoscope, Wind,
 } from "lucide-react";
 import { StatusPill, Widget } from "@/components/Widget";
 
