@@ -1,11 +1,15 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import type { Department } from "@/lib/departments";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, Calculator, ClipboardList,
   Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
   Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
 } from "lucide-react";
 import { getPatient } from "@/lib/patients";
+import type { PatientFull, VitalSet } from "@/lib/patients";
 import { getClinicalExtras, type Lab } from "@/lib/patient-extras";
 import { getSession, type Session } from "@/lib/auth";
 import { getDept } from "@/lib/departments";
@@ -34,9 +38,76 @@ function PatientPage() {
     setSession(s);
   }, [navigate]);
 
-  const patient = getPatient(patientId);
+  const isMock = !!getPatient(patientId);
+  const { data: dbPatient, isPending: patientPending } = useQuery({
+    queryKey: ["patient", patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("patients")
+        .select("*")
+        .eq("id", patientId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !isMock,
+  });
+  const { data: dbVitals } = useQuery({
+    queryKey: ["vitals", patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("vitals")
+        .select("*")
+        .eq("patient_id", patientId)
+        .order("recorded_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !isMock,
+  });
+
+  let patient: PatientFull | undefined = getPatient(patientId);
+  if (!patient && dbPatient) {
+    const v = dbVitals;
+    const vitals: VitalSet = v
+      ? {
+          hr: v.heart_rate ?? 0,
+          bp:
+            v.systolic_bp != null && v.diastolic_bp != null
+              ? `${v.systolic_bp}/${v.diastolic_bp}`
+              : "—",
+          rr: v.respiratory_rate ?? 0,
+          spo2: v.spo2 ?? 0,
+          temp: v.temperature != null ? String(v.temperature) : "—",
+        }
+      : { hr: 0, bp: "—", rr: 0, spo2: 0, temp: "—" };
+
+    patient = {
+      id: dbPatient.id,
+      name: dbPatient.full_name,
+      age: dbPatient.age,
+      sex: dbPatient.sex as "M" | "F",
+      mrn: dbPatient.mrn,
+      room: dbPatient.room ?? "",
+      dept: dbPatient.dept as Department,
+      status: dbPatient.status as "stable" | "watch" | "critical",
+      admittedOn: dbPatient.admitted_on,
+      reasonForAdmission: dbPatient.reason_for_admission,
+      historySummary: dbPatient.history_summary ?? "",
+      allergy: null,
+      codeStatus: dbPatient.code_status,
+      vitals,
+      pain: { score: 0, site: "—", character: "—", lastDose: "—", plan: "—" },
+      gcs: { eye: 4, verbal: 5, motor: 6 },
+      medications: [],
+      shortNote: dbPatient.short_note ?? "",
+    };
+  }
 
   if (!session) return null;
+  if (!isMock && patientPending) return null;
   if (!patient) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-10">
@@ -180,13 +251,17 @@ function PatientPage() {
 
           {/* Vital signs */}
           <Box title="Vital signs" icon={HeartPulse} accent="var(--color-tone-rose)" className="md:col-span-2 xl:col-span-2">
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-              <Vital icon={HeartPulse} label="HR"   value={`${patient.vitals.hr}`} unit="bpm"  flag={patient.vitals.hr > 110 || patient.vitals.hr < 50} />
-              <Vital icon={Activity}   label="BP"   value={patient.vitals.bp}      unit="mmHg" />
-              <Vital icon={Stethoscope}label="RR"   value={`${patient.vitals.rr}`} unit="/min" flag={patient.vitals.rr > 24} />
-              <Vital icon={Droplet}    label="SpO₂" value={`${patient.vitals.spo2}`} unit="%"  flag={patient.vitals.spo2 < 94} />
-              <Vital icon={Thermometer}label="Temp" value={patient.vitals.temp}   unit="°C"   flag={parseFloat(patient.vitals.temp) > 38} />
-            </div>
+            {dbPatient && !dbVitals ? (
+              <p className="text-sm text-muted-foreground">No vitals recorded</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+                <Vital icon={HeartPulse} label="HR"   value={`${patient.vitals.hr}`} unit="bpm"  flag={patient.vitals.hr > 110 || patient.vitals.hr < 50} />
+                <Vital icon={Activity}   label="BP"   value={patient.vitals.bp}      unit="mmHg" />
+                <Vital icon={Stethoscope}label="RR"   value={`${patient.vitals.rr}`} unit="/min" flag={patient.vitals.rr > 24} />
+                <Vital icon={Droplet}    label="SpO₂" value={`${patient.vitals.spo2}`} unit="%"  flag={patient.vitals.spo2 < 94} />
+                <Vital icon={Thermometer}label="Temp" value={patient.vitals.temp}   unit="°C"   flag={parseFloat(patient.vitals.temp) > 38} />
+              </div>
+            )}
           </Box>
 
           {/* Pain management */}
