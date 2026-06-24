@@ -504,24 +504,30 @@ function PatientPage() {
             {/* NOTES */}
             <TabsContent value="notes" className="mt-4">
               <Box title="Nursing notes — this shift" icon={NotebookPen} accent="var(--color-tone-violet)">
-                <ul className="space-y-3">
-                  {extras.notes.map((n, i) => (
-                    <li key={i} className="rounded-xl border border-border bg-background/60 p-3">
-                      <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-                        <span className="font-semibold text-foreground">{n.time}</span>
-                        <span>·</span>
-                        <span>{n.author}</span>
-                        <span
-                          className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                          style={{ background: "color-mix(in oklab, var(--color-tone-violet) 18%, transparent)", color: "var(--color-tone-violet)" }}
-                        >
-                          {n.type}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed text-foreground">{n.body}</p>
-                    </li>
-                  ))}
-                </ul>
+                {dbPatient && !dbNotes?.length ? (
+                  <p className="text-sm text-muted-foreground">No nursing notes recorded</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {(dbNotes ?? extras.notes).map((n: any, i: number) => (
+                      <li key={n.id ?? i} className="rounded-xl border border-border bg-background/60 p-3">
+                        <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+                          <span className="font-semibold text-foreground">
+                            {n.recorded_at ? new Date(n.recorded_at).toLocaleString() : n.time}
+                          </span>
+                          <span>·</span>
+                          <span>{n.profiles?.full_name ?? n.author ?? "Unknown"}</span>
+                          <span
+                            className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                            style={{ background: "color-mix(in oklab, var(--color-tone-violet) 18%, transparent)", color: "var(--color-tone-violet)" }}
+                          >
+                            {n.note_type ?? n.type}
+                          </span>
+                        </div>
+                        <p className="mt-2 text-sm leading-relaxed text-foreground">{n.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <div className="mt-4">
                   <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Add note</label>
                   <textarea
