@@ -180,7 +180,7 @@ export function StaffDashboard({ session }: Props) {
 
         {patients.length === 0 ? (
           <BoxCard accent="var(--color-tone-teal)">
-            <p className="text-sm text-muted-foreground">No patients assigned to you right now.</p>
+            <p className="text-sm text-muted-foreground">No patients found.</p>
           </BoxCard>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
