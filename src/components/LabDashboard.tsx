@@ -87,38 +87,127 @@ function Queue({ list }: { list: typeof MOCK }) {
 
 function ResultEntry({ list }: { list: typeof MOCK }) {
   const sample = list[0] ?? MOCK[3];
-  const tests = [
-    { name: "Hb",       unit: "g/dL", ref: "12–16" },
-    { name: "WBC",      unit: "×10⁹/L", ref: "4–11" },
-    { name: "Platelet", unit: "×10⁹/L", ref: "150–450" },
-    { name: "Na",       unit: "mmol/L", ref: "135–145" },
-    { name: "K",        unit: "mmol/L", ref: "3.5–5.0" },
-    { name: "Creat",    unit: "mg/dL", ref: "0.6–1.3" },
+  const panels: { name: string; tests: { name: string; unit: string; ref: string }[] }[] = [
+    {
+      name: "Hematology (CBC + Diff)",
+      tests: [
+        { name: "Hb",         unit: "g/dL",    ref: "12–16" },
+        { name: "Hct",        unit: "%",       ref: "36–48" },
+        { name: "RBC",        unit: "×10¹²/L", ref: "4.2–5.4" },
+        { name: "WBC",        unit: "×10⁹/L",  ref: "4–11" },
+        { name: "Neutrophils",unit: "%",       ref: "40–70" },
+        { name: "Lymphocytes",unit: "%",       ref: "20–40" },
+        { name: "Platelet",   unit: "×10⁹/L",  ref: "150–450" },
+        { name: "MCV",        unit: "fL",      ref: "80–100" },
+        { name: "ESR",        unit: "mm/h",    ref: "0–20" },
+      ],
+    },
+    {
+      name: "Chemistry (BMP / CMP)",
+      tests: [
+        { name: "Na",        unit: "mmol/L", ref: "135–145" },
+        { name: "K",         unit: "mmol/L", ref: "3.5–5.0" },
+        { name: "Cl",        unit: "mmol/L", ref: "98–107" },
+        { name: "HCO₃",      unit: "mmol/L", ref: "22–28" },
+        { name: "BUN",       unit: "mg/dL",  ref: "7–20" },
+        { name: "Creatinine",unit: "mg/dL",  ref: "0.6–1.3" },
+        { name: "Glucose",   unit: "mg/dL",  ref: "70–110" },
+        { name: "Ca",        unit: "mg/dL",  ref: "8.5–10.5" },
+        { name: "Mg",        unit: "mg/dL",  ref: "1.7–2.2" },
+        { name: "PO₄",       unit: "mg/dL",  ref: "2.5–4.5" },
+      ],
+    },
+    {
+      name: "Liver Function (LFT)",
+      tests: [
+        { name: "Total bilirubin", unit: "mg/dL", ref: "0.1–1.2" },
+        { name: "Direct bilirubin",unit: "mg/dL", ref: "0–0.3" },
+        { name: "AST",             unit: "U/L",   ref: "10–40" },
+        { name: "ALT",             unit: "U/L",   ref: "7–56" },
+        { name: "ALP",             unit: "U/L",   ref: "44–147" },
+        { name: "Albumin",         unit: "g/dL",  ref: "3.5–5.0" },
+        { name: "Total protein",   unit: "g/dL",  ref: "6.0–8.3" },
+      ],
+    },
+    {
+      name: "Cardiac & Coagulation",
+      tests: [
+        { name: "Troponin I",unit: "ng/mL", ref: "< 0.04" },
+        { name: "CK-MB",     unit: "ng/mL", ref: "< 5" },
+        { name: "BNP",       unit: "pg/mL", ref: "< 100" },
+        { name: "D-dimer",   unit: "µg/mL", ref: "< 0.5" },
+        { name: "PT",        unit: "s",     ref: "11–13.5" },
+        { name: "INR",       unit: "",      ref: "0.8–1.2" },
+        { name: "aPTT",      unit: "s",     ref: "25–35" },
+      ],
+    },
+    {
+      name: "ABG",
+      tests: [
+        { name: "pH",      unit: "",       ref: "7.35–7.45" },
+        { name: "PaCO₂",   unit: "mmHg",   ref: "35–45" },
+        { name: "PaO₂",    unit: "mmHg",   ref: "80–100" },
+        { name: "HCO₃",    unit: "mmol/L", ref: "22–26" },
+        { name: "Base excess", unit: "",   ref: "−2 to +2" },
+        { name: "Lactate", unit: "mmol/L", ref: "0.5–2.2" },
+        { name: "SaO₂",    unit: "%",      ref: "95–100" },
+      ],
+    },
+    {
+      name: "Microbiology",
+      tests: [
+        { name: "Gram stain",  unit: "",    ref: "report" },
+        { name: "Culture organism", unit: "", ref: "no growth" },
+        { name: "Colony count",unit: "CFU/mL", ref: "—" },
+        { name: "Sensitivity (S/I/R)", unit: "", ref: "panel" },
+        { name: "MIC",         unit: "µg/mL", ref: "—" },
+      ],
+    },
+    {
+      name: "Urinalysis",
+      tests: [
+        { name: "Colour",      unit: "",      ref: "pale yellow" },
+        { name: "Specific gravity", unit: "", ref: "1.005–1.030" },
+        { name: "pH",          unit: "",      ref: "4.5–8.0" },
+        { name: "Protein",     unit: "",      ref: "negative" },
+        { name: "Glucose",     unit: "",      ref: "negative" },
+        { name: "Ketones",     unit: "",      ref: "negative" },
+        { name: "Nitrite",     unit: "",      ref: "negative" },
+        { name: "Leuk esterase",unit: "",     ref: "negative" },
+        { name: "RBC / HPF",   unit: "",      ref: "0–2" },
+        { name: "WBC / HPF",   unit: "",      ref: "0–5" },
+      ],
+    },
   ];
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold">Result entry · {sample.id} ({sample.patient})</h3>
         <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
           <Send className="h-3.5 w-3.5" />Post to chart
         </button>
       </div>
-      <table className="w-full text-sm">
-        <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-          <tr><th className="py-2">Analyte</th><th>Result</th><th>Unit</th><th>Reference</th><th>Flag</th></tr>
-        </thead>
-        <tbody>
-          {tests.map(t => (
-            <tr key={t.name} className="border-t border-border">
-              <td className="py-2 font-medium">{t.name}</td>
-              <td><input className="w-24 rounded-md border border-input bg-background px-2 py-1 text-sm" /></td>
-              <td className="text-xs text-muted-foreground">{t.unit}</td>
-              <td className="text-xs text-muted-foreground">{t.ref}</td>
-              <td><select className="rounded-md border border-input bg-background px-2 py-1 text-xs"><option>—</option><option>↑ High</option><option>↓ Low</option><option>!! Critical</option></select></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {panels.map(p => (
+        <details key={p.name} open={p.name === "Hematology (CBC + Diff)"} className="rounded-md border border-border bg-background">
+          <summary className="cursor-pointer select-none px-3 py-2 text-sm font-medium text-foreground">{p.name}</summary>
+          <table className="w-full text-sm">
+            <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+              <tr><th className="px-3 py-2">Analyte</th><th>Result</th><th>Unit</th><th>Reference</th><th className="pr-3">Flag</th></tr>
+            </thead>
+            <tbody>
+              {p.tests.map(t => (
+                <tr key={t.name} className="border-t border-border">
+                  <td className="px-3 py-2 font-medium">{t.name}</td>
+                  <td><input className="w-24 rounded-md border border-input bg-background px-2 py-1 text-sm" /></td>
+                  <td className="text-xs text-muted-foreground">{t.unit}</td>
+                  <td className="text-xs text-muted-foreground">{t.ref}</td>
+                  <td className="pr-3"><select className="rounded-md border border-input bg-background px-2 py-1 text-xs"><option>—</option><option>↑ High</option><option>↓ Low</option><option>!! Critical</option></select></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+      ))}
     </div>
   );
 }
