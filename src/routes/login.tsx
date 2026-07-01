@@ -31,8 +31,9 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      await signInWithEmail(username.trim(), password);
-      navigate({ to: "/" });
+      const s = await signInWithEmail(username.trim(), password);
+      const isAdmin = (s as any)?.role === "admin";
+      navigate({ to: isAdmin ? "/workforce-intelligence" : "/" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid email or password.");
     } finally {
