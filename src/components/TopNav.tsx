@@ -162,6 +162,15 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
             )}
           </div>
 
+          <Link
+            to="/workforce-intelligence"
+            className="hidden items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/15 sm:flex"
+            title="Workforce Intelligence"
+          >
+            <Brain className="h-4 w-4" />
+            <span>Workforce AI</span>
+          </Link>
+
           <button className="relative rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground">
             <Bell className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
