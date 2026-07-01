@@ -40,11 +40,6 @@ function Index() {
   useEffect(() => {
     const s = getSession();
     if (!s) { navigate({ to: "/login" }); return; }
-    if (s.role === "admin" && !sessionStorage.getItem("admin-visited-home")) {
-      sessionStorage.setItem("admin-visited-home", "1");
-      navigate({ to: "/workforce-intelligence" });
-      return;
-    }
     setSess(s);
     setDept(s.activeDept);
   }, [navigate]);
