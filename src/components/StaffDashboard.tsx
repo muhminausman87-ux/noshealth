@@ -16,7 +16,7 @@ import {
   Users,
   ChevronRight,
 } from "lucide-react";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { getDept } from "@/lib/departments";
 import type { Session } from "@/lib/auth";
