@@ -1,6 +1,6 @@
-import { Bell, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
+import { Bell, Brain, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { Department } from "@/lib/departments";
 import { DEPARTMENTS, getDept } from "@/lib/departments";
 import { PATIENTS } from "@/lib/patients";
@@ -161,6 +161,15 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
               </div>
             )}
           </div>
+
+          <Link
+            to="/workforce-intelligence"
+            className="hidden items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/15 sm:flex"
+            title="Workforce Intelligence"
+          >
+            <Brain className="h-4 w-4" />
+            <span>Workforce AI</span>
+          </Link>
 
           <button className="relative rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground">
             <Bell className="h-5 w-5" />

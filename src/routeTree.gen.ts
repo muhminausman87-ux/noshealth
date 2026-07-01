@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
 
+const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
+  id: '/workforce-intelligence',
+  path: '/workforce-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -32,35 +38,51 @@ const PatientPatientIdRoute = PatientPatientIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/patient/$patientId'
+  fullPaths: '/' | '/login' | '/workforce-intelligence' | '/patient/$patientId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/patient/$patientId'
-  id: '__root__' | '/' | '/login' | '/patient/$patientId'
+  to: '/' | '/login' | '/workforce-intelligence' | '/patient/$patientId'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/workforce-intelligence'
+    | '/patient/$patientId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
   PatientPatientIdRoute: typeof PatientPatientIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workforce-intelligence': {
+      id: '/workforce-intelligence'
+      path: '/workforce-intelligence'
+      fullPath: '/workforce-intelligence'
+      preLoaderRoute: typeof WorkforceIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -88,6 +110,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
   PatientPatientIdRoute: PatientPatientIdRoute,
 }
 export const routeTree = rootRouteImport
