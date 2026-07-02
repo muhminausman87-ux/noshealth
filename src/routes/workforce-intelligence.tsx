@@ -10,6 +10,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell, Legend, AreaChart, Area,
 } from "recharts";
 import { Widget, StatusPill } from "@/components/Widget";
+import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
