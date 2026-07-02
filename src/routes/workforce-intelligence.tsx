@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import { Widget, StatusPill } from "@/components/Widget";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
-import { WorkforcePulse } from "@/components/WorkforcePulse";
+import { AdminHome } from "@/components/AdminHome";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
@@ -93,11 +93,9 @@ function WorkforceIntelligencePage() {
     <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
 
-        {/* Workforce Pulse (first thing admins see) */}
-        <WorkforcePulse />
+        {/* Admin Home — workforce-first executive dashboard */}
+        <AdminHome />
 
-        {/* Executive Summary */}
-        <ExecutiveSummary totalOnDuty={totalOnDuty} deptCount={DEPTS.length} />
 
 
 
