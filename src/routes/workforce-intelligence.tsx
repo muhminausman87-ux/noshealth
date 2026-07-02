@@ -372,7 +372,7 @@ function WorkforceIntelligencePage() {
           Workforce Intelligence · Prototype dashboard · Data shown is illustrative and not connected to live records.
         </footer>
       </main>
-    </div>
+    </EcosystemLayout>
   );
 }
 
