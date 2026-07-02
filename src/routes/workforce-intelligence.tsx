@@ -88,29 +88,9 @@ function WorkforceIntelligencePage() {
   const ratio = (totalPatients / totalOnDuty).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 sm:px-6">
-          <Link to="/" className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Back
-          </Link>
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <Brain className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-sm font-semibold leading-tight sm:text-base">Workforce Intelligence</h1>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Executive Dashboard · AI-Ready</div>
-            </div>
-          </div>
-          <span className="ml-auto rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-            Prototype
-          </span>
-        </div>
-      </header>
-
+    <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+
         {/* Executive Summary */}
         <ExecutiveSummary totalOnDuty={totalOnDuty} deptCount={DEPTS.length} />
 

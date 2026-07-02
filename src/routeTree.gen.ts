@@ -10,7 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
+import { Route as ResearchRouteImport } from './routes/research'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LearningRouteImport } from './routes/learning'
+import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
+import { Route as EbpRouteImport } from './routes/ebp'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
 
@@ -19,9 +23,29 @@ const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
   path: '/workforce-intelligence',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResearchRoute = ResearchRouteImport.update({
+  id: '/research',
+  path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningRoute = LearningRouteImport.update({
+  id: '/learning',
+  path: '/learning',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExecutiveIntelligenceRoute = ExecutiveIntelligenceRouteImport.update({
+  id: '/executive-intelligence',
+  path: '/executive-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EbpRoute = EbpRouteImport.update({
+  id: '/ebp',
+  path: '/ebp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,39 +61,75 @@ const PatientPatientIdRoute = PatientPatientIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ebp': typeof EbpRoute
+  '/executive-intelligence': typeof ExecutiveIntelligenceRoute
+  '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
+  '/research': typeof ResearchRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ebp': typeof EbpRoute
+  '/executive-intelligence': typeof ExecutiveIntelligenceRoute
+  '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
+  '/research': typeof ResearchRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ebp': typeof EbpRoute
+  '/executive-intelligence': typeof ExecutiveIntelligenceRoute
+  '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
+  '/research': typeof ResearchRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/workforce-intelligence' | '/patient/$patientId'
+  fullPaths:
+    | '/'
+    | '/ebp'
+    | '/executive-intelligence'
+    | '/learning'
+    | '/login'
+    | '/research'
+    | '/workforce-intelligence'
+    | '/patient/$patientId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/workforce-intelligence' | '/patient/$patientId'
+  to:
+    | '/'
+    | '/ebp'
+    | '/executive-intelligence'
+    | '/learning'
+    | '/login'
+    | '/research'
+    | '/workforce-intelligence'
+    | '/patient/$patientId'
   id:
     | '__root__'
     | '/'
+    | '/ebp'
+    | '/executive-intelligence'
+    | '/learning'
     | '/login'
+    | '/research'
     | '/workforce-intelligence'
     | '/patient/$patientId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EbpRoute: typeof EbpRoute
+  ExecutiveIntelligenceRoute: typeof ExecutiveIntelligenceRoute
+  LearningRoute: typeof LearningRoute
   LoginRoute: typeof LoginRoute
+  ResearchRoute: typeof ResearchRoute
   WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
   PatientPatientIdRoute: typeof PatientPatientIdRoute
 }
@@ -83,11 +143,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkforceIntelligenceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/research': {
+      id: '/research'
+      path: '/research'
+      fullPath: '/research'
+      preLoaderRoute: typeof ResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning': {
+      id: '/learning'
+      path: '/learning'
+      fullPath: '/learning'
+      preLoaderRoute: typeof LearningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/executive-intelligence': {
+      id: '/executive-intelligence'
+      path: '/executive-intelligence'
+      fullPath: '/executive-intelligence'
+      preLoaderRoute: typeof ExecutiveIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ebp': {
+      id: '/ebp'
+      path: '/ebp'
+      fullPath: '/ebp'
+      preLoaderRoute: typeof EbpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -109,7 +197,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EbpRoute: EbpRoute,
+  ExecutiveIntelligenceRoute: ExecutiveIntelligenceRoute,
+  LearningRoute: LearningRoute,
   LoginRoute: LoginRoute,
+  ResearchRoute: ResearchRoute,
   WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
   PatientPatientIdRoute: PatientPatientIdRoute,
 }
