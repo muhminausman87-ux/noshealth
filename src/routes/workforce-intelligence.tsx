@@ -440,3 +440,125 @@ function Kpi({
     </div>
   );
 }
+
+// ---------------- Executive Summary ----------------
+function ExecutiveSummary({ totalOnDuty, deptCount }: { totalOnDuty: number; deptCount: number }) {
+  // Demo values (no live data source)
+  const openShifts = 12;
+  const staffingGap = 9; // percent
+  const burnoutRisk = 58; // 0-100
+  const healthScore = Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(100 - staffingGap * 1.8 - Math.max(0, burnoutRisk - 40) * 0.6 - openShifts * 0.8),
+    ),
+  );
+
+  const scoreTone =
+    healthScore >= 80
+      ? { label: "Healthy", color: "hsl(var(--success))", ring: "text-success", bg: "from-success/20 to-success/5" }
+      : healthScore >= 60
+        ? { label: "Watch", color: "hsl(35 90% 55%)", ring: "text-warning-foreground", bg: "from-warning/25 to-warning/5" }
+        : { label: "Critical", color: "hsl(var(--destructive))", ring: "text-destructive", bg: "from-destructive/25 to-destructive/5" };
+
+  const circumference = 2 * Math.PI * 52;
+  const dash = (healthScore / 100) * circumference;
+
+  const cards: ExecKpiProps[] = [
+    { icon: Users, label: "Nurses on Duty", value: totalOnDuty, trend: "up", delta: "+4 vs yesterday", status: "success", hint: `${deptCount} departments` },
+    { icon: AlertTriangle, label: "Staffing Gap", value: `${staffingGap}%`, trend: "up", delta: "+2% vs last week", status: "warning", hint: "Evening shift most affected" },
+    { icon: Flame, label: "Burnout Risk", value: burnoutRisk, trend: "up", delta: "+12 vs last week", status: burnoutRisk > 65 ? "danger" : "warning", hint: "Moderate index" },
+    { icon: CalendarClock, label: "Open Shifts", value: openShifts, trend: "down", delta: "-3 vs yesterday", status: "danger", hint: "Next 72h" },
+  ];
+
+  return (
+    <section className="space-y-4">
+      {/* Health Score hero */}
+      <div className={`rounded-2xl border border-border bg-gradient-to-br ${scoreTone.bg} via-card to-card p-5 shadow-sm sm:p-6`}>
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 sm:gap-6">
+          <div className="relative shrink-0">
+            <svg viewBox="0 0 120 120" className="h-28 w-28 -rotate-90 sm:h-32 sm:w-32">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--border))" strokeWidth="10" />
+              <circle
+                cx="60" cy="60" r="52" fill="none"
+                stroke={scoreTone.color} strokeWidth="10" strokeLinecap="round"
+                strokeDasharray={`${dash} ${circumference}`}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className={`text-3xl font-bold sm:text-4xl ${scoreTone.ring}`}>{healthScore}</div>
+              <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">/ 100</div>
+            </div>
+          </div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Executive Summary</div>
+              <StatusPill tone="info">Prototype</StatusPill>
+            </div>
+            <h2 className="mt-1 text-lg font-semibold tracking-tight text-foreground sm:text-xl">
+              Hospital Workforce Health Score
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Composite index of staffing coverage, burnout risk, and open shifts.
+              Current status: <span className={`font-semibold ${scoreTone.ring}`}>{scoreTone.label}</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* KPI cards */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => <ExecKpi key={c.label} {...c} />)}
+      </div>
+    </section>
+  );
+}
+
+type ExecKpiProps = {
+  icon: any;
+  label: string;
+  value: string | number;
+  trend: "up" | "down";
+  delta: string;
+  status: "success" | "warning" | "danger" | "info";
+  hint?: string;
+};
+
+function ExecKpi({ icon: Icon, label, value, trend, delta, status, hint }: ExecKpiProps) {
+  const statusMap = {
+    success: { icon: "bg-success/15 text-success", dot: "bg-success", ring: "border-success/30" },
+    warning: { icon: "bg-warning/20 text-warning-foreground", dot: "bg-warning", ring: "border-warning/40" },
+    danger:  { icon: "bg-destructive/15 text-destructive", dot: "bg-destructive", ring: "border-destructive/30" },
+    info:    { icon: "bg-primary/10 text-primary", dot: "bg-primary", ring: "border-primary/30" },
+  }[status];
+
+  const TrendIcon = trend === "up" ? TrendingUp : TrendingDown;
+  // For "gap", "burnout", "open shifts" up is bad; for "on duty" up is good.
+  // Delta color is neutral to the metric — use status as source of truth.
+  const trendColor = status === "success" ? "text-success"
+    : status === "danger" ? "text-destructive"
+    : status === "warning" ? "text-warning-foreground"
+    : "text-primary";
+
+  return (
+    <div className={`rounded-xl border ${statusMap.ring} bg-card p-4 shadow-sm transition-shadow hover:shadow-md`}>
+      <div className="flex items-start justify-between gap-2">
+        <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${statusMap.icon}`}>
+          <Icon className="h-4.5 w-4.5" />
+        </div>
+        <span className={`inline-flex items-center gap-1 rounded-full bg-background px-2 py-0.5 text-[11px] font-medium ${trendColor}`}>
+          <TrendIcon className="h-3 w-3" />
+          {delta}
+        </span>
+      </div>
+      <div className="mt-3 flex items-baseline gap-2">
+        <div className="text-3xl font-semibold tracking-tight text-foreground">{value}</div>
+        <span className={`h-1.5 w-1.5 rounded-full ${statusMap.dot}`} />
+      </div>
+      <div className="mt-0.5 text-xs font-medium text-foreground">{label}</div>
+      {hint && <div className="mt-0.5 text-[11px] text-muted-foreground">{hint}</div>}
+    </div>
+  );
+}
+
