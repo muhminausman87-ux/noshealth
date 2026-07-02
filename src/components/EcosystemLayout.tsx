@@ -15,7 +15,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { getSession, clearSession, type Session } from "@/lib/auth";
+import { getSession, signOut, type Session } from "@/lib/auth";
 import logo from "@/assets/nos-logo.png.asset.json";
 
 export type NosModule = {
