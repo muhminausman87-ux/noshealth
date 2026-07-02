@@ -89,7 +89,7 @@ export function EcosystemLayout({ children }: { children: ReactNode }) {
   }
 
   const isAdmin = session.role === "admin";
-  const logout = () => { clearSession(); navigate({ to: "/login" }); };
+  const logout = async () => { await signOut(); navigate({ to: "/login" }); };
 
   return (
     <div className="flex min-h-screen bg-background">
