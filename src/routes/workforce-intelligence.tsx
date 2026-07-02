@@ -111,23 +111,9 @@ function WorkforceIntelligencePage() {
       </header>
 
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
-        {/* Executive Summary / AI Insights */}
-        <section className="rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/10 via-card to-card p-5 shadow-sm">
-          <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-semibold text-foreground">AI Executive Summary</h2>
-                <StatusPill tone="info">Coming Soon</StatusPill>
-              </div>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                Hospital workforce operating at <strong className="text-foreground">{Math.round((totalOnDuty / (totalOnDuty + 9)) * 100)}% capacity</strong> across {DEPTS.length} departments. ICU and ED show elevated acuity with rising overtime. Predicted evening staffing gap of ~9% — pre-emptive floater allocation recommended. Fatigue index trending upward 3rd week; consider mandatory rest windows.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* Executive Summary */}
+        <ExecutiveSummary totalOnDuty={totalOnDuty} deptCount={DEPTS.length} />
+
 
         {/* 1. Workforce Overview */}
         <section>
