@@ -12,6 +12,7 @@ import {
 import { Widget, StatusPill } from "@/components/Widget";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { AdminHome } from "@/components/AdminHome";
+import { AIWorkforceRisk } from "@/components/AIWorkforceRisk";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
@@ -338,6 +339,10 @@ function WorkforceIntelligencePage() {
             ))}
           </div>
         </section>
+
+        {/* AI Workforce Risk & Predictive Intelligence */}
+        <AIWorkforceRisk />
+
 
         {/* 6. Operational KPIs */}
         <section>
