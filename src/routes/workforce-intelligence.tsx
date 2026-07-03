@@ -340,6 +340,10 @@ function WorkforceIntelligencePage() {
           </div>
         </section>
 
+        {/* AI Workforce Risk & Predictive Intelligence */}
+        <AIWorkforceRisk />
+
+
         {/* 6. Operational KPIs */}
         <section>
           <SectionTitle icon={Gauge} title="Operational KPIs" />
