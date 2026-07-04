@@ -1,22 +1,21 @@
-import { useState } from "react";
 import {
-  Heart, MessageSquare, Lightbulb, ThumbsUp, Workflow, Users2,
-  ShieldCheck, Sparkles, ArrowRight, Compass, GraduationCap,
-  Wrench, Bot, Rocket, Activity, Target, TrendingUp, AlertTriangle,
+  Heart, MessageSquare, ShieldCheck, Sparkles, ArrowRight, Compass,
+  GraduationCap, Wrench, Bot, Rocket, Activity, Target, TrendingUp,
+  AlertTriangle, Lightbulb, ThumbsUp, Workflow,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { StatusPill } from "@/components/Widget";
+import { NurseVoiceCenter } from "@/components/NurseVoiceCenter";
 
 /**
  * Workforce Intelligence — Strategic Pillars
- * Philosophy hero + Listen to the Nurse + Support the Leader + Informatics Network.
- * Language centered on support, collaboration, and continuous improvement.
+ * Philosophy hero + Nurse Voice Intelligence Center + Support the Leader + Informatics Network.
  */
 export function WorkforcePillars() {
   return (
     <div className="space-y-6">
       <PhilosophyHero />
-      <ListenToTheNurse />
+      <NurseVoiceCenter />
       <SupportTheLeader />
       <InformaticsNetwork />
     </div>
