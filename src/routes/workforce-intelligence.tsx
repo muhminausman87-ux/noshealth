@@ -95,8 +95,12 @@ function WorkforceIntelligencePage() {
     <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
 
+        {/* Strategic pillars — philosophy, nurse voice, leader support, champions */}
+        <WorkforcePillars />
+
         {/* Admin Home — workforce-first executive dashboard */}
         <AdminHome />
+
 
 
 
