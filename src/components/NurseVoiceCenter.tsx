@@ -505,5 +505,3 @@ function LeadershipResponse() {
   );
 }
 
-// Prevent unused-import warnings for icons only referenced conditionally
-void useMemo;
