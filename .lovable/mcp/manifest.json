@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "nos-ecosystem-mcp",
+      "version": "0.1.0",
+      "title": "NOS Ecosystem MCP"
+    },
+    "tools": [
+      {
+        "name": "list_departments",
+        "title": "List departments",
+        "description": "List all hospital departments configured in the NOS Ecosystem workspace.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_patients",
+        "title": "List patients",
+        "description": "List demo patients in the NOS Ecosystem, optionally filtered by department or clinical status. Returns a compact roster (id, name, room, MRN, department, status).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "department": {
+              "description": "Filter by department id (e.g. ed, icu, medsurg).",
+              "type": "string",
+              "enum": [
+                "ed",
+                "icu",
+                "medsurg",
+                "maternity",
+                "cardiac",
+                "labour",
+                "pediatric",
+                "medical",
+                "surgical",
+                "opd",
+                "daycare",
+                "ot"
+              ]
+            },
+            "status": {
+              "description": "Filter by clinical status.",
+              "type": "string",
+              "enum": [
+                "stable",
+                "watch",
+                "critical"
+              ]
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_patient",
+        "title": "Get patient details",
+        "description": "Fetch the full demo record for one patient by id (e.g. 'p-icu-01'): vitals, medications, GCS, pain, allergies, and clinical note.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Patient id from list_patients."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "workforce_pulse",
+        "title": "Workforce pulse",
+        "description": "Return today's NOSHealth Workforce Pulse (demo): overall workforce health, burnout risk, staffing coverage, and open concerns per department.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "department": {
+              "description": "Optional department id to scope the pulse (e.g. 'ed'). Omit for hospital-wide.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

@@ -11,12 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
 import { Route as ResearchRouteImport } from './routes/research'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LearningRouteImport } from './routes/learning'
 import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
 import { Route as EbpRouteImport } from './routes/ebp'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
   id: '/workforce-intelligence',
@@ -26,6 +30,11 @@ const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
 const ResearchRoute = ResearchRouteImport.update({
   id: '/research',
   path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -58,6 +67,24 @@ const PatientPatientIdRoute = PatientPatientIdRouteImport.update({
   path: '/patient/$patientId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,9 +92,13 @@ export interface FileRoutesByFullPath {
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/research': typeof ResearchRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,9 +106,13 @@ export interface FileRoutesByTo {
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/research': typeof ResearchRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,9 +121,13 @@ export interface FileRoutesById {
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
+  '/mcp': typeof McpRoute
   '/research': typeof ResearchRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -98,9 +137,13 @@ export interface FileRouteTypes {
     | '/executive-intelligence'
     | '/learning'
     | '/login'
+    | '/mcp'
     | '/research'
     | '/workforce-intelligence'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,9 +151,13 @@ export interface FileRouteTypes {
     | '/executive-intelligence'
     | '/learning'
     | '/login'
+    | '/mcp'
     | '/research'
     | '/workforce-intelligence'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
+    | '/.mcp/invoke-tool/$tool'
   id:
     | '__root__'
     | '/'
@@ -118,9 +165,13 @@ export interface FileRouteTypes {
     | '/executive-intelligence'
     | '/learning'
     | '/login'
+    | '/mcp'
     | '/research'
     | '/workforce-intelligence'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
+    | '/.mcp/invoke-tool/$tool'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,9 +180,13 @@ export interface RootRouteChildren {
   ExecutiveIntelligenceRoute: typeof ExecutiveIntelligenceRoute
   LearningRoute: typeof LearningRoute
   LoginRoute: typeof LoginRoute
+  McpRoute: typeof McpRoute
   ResearchRoute: typeof ResearchRoute
   WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   PatientPatientIdRoute: typeof PatientPatientIdRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -148,6 +203,13 @@ declare module '@tanstack/react-router' {
       path: '/research'
       fullPath: '/research'
       preLoaderRoute: typeof ResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -192,6 +254,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatientPatientIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -201,10 +284,25 @@ const rootRouteChildren: RootRouteChildren = {
   ExecutiveIntelligenceRoute: ExecutiveIntelligenceRoute,
   LearningRoute: LearningRoute,
   LoginRoute: LoginRoute,
+  McpRoute: McpRoute,
   ResearchRoute: ResearchRoute,
   WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   PatientPatientIdRoute: PatientPatientIdRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
