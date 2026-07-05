@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
+import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
@@ -25,6 +26,11 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
   id: '/workforce-intelligence',
   path: '/workforce-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkflowIntelligenceRoute = WorkflowIntelligenceRouteImport.update({
+  id: '/workflow-intelligence',
+  path: '/workflow-intelligence',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResearchRoute = ResearchRouteImport.update({
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/research': typeof ResearchRoute
+  '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/research': typeof ResearchRoute
+  '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/research': typeof ResearchRoute
+  '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mcp'
     | '/research'
+    | '/workflow-intelligence'
     | '/workforce-intelligence'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mcp'
     | '/research'
+    | '/workflow-intelligence'
     | '/workforce-intelligence'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/mcp'
     | '/research'
+    | '/workflow-intelligence'
     | '/workforce-intelligence'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -182,6 +194,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
   ResearchRoute: typeof ResearchRoute
+  WorkflowIntelligenceRoute: typeof WorkflowIntelligenceRoute
   WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -196,6 +209,13 @@ declare module '@tanstack/react-router' {
       path: '/workforce-intelligence'
       fullPath: '/workforce-intelligence'
       preLoaderRoute: typeof WorkforceIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workflow-intelligence': {
+      id: '/workflow-intelligence'
+      path: '/workflow-intelligence'
+      fullPath: '/workflow-intelligence'
+      preLoaderRoute: typeof WorkflowIntelligenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/research': {
@@ -286,6 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
   ResearchRoute: ResearchRoute,
+  WorkflowIntelligenceRoute: WorkflowIntelligenceRoute,
   WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

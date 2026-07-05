@@ -6,6 +6,7 @@ import {
   FlaskConical,
   GraduationCap,
   LineChart,
+  Activity,
   ChevronLeft,
   ChevronRight,
   ArrowLeft,
@@ -34,6 +35,13 @@ export const NOS_MODULES: NosModule[] = [
     title: "Workforce Intelligence",
     subtitle: "AI-powered workforce management and operational analytics",
     icon: Brain,
+  },
+  {
+    key: "workflow",
+    to: "/workflow-intelligence",
+    title: "Workflow Intelligence",
+    subtitle: "AI-assisted coordination of clinical workflows across departments",
+    icon: Activity,
   },
   {
     key: "ebp",
