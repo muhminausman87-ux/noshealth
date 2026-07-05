@@ -37,6 +37,13 @@ export const NOS_MODULES: NosModule[] = [
     icon: Brain,
   },
   {
+    key: "workflow",
+    to: "/workflow-intelligence",
+    title: "Workflow Intelligence",
+    subtitle: "AI-assisted coordination of clinical workflows across departments",
+    icon: Activity,
+  },
+  {
     key: "ebp",
     to: "/ebp",
     title: "Evidence-Based Practice",
