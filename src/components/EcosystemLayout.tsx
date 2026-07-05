@@ -6,6 +6,7 @@ import {
   FlaskConical,
   GraduationCap,
   LineChart,
+  Activity,
   ChevronLeft,
   ChevronRight,
   ArrowLeft,
