@@ -1,5 +1,4 @@
 import { defineTool } from "@lovable.dev/mcp-js";
-import { z } from "zod";
 import { DEPARTMENTS } from "@/lib/departments";
 
 export default defineTool({
@@ -12,5 +11,4 @@ export default defineTool({
     content: [{ type: "text", text: JSON.stringify(DEPARTMENTS, null, 2) }],
     structuredContent: { departments: DEPARTMENTS },
   }),
-  _unusedZ: z,
-} as any);
+});
