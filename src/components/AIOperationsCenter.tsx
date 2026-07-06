@@ -68,10 +68,6 @@ const GLANCE: {
   { label: "Pending Radiology Reports",   value: 7,   icon: Radio,          tone: "info",    hint: "3 STAT" },
 ];
 
-function UserMinusIcon(props: any) {
-  // fallback icon alias
-  return <Users {...props} />;
-}
 
 function HospitalAtAGlance() {
   return (
