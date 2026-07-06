@@ -59,7 +59,7 @@ const GLANCE: {
   label: string; value: string | number; icon: LucideIcon; tone: "info" | "warning" | "danger" | "success"; hint?: string;
 }[] = [
   { label: "Nurses on Duty",              value: 70,  icon: Users,          tone: "info",    hint: "Across 7 units" },
-  { label: "Staff Shortage",              value: 6,   icon: UserMinusIcon,  tone: "warning", hint: "2 ICU · 3 ED · 1 Med-Surg" },
+  { label: "Staff Shortage",              value: 6,   icon: UserMinus,      tone: "warning", hint: "2 ICU · 3 ED · 1 Med-Surg" },
   { label: "Open Shifts",                 value: 12,  icon: Clock,          tone: "danger",  hint: "Next 72h" },
   { label: "High Acuity Units",           value: 3,   icon: Activity,       tone: "danger",  hint: "ICU · ED · Cardiac" },
   { label: "Departments Needing Support", value: 2,   icon: Hospital,       tone: "warning", hint: "ED · Med-Surg" },
