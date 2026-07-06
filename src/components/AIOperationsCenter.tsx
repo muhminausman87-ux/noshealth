@@ -2,7 +2,7 @@ import {
   Activity, AlertTriangle, ArrowRight, Bell, Brain, CheckCircle2,
   ClipboardList, Clock, FlaskConical, Hospital, Radio, Sparkles,
   Stethoscope, Sun, Sunrise, Sunset, Moon, Target, TrendingUp,
-  UserPlus, Users, Workflow, Zap,
+  UserMinus, UserPlus, Users, Workflow, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { StatusPill } from "@/components/Widget";
