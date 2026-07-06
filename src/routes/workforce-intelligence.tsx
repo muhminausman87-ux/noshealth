@@ -14,6 +14,7 @@ import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { AdminHome } from "@/components/AdminHome";
 import { AIWorkforceRisk } from "@/components/AIWorkforceRisk";
 import { WorkforcePillars } from "@/components/WorkforcePillars";
+import { AIOperationsCenter } from "@/components/AIOperationsCenter";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
@@ -97,6 +98,9 @@ function WorkforceIntelligencePage() {
 
         {/* Strategic pillars — philosophy, nurse voice, leader support, champions */}
         <WorkforcePillars />
+
+        {/* AI Nursing Operations Center — CNO command center */}
+        <AIOperationsCenter />
 
         {/* Admin Home — workforce-first executive dashboard */}
         <AdminHome />
