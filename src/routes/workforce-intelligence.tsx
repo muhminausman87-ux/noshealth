@@ -99,6 +99,9 @@ function WorkforceIntelligencePage() {
         {/* Strategic pillars — philosophy, nurse voice, leader support, champions */}
         <WorkforcePillars />
 
+        {/* AI Nursing Operations Center — CNO command center */}
+        <AIOperationsCenter />
+
         {/* Admin Home — workforce-first executive dashboard */}
         <AdminHome />
 
