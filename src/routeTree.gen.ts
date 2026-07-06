@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LearningRouteImport } from './routes/learning'
 import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
 import { Route as EbpRouteImport } from './routes/ebp'
+import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -63,6 +64,11 @@ const EbpRoute = EbpRouteImport.update({
   path: '/ebp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DigitalTwinRoute = DigitalTwinRouteImport.update({
+  id: '/digital-twin',
+  path: '/digital-twin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -94,6 +100,7 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
   '/learning': typeof LearningRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
   '/learning': typeof LearningRoute
@@ -125,6 +133,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
   '/learning': typeof LearningRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/digital-twin'
     | '/ebp'
     | '/executive-intelligence'
     | '/learning'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/digital-twin'
     | '/ebp'
     | '/executive-intelligence'
     | '/learning'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/digital-twin'
     | '/ebp'
     | '/executive-intelligence'
     | '/learning'
@@ -188,6 +200,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DigitalTwinRoute: typeof DigitalTwinRoute
   EbpRoute: typeof EbpRoute
   ExecutiveIntelligenceRoute: typeof ExecutiveIntelligenceRoute
   LearningRoute: typeof LearningRoute
@@ -260,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/digital-twin': {
+      id: '/digital-twin'
+      path: '/digital-twin'
+      fullPath: '/digital-twin'
+      preLoaderRoute: typeof DigitalTwinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -300,6 +320,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DigitalTwinRoute: DigitalTwinRoute,
   EbpRoute: EbpRoute,
   ExecutiveIntelligenceRoute: ExecutiveIntelligenceRoute,
   LearningRoute: LearningRoute,
