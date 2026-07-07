@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
 import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
 import { Route as ResearchRouteImport } from './routes/research'
+import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LearningRouteImport } from './routes/learning'
@@ -37,6 +38,11 @@ const WorkflowIntelligenceRoute = WorkflowIntelligenceRouteImport.update({
 const ResearchRoute = ResearchRouteImport.update({
   id: '/research',
   path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcedureDocumentationRoute = ProcedureDocumentationRouteImport.update({
+  id: '/procedure-documentation',
+  path: '/procedure-documentation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/procedure-documentation'
     | '/research'
     | '/workflow-intelligence'
     | '/workforce-intelligence'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/procedure-documentation'
     | '/research'
     | '/workflow-intelligence'
     | '/workforce-intelligence'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/procedure-documentation'
     | '/research'
     | '/workflow-intelligence'
     | '/workforce-intelligence'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   LearningRoute: typeof LearningRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  ProcedureDocumentationRoute: typeof ProcedureDocumentationRoute
   ResearchRoute: typeof ResearchRoute
   WorkflowIntelligenceRoute: typeof WorkflowIntelligenceRoute
   WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
@@ -236,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/research'
       fullPath: '/research'
       preLoaderRoute: typeof ResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/procedure-documentation': {
+      id: '/procedure-documentation'
+      path: '/procedure-documentation'
+      fullPath: '/procedure-documentation'
+      preLoaderRoute: typeof ProcedureDocumentationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearningRoute: LearningRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  ProcedureDocumentationRoute: ProcedureDocumentationRoute,
   ResearchRoute: ResearchRoute,
   WorkflowIntelligenceRoute: WorkflowIntelligenceRoute,
   WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
