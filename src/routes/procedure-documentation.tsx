@@ -570,6 +570,10 @@ function ProcedureDocPage() {
             </Widget>
           </aside>
         </div>
+
+        <AutomaticInformationFlow />
+        <AIDocumentationIntelligence />
+        <ClinicalWorkflowImpact />
       </main>
     </EcosystemLayout>
   );
