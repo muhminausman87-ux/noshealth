@@ -305,7 +305,7 @@ function NursingWorkforceTwinPage() {
   const selectedDept = DEPTS.find((d) => d.key === selected) || null;
 
   return (
-    <EcosystemLayout session={session}>
+    <EcosystemLayout>
       <div className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
         {/* Header */}
         <header className="flex flex-wrap items-start justify-between gap-3">
