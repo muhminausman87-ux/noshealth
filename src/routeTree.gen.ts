@@ -13,6 +13,7 @@ import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-in
 import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
+import { Route as NursingWorkforceTwinRouteImport } from './routes/nursing-workforce-twin'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LearningRouteImport } from './routes/learning'
@@ -43,6 +44,11 @@ const ResearchRoute = ResearchRouteImport.update({
 const ProcedureDocumentationRoute = ProcedureDocumentationRouteImport.update({
   id: '/procedure-documentation',
   path: '/procedure-documentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NursingWorkforceTwinRoute = NursingWorkforceTwinRouteImport.update({
+  id: '/nursing-workforce-twin',
+  path: '/nursing-workforce-twin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
     | '/workflow-intelligence'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
     | '/workflow-intelligence'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
     | '/workflow-intelligence'
@@ -218,6 +230,7 @@ export interface RootRouteChildren {
   LearningRoute: typeof LearningRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  NursingWorkforceTwinRoute: typeof NursingWorkforceTwinRoute
   ProcedureDocumentationRoute: typeof ProcedureDocumentationRoute
   ResearchRoute: typeof ResearchRoute
   WorkflowIntelligenceRoute: typeof WorkflowIntelligenceRoute
@@ -256,6 +269,13 @@ declare module '@tanstack/react-router' {
       path: '/procedure-documentation'
       fullPath: '/procedure-documentation'
       preLoaderRoute: typeof ProcedureDocumentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nursing-workforce-twin': {
+      id: '/nursing-workforce-twin'
+      path: '/nursing-workforce-twin'
+      fullPath: '/nursing-workforce-twin'
+      preLoaderRoute: typeof NursingWorkforceTwinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearningRoute: LearningRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  NursingWorkforceTwinRoute: NursingWorkforceTwinRoute,
   ProcedureDocumentationRoute: ProcedureDocumentationRoute,
   ResearchRoute: ResearchRoute,
   WorkflowIntelligenceRoute: WorkflowIntelligenceRoute,
