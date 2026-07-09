@@ -570,6 +570,10 @@ function ProcedureDocPage() {
             </Widget>
           </aside>
         </div>
+
+        <AutomaticInformationFlow />
+        <AIDocumentationIntelligence />
+        <ClinicalWorkflowImpact />
       </main>
     </EcosystemLayout>
   );
@@ -697,5 +701,221 @@ function Metric({
       </div>
       <span className={`text-sm font-semibold ${color}`}>{value}</span>
     </div>
+  );
+}
+
+// ---------- New: Automatic Information Flow ----------
+
+const FLOW_STEPS: {
+  label: string;
+  icon: typeof FileText;
+  optional?: boolean;
+  tone: "primary" | "success" | "warning" | "info";
+}[] = [
+  { label: "Procedure Completed", icon: CheckCircle2, tone: "success" },
+  { label: "Nursing Documentation Updated", icon: ClipboardCheck, tone: "primary" },
+  { label: "Patient Timeline Updated", icon: Clock, tone: "primary" },
+  { label: "Medication Administration Record Updated", icon: Pill, tone: "primary" },
+  { label: "Laboratory Updated", icon: Layers, optional: true, tone: "info" },
+  { label: "Radiology Updated", icon: Stethoscope, optional: true, tone: "info" },
+  { label: "CSSD Instrument Tracking Updated", icon: Wrench, tone: "primary" },
+  { label: "Consumables Recorded", icon: Boxes, tone: "primary" },
+  { label: "Billing Review Queue Updated", icon: Receipt, tone: "primary" },
+  { label: "Quality Dashboard Updated", icon: Gauge, tone: "primary" },
+  { label: "Patient Safety Dashboard Updated", icon: ShieldCheck, tone: "primary" },
+  { label: "Audit Trail Completed", icon: BookCheck, tone: "success" },
+  { label: "Discharge Planning Updated", icon: ShoppingBag, optional: true, tone: "info" },
+];
+
+function AutomaticInformationFlow() {
+  return (
+    <section className="mt-6 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm sm:p-6">
+      <header className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Repeat className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold tracking-tight text-foreground">
+              Automatic Information Flow
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              One procedure documented · information distributed across the hospital
+            </p>
+          </div>
+        </div>
+        <StatusPill tone="info">AI Prototype</StatusPill>
+      </header>
+
+      <ol className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+        {FLOW_STEPS.map((s, i) => {
+          const bg =
+            s.tone === "success" ? "bg-success/15 text-success" :
+            s.tone === "info"    ? "bg-primary/10 text-primary/80" :
+                                   "bg-primary/10 text-primary";
+          return (
+            <li
+              key={s.label}
+              className="relative flex items-start gap-3 rounded-lg border border-border bg-background p-3"
+            >
+              <div className="flex h-9 w-9 shrink-0 flex-col items-center justify-center rounded-md bg-secondary text-[10px] font-bold text-muted-foreground">
+                {String(i + 1).padStart(2, "0")}
+              </div>
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${bg}`}>
+                <s.icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-sm font-medium text-foreground">{s.label}</span>
+                  {s.optional && <StatusPill tone="neutral">If applicable</StatusPill>}
+                </div>
+                <div className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <ArrowRight className="h-3 w-3" />
+                  Auto-populated from single documentation event
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card p-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          13 downstream systems updated · 0 manual re-entry required
+        </div>
+        <StatusPill tone="success">
+          <CheckCircle2 className="h-3 w-3" /> Fully synchronized
+        </StatusPill>
+      </div>
+    </section>
+  );
+}
+
+// ---------- New: AI Documentation Intelligence ----------
+
+const DOC_INTEL: {
+  label: string;
+  value: string;
+  detail: string;
+  icon: typeof FileText;
+  tone: "danger" | "warning" | "info" | "success";
+}[] = [
+  { label: "Missing documentation detected", value: "3 items", detail: "Post-procedure vitals · pain score · site check", icon: AlertTriangle, tone: "warning" },
+  { label: "Missing signatures",             value: "1 nurse", detail: "RN witness signature required",                 icon: FileText,     tone: "warning" },
+  { label: "Missing physician co-sign",      value: "2 orders", detail: "Standing orders awaiting attending",           icon: Stethoscope,  tone: "danger"  },
+  { label: "Missing consent",                value: "0",       detail: "All consents on file",                          icon: ShieldCheck,  tone: "success" },
+  { label: "Missing consumables",            value: "1 item",  detail: "IV starter kit not scanned",                    icon: Boxes,        tone: "warning" },
+  { label: "Missing billing information",    value: "1 code",  detail: "Procedure modifier not selected",               icon: Receipt,      tone: "warning" },
+  { label: "Documentation completeness",     value: "92%",     detail: "Above hospital benchmark (85%)",                icon: Gauge,        tone: "success" },
+  { label: "Estimated time saved",           value: "18 min",  detail: "Per procedure vs manual documentation",         icon: Timer,        tone: "info"    },
+  { label: "Duplicate documentation avoided",value: "7 entries", detail: "Auto-shared with 5 downstream systems",       icon: Repeat,       tone: "success" },
+];
+
+function AIDocumentationIntelligence() {
+  return (
+    <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
+      <header className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold tracking-tight text-foreground">
+              AI Documentation Intelligence
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Real-time gap detection · completeness scoring · efficiency metrics
+            </p>
+          </div>
+        </div>
+        <StatusPill tone="info">AI Prototype</StatusPill>
+      </header>
+
+      <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+        {DOC_INTEL.map((d) => {
+          const bg =
+            d.tone === "danger"  ? "bg-destructive/15 text-destructive" :
+            d.tone === "warning" ? "bg-warning/20 text-warning-foreground" :
+            d.tone === "success" ? "bg-success/15 text-success" :
+                                   "bg-primary/10 text-primary";
+          return (
+            <div key={d.label} className="rounded-lg border border-border bg-background p-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className={`flex h-8 w-8 items-center justify-center rounded-md ${bg}`}>
+                  <d.icon className="h-4 w-4" />
+                </div>
+                <div className="text-right text-lg font-bold leading-none text-foreground">
+                  {d.value}
+                </div>
+              </div>
+              <div className="mt-2 text-xs font-semibold text-foreground">{d.label}</div>
+              <div className="text-[11px] text-muted-foreground">{d.detail}</div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+// ---------- New: Clinical Workflow Impact ----------
+
+const IMPACT: {
+  label: string;
+  value: string;
+  delta: string;
+  icon: typeof Gauge;
+}[] = [
+  { label: "Time saved per shift",           value: "3.4 hrs",  delta: "↓ 42% documentation time", icon: Timer },
+  { label: "Reduced duplicate documentation",value: "68%",      delta: "vs prior quarter",         icon: Repeat },
+  { label: "Improved billing accuracy",      value: "+14%",     delta: "capture completeness",     icon: Receipt },
+  { label: "Reduced documentation burden",   value: "−52%",     delta: "manual data entry steps",  icon: ClipboardCheck },
+  { label: "Improved audit readiness",       value: "97%",      delta: "chart audit pass rate",    icon: BookCheck },
+  { label: "Improved patient safety",        value: "−31%",     delta: "documentation-related events", icon: ShieldCheck },
+];
+
+function ClinicalWorkflowImpact() {
+  return (
+    <section className="mt-6 rounded-2xl border border-border bg-gradient-to-br from-card via-card to-primary/[0.04] p-5 shadow-sm sm:p-6">
+      <header className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Award className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold tracking-tight text-foreground">
+              Clinical Workflow Impact
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Executive view · Document Once. Use Everywhere.
+            </p>
+          </div>
+        </div>
+        <StatusPill tone="info">AI Prototype</StatusPill>
+      </header>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {IMPACT.map((m) => (
+          <div
+            key={m.label}
+            className="rounded-xl border border-border bg-background p-4"
+          >
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <m.icon className="h-4 w-4 text-primary" />
+              {m.label}
+            </div>
+            <div className="mt-2 text-2xl font-bold text-foreground">{m.value}</div>
+            <div className="mt-1 text-[11px] text-muted-foreground">{m.delta}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-foreground">
+        <span className="font-semibold text-primary">Design Philosophy · </span>
+        Document Once. Use Everywhere. Reduce nursing documentation burden while improving
+        communication, operational efficiency, billing accuracy, patient safety, and audit readiness.
+      </div>
+    </section>
   );
 }
