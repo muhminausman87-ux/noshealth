@@ -20,6 +20,7 @@ import { Route as LearningRouteImport } from './routes/learning'
 import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
 import { Route as EbpRouteImport } from './routes/ebp'
 import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
+import { Route as ClinicalExcellenceRouteImport } from './routes/clinical-excellence'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -81,6 +82,11 @@ const DigitalTwinRoute = DigitalTwinRouteImport.update({
   path: '/digital-twin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClinicalExcellenceRoute = ClinicalExcellenceRouteImport.update({
+  id: '/clinical-excellence',
+  path: '/clinical-excellence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -112,6 +118,7 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
@@ -149,6 +157,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/clinical-excellence'
     | '/digital-twin'
     | '/ebp'
     | '/executive-intelligence'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/clinical-excellence'
     | '/digital-twin'
     | '/ebp'
     | '/executive-intelligence'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/clinical-excellence'
     | '/digital-twin'
     | '/ebp'
     | '/executive-intelligence'
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClinicalExcellenceRoute: typeof ClinicalExcellenceRoute
   DigitalTwinRoute: typeof DigitalTwinRoute
   EbpRoute: typeof EbpRoute
   ExecutiveIntelligenceRoute: typeof ExecutiveIntelligenceRoute
@@ -320,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DigitalTwinRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clinical-excellence': {
+      id: '/clinical-excellence'
+      path: '/clinical-excellence'
+      fullPath: '/clinical-excellence'
+      preLoaderRoute: typeof ClinicalExcellenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -360,6 +380,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClinicalExcellenceRoute: ClinicalExcellenceRoute,
   DigitalTwinRoute: DigitalTwinRoute,
   EbpRoute: EbpRoute,
   ExecutiveIntelligenceRoute: ExecutiveIntelligenceRoute,
