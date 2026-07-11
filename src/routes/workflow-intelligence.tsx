@@ -428,6 +428,8 @@ function WorkflowIntelligencePage() {
           </div>
         </section>
 
+        <AIIntelligenceLayer module="workflow" />
+
         {/* Footer vision */}
         <section className="rounded-xl border border-border bg-card p-5 text-center text-sm text-muted-foreground shadow-sm">
           Our vision is to build an integrated AI-powered healthcare intelligence ecosystem supporting
