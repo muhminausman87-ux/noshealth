@@ -4,9 +4,12 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 import appCss from "../styles.css?url";
 import logo from "../assets/nos-logo.png.asset.json";
@@ -120,6 +123,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const isAuthShell = pathname === "/login";
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -132,12 +137,34 @@ function RootComponent() {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "min(95vw, 95vh) auto",
-          opacity: 0.06,
+          opacity: 0.05,
         }}
       />
-      <div className="relative z-10">
-        <Outlet />
-      </div>
+      {isAuthShell ? (
+        <div className="relative z-10">
+          <Outlet />
+        </div>
+      ) : (
+        <SidebarProvider
+          style={{
+            "--sidebar-width": "17rem",
+            "--sidebar-width-icon": "3.25rem",
+          } as React.CSSProperties}
+        >
+          <div className="relative z-10 flex min-h-screen w-full">
+            <AppSidebar />
+            <SidebarInset className="min-w-0 bg-transparent">
+              <div className="sticky top-0 z-20 flex h-11 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur">
+                <SidebarTrigger />
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  NOS Clinical Workspace
+                </div>
+              </div>
+              <Outlet />
+            </SidebarInset>
+          </div>
+        </SidebarProvider>
+      )}
     </QueryClientProvider>
   );
 }
