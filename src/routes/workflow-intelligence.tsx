@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
+import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workflow-intelligence")({
@@ -426,6 +427,8 @@ function WorkflowIntelligencePage() {
             </div>
           </div>
         </section>
+
+        <AIIntelligenceLayer module="workflow" />
 
         {/* Footer vision */}
         <section className="rounded-xl border border-border bg-card p-5 text-center text-sm text-muted-foreground shadow-sm">

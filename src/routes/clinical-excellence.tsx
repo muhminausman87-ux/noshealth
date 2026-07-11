@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
+import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 
 export const Route = createFileRoute("/clinical-excellence")({
   head: () => ({
@@ -462,6 +463,8 @@ function ClinicalExcellencePage() {
         </section>
 
         {/* Philosophy footer */}
+        <AIIntelligenceLayer module="excellence" />
+
         <section className="mt-8 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground shadow-sm">
           <div className="flex items-center gap-2 text-foreground">
             <Star className="h-4 w-4 text-primary" />
