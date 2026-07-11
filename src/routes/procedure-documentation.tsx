@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
+import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import {
   ClipboardList,
   Package,
