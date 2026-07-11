@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
+import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 
 export const Route = createFileRoute("/clinical-excellence")({
   head: () => ({
