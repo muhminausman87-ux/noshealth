@@ -387,6 +387,8 @@ function WorkforceIntelligencePage() {
           </div>
         </section>
 
+        <AIIntelligenceLayer module="workforce" />
+
         <footer className="pt-2 pb-8 text-center text-[11px] text-muted-foreground">
           Workforce Intelligence · Prototype dashboard · Data shown is illustrative and not connected to live records.
         </footer>
