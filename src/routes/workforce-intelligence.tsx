@@ -16,6 +16,7 @@ import { AIWorkforceRisk } from "@/components/AIWorkforceRisk";
 import { WorkforcePillars } from "@/components/WorkforcePillars";
 import { AIOperationsCenter } from "@/components/AIOperationsCenter";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
+import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
