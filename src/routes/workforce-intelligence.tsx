@@ -388,6 +388,7 @@ function WorkforceIntelligencePage() {
           </div>
         </section>
 
+        <ExecutiveDecisionSupport module="workforce" />
         <AIIntelligenceLayer module="workforce" />
 
         <footer className="pt-2 pb-8 text-center text-[11px] text-muted-foreground">
