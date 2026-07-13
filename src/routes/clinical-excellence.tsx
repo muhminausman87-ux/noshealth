@@ -9,6 +9,7 @@ import {
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
+import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
 
 export const Route = createFileRoute("/clinical-excellence")({
   head: () => ({
@@ -463,6 +464,7 @@ function ClinicalExcellencePage() {
         </section>
 
         {/* Philosophy footer */}
+        <ExecutiveDecisionSupport module="excellence" />
         <AIIntelligenceLayer module="excellence" />
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground shadow-sm">
