@@ -429,6 +429,7 @@ function WorkflowIntelligencePage() {
           </div>
         </section>
 
+        <ExecutiveDecisionSupport module="workflow" />
         <AIIntelligenceLayer module="workflow" />
 
         {/* Footer vision */}
