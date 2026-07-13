@@ -464,6 +464,7 @@ function ClinicalExcellencePage() {
         </section>
 
         {/* Philosophy footer */}
+        <ExecutiveDecisionSupport module="excellence" />
         <AIIntelligenceLayer module="excellence" />
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground shadow-sm">
