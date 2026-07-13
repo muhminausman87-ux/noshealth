@@ -8,6 +8,7 @@ import {
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
+import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workflow-intelligence")({
