@@ -576,6 +576,7 @@ function ProcedureDocPage() {
         <AutomaticInformationFlow />
         <AIDocumentationIntelligence />
         <ClinicalWorkflowImpact />
+        <ExecutiveDecisionSupport module="documentation" />
         <AIIntelligenceLayer module="documentation" />
       </main>
     </EcosystemLayout>
