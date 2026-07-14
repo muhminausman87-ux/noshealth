@@ -156,36 +156,36 @@ function PatientPage() {
     : "var(--color-destructive)";
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border bg-card/85 backdrop-blur">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-6 py-3">
+    <div className="flex h-[calc(100vh-2.75rem)] flex-col overflow-hidden">
+      {/* Sticky compact patient banner */}
+      <header className="shrink-0 border-b border-border bg-card/90 backdrop-blur">
+        <div className="flex items-center gap-3 px-4 py-2">
           <Link
             to="/"
-            className="flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-3 py-1.5 text-sm hover:bg-secondary"
+            className="flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 text-xs hover:bg-secondary"
           >
-            <ArrowLeft className="h-4 w-4" /> Dashboard
+            <ArrowLeft className="h-3.5 w-3.5" /> Dashboard
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/15 text-primary">
-              <User className="h-5 w-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-primary">
+              <User className="h-4 w-4" />
             </div>
-            <div>
-              <div className="text-base font-semibold text-foreground">{patient.name}</div>
-              <div className="text-xs text-muted-foreground">
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold text-foreground">{patient.name}</div>
+              <div className="truncate text-[11px] text-muted-foreground">
                 {patient.sex} · {patient.age} y · MRN {patient.mrn} · Room {patient.room}
               </div>
             </div>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-1.5">
             <span
-              className="rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
+              className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
               style={{ background: `color-mix(in oklab, ${meta.color} 18%, transparent)`, color: meta.color }}
             >
               {meta.short}
             </span>
             <span
-              className="rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider"
+              className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
               style={{
                 background:
                   patient.status === "critical"
@@ -207,187 +207,218 @@ function PatientPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1400px] px-6 py-6">
-        {/* Allergy strip */}
-        <div
-          className="mb-5 flex items-start gap-3 rounded-xl border p-4"
-          style={{
-            borderColor: patient.allergy
-              ? "color-mix(in oklab, var(--color-destructive) 40%, transparent)"
-              : "color-mix(in oklab, var(--color-tone-mint) 40%, transparent)",
-            background: patient.allergy
-              ? "color-mix(in oklab, var(--color-destructive) 10%, transparent)"
-              : "color-mix(in oklab, var(--color-tone-mint) 10%, transparent)",
-          }}
-        >
-          {patient.allergy ? (
-            <ShieldAlert className="mt-0.5 h-5 w-5 text-destructive" />
-          ) : (
-            <ShieldAlert className="mt-0.5 h-5 w-5" style={{ color: "var(--color-tone-mint)" }} />
-          )}
-          <div className="flex-1">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Allergy status
-            </div>
-            {patient.allergy ? (
-              <div className="text-sm font-medium text-foreground">
-                <span className="text-destructive">{patient.allergy.agent}</span> — {patient.allergy.reaction}
-                <span className="ml-2 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-semibold uppercase text-destructive">
-                  {patient.allergy.severity}
-                </span>
-              </div>
-            ) : (
-              <div className="text-sm font-medium text-foreground">No known allergies</div>
-            )}
+      {/* Split workspace */}
+      <Tabs defaultValue="summary" orientation="vertical" className="flex min-h-0 flex-1">
+        {/* LEFT selection panel */}
+        <aside className="hidden w-[240px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
+          <div className="border-b border-border px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Chart sections
           </div>
-          <span className="rounded-md border border-border bg-card px-2 py-1 text-[11px] text-muted-foreground">
-            Code: {patient.codeStatus}
-          </span>
-        </div>
+          <TabsList className="flex h-auto flex-col items-stretch gap-0.5 rounded-none bg-transparent p-2">
+            {[
+              { v: "summary",  label: "Patient Summary",   Icon: BookOpen },
+              { v: "labs",     label: "Laboratory",        Icon: FlaskConical },
+              { v: "trends",   label: "Vitals & Trends",   Icon: LineChart },
+              { v: "io",       label: "Fluid Balance",     Icon: Droplet },
+              { v: "notes",    label: "Nursing Notes",     Icon: NotebookPen },
+              { v: "careplan", label: "Care Plan",         Icon: ListChecks },
+              { v: "cpr",      label: "CPR / Code Sheet",  Icon: HeartCrack },
+              { v: "ehr",      label: "EHR Modules",       Icon: Network },
+              { v: "ebp",      label: "EBP & Tools",       Icon: Calculator },
+              { v: "handover", label: "Handover",          Icon: Send },
+            ].map(({ v, label, Icon }) => (
+              <TabsTrigger
+                key={v}
+                value={v}
+                className="justify-start gap-2 rounded-md px-3 py-2 text-sm data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <div className="mt-auto border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+              Auto-save on · all changes synced
+            </span>
+          </div>
+        </aside>
 
-        {/* Boxes */}
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {/* Current admission */}
-          <Box title="Current admission" icon={BookOpen} accent="var(--color-tone-teal)" className="xl:col-span-2">
-            <div className="space-y-3 text-sm">
-              <KV k="Admitted" v={new Date(patient.admittedOn).toLocaleDateString()} />
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Reason for admission
-                </div>
-                <p className="mt-1 leading-relaxed text-foreground">{patient.reasonForAdmission}</p>
-              </div>
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Relevant history
-                </div>
-                <p className="mt-1 leading-relaxed text-foreground">{patient.historySummary}</p>
-              </div>
-            </div>
-          </Box>
+        {/* RIGHT documentation workspace — scrollable */}
+        <div className="relative flex min-w-0 flex-1 flex-col">
+          {/* Mobile: horizontal quick list */}
+          <div className="border-b border-border bg-card/50 md:hidden">
+            <TabsList className="flex w-full gap-1 overflow-x-auto bg-transparent p-2">
+              {["summary","labs","trends","io","notes","careplan","cpr","ehr","ebp","handover"].map((v) => (
+                <TabsTrigger key={v} value={v} className="shrink-0 text-xs capitalize">
+                  {v}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
-          {/* GCS */}
-          <Box title="Glasgow Coma Scale" icon={Brain} accent={gcsTone}>
-            {dbPatient && !dbGcs ? (
-              <p className="text-sm text-muted-foreground">No GCS recorded</p>
-            ) : (
-              <>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-semibold" style={{ color: gcsTone }}>{gcsTotal}</span>
-                  <span className="text-sm text-muted-foreground">/ 15</span>
-                </div>
-                <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                  <Mini label="Eye" value={`${patient.gcs.eye}/4`} />
-                  <Mini label="Verbal" value={`${patient.gcs.verbal}/5`} />
-                  <Mini label="Motor" value={`${patient.gcs.motor}/6`} />
-                </div>
-              </>
-            )}
-          </Box>
-
-          {/* Vital signs */}
-          <Box title="Vital signs" icon={HeartPulse} accent="var(--color-tone-rose)" className="md:col-span-2 xl:col-span-2">
-            {dbPatient && !dbVitals ? (
-              <p className="text-sm text-muted-foreground">No vitals recorded</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-                <Vital icon={HeartPulse} label="HR"   value={`${patient.vitals.hr}`} unit="bpm"  flag={patient.vitals.hr > 110 || patient.vitals.hr < 50} />
-                <Vital icon={Activity}   label="BP"   value={patient.vitals.bp}      unit="mmHg" />
-                <Vital icon={Stethoscope}label="RR"   value={`${patient.vitals.rr}`} unit="/min" flag={patient.vitals.rr > 24} />
-                <Vital icon={Droplet}    label="SpO₂" value={`${patient.vitals.spo2}`} unit="%"  flag={patient.vitals.spo2 < 94} />
-                <Vital icon={Thermometer}label="Temp" value={patient.vitals.temp}   unit="°C"   flag={parseFloat(patient.vitals.temp) > 38} />
-              </div>
-            )}
-          </Box>
-
-          {/* Pain management */}
-          <Box title="Pain management" icon={AlertTriangle} accent="var(--color-tone-amber)">
-            <div className="flex items-baseline gap-2">
-              <span
-                className="text-5xl font-semibold"
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-24">
+            {/* SUMMARY */}
+            <TabsContent value="summary" className="mt-0 space-y-4">
+              <div
+                className="flex items-start gap-3 rounded-xl border p-3"
                 style={{
-                  color: patient.pain.score >= 7 ? "var(--color-destructive)"
-                    : patient.pain.score >= 4 ? "var(--color-tone-amber)"
-                    : "var(--color-tone-mint)",
+                  borderColor: patient.allergy
+                    ? "color-mix(in oklab, var(--color-destructive) 40%, transparent)"
+                    : "color-mix(in oklab, var(--color-tone-mint) 40%, transparent)",
+                  background: patient.allergy
+                    ? "color-mix(in oklab, var(--color-destructive) 10%, transparent)"
+                    : "color-mix(in oklab, var(--color-tone-mint) 10%, transparent)",
                 }}
               >
-                {patient.pain.score}
-              </span>
-              <span className="text-sm text-muted-foreground">/ 10</span>
-            </div>
-            <dl className="mt-3 space-y-2 text-sm">
-              <KV k="Site" v={patient.pain.site} />
-              <KV k="Character" v={patient.pain.character} />
-              <KV k="Last dose" v={patient.pain.lastDose} />
-              <KV k="Plan" v={patient.pain.plan} />
-            </dl>
-          </Box>
-
-          {/* Medications */}
-          <Box title="Medications" icon={Pill} accent="var(--color-tone-violet)" className="md:col-span-2 xl:col-span-3">
-            <ul className="divide-y divide-border">
-              {patient.medications.map((m) => {
-                const tone =
-                  m.status === "due" ? "var(--color-tone-amber)"
-                  : m.status === "given" ? "var(--color-tone-mint)"
-                  : "var(--color-tone-sky)";
-                return (
-                  <li key={m.name} className="flex items-center justify-between gap-3 py-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="flex h-8 w-8 items-center justify-center rounded-lg"
-                        style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
-                      >
-                        <Pill className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
-                          <span>{m.name} <span className="text-muted-foreground">· {m.dose}</span></span>
-                          {isNewDrug(m.name) && <NewDrugBadge name={m.name} />}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {m.route} · {m.freq} · next {m.nextDue}
-                        </div>
-                      </div>
+                {patient.allergy ? (
+                  <ShieldAlert className="mt-0.5 h-5 w-5 text-destructive" />
+                ) : (
+                  <ShieldAlert className="mt-0.5 h-5 w-5" style={{ color: "var(--color-tone-mint)" }} />
+                )}
+                <div className="flex-1">
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Allergy status
+                  </div>
+                  {patient.allergy ? (
+                    <div className="text-sm font-medium text-foreground">
+                      <span className="text-destructive">{patient.allergy.agent}</span> — {patient.allergy.reaction}
+                      <span className="ml-2 rounded-full bg-destructive/15 px-2 py-0.5 text-[10px] font-semibold uppercase text-destructive">
+                        {patient.allergy.severity}
+                      </span>
                     </div>
+                  ) : (
+                    <div className="text-sm font-medium text-foreground">No known allergies</div>
+                  )}
+                </div>
+                <span className="rounded-md border border-border bg-card px-2 py-1 text-[11px] text-muted-foreground">
+                  Code: {patient.codeStatus}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <Box title="Current admission" icon={BookOpen} accent="var(--color-tone-teal)" className="xl:col-span-2">
+                  <div className="space-y-3 text-sm">
+                    <KV k="Admitted" v={new Date(patient.admittedOn).toLocaleDateString()} />
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Reason for admission
+                      </div>
+                      <p className="mt-1 leading-relaxed text-foreground">{patient.reasonForAdmission}</p>
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Relevant history
+                      </div>
+                      <p className="mt-1 leading-relaxed text-foreground">{patient.historySummary}</p>
+                    </div>
+                  </div>
+                </Box>
+
+                <Box title="Glasgow Coma Scale" icon={Brain} accent={gcsTone}>
+                  {dbPatient && !dbGcs ? (
+                    <p className="text-sm text-muted-foreground">No GCS recorded</p>
+                  ) : (
+                    <>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-5xl font-semibold" style={{ color: gcsTone }}>{gcsTotal}</span>
+                        <span className="text-sm text-muted-foreground">/ 15</span>
+                      </div>
+                      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+                        <Mini label="Eye" value={`${patient.gcs.eye}/4`} />
+                        <Mini label="Verbal" value={`${patient.gcs.verbal}/5`} />
+                        <Mini label="Motor" value={`${patient.gcs.motor}/6`} />
+                      </div>
+                    </>
+                  )}
+                </Box>
+
+                <Box title="Vital signs" icon={HeartPulse} accent="var(--color-tone-rose)" className="md:col-span-2 xl:col-span-2">
+                  {dbPatient && !dbVitals ? (
+                    <p className="text-sm text-muted-foreground">No vitals recorded</p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+                      <Vital icon={HeartPulse} label="HR"   value={`${patient.vitals.hr}`} unit="bpm"  flag={patient.vitals.hr > 110 || patient.vitals.hr < 50} />
+                      <Vital icon={Activity}   label="BP"   value={patient.vitals.bp}      unit="mmHg" />
+                      <Vital icon={Stethoscope}label="RR"   value={`${patient.vitals.rr}`} unit="/min" flag={patient.vitals.rr > 24} />
+                      <Vital icon={Droplet}    label="SpO₂" value={`${patient.vitals.spo2}`} unit="%"  flag={patient.vitals.spo2 < 94} />
+                      <Vital icon={Thermometer}label="Temp" value={patient.vitals.temp}   unit="°C"   flag={parseFloat(patient.vitals.temp) > 38} />
+                    </div>
+                  )}
+                </Box>
+
+                <Box title="Pain management" icon={AlertTriangle} accent="var(--color-tone-amber)">
+                  <div className="flex items-baseline gap-2">
                     <span
-                      className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-                      style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
+                      className="text-5xl font-semibold"
+                      style={{
+                        color: patient.pain.score >= 7 ? "var(--color-destructive)"
+                          : patient.pain.score >= 4 ? "var(--color-tone-amber)"
+                          : "var(--color-tone-mint)",
+                      }}
                     >
-                      {m.status}
+                      {patient.pain.score}
                     </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </Box>
+                    <span className="text-sm text-muted-foreground">/ 10</span>
+                  </div>
+                  <dl className="mt-3 space-y-2 text-sm">
+                    <KV k="Site" v={patient.pain.site} />
+                    <KV k="Character" v={patient.pain.character} />
+                    <KV k="Last dose" v={patient.pain.lastDose} />
+                    <KV k="Plan" v={patient.pain.plan} />
+                  </dl>
+                </Box>
 
-        </div>
-
-        {/* Clinical tabs */}
-        <div className="mt-6">
-          <Tabs defaultValue="labs" className="w-full">
-            <TabsList className="flex w-full flex-wrap gap-1 bg-card/60 p-1">
-              <TabsTrigger value="labs" className="gap-1.5"><FlaskConical className="h-3.5 w-3.5" />Labs</TabsTrigger>
-              <TabsTrigger value="trends" className="gap-1.5"><LineChart className="h-3.5 w-3.5" />Trends & entry</TabsTrigger>
-              <TabsTrigger value="io" className="gap-1.5"><Droplet className="h-3.5 w-3.5" />I / O chart</TabsTrigger>
-              <TabsTrigger value="notes" className="gap-1.5"><NotebookPen className="h-3.5 w-3.5" />Nursing notes</TabsTrigger>
-              <TabsTrigger value="careplan" className="gap-1.5"><ListChecks className="h-3.5 w-3.5" />Care plan</TabsTrigger>
-              <TabsTrigger value="cpr" className="gap-1.5"><HeartCrack className="h-3.5 w-3.5" />CPR</TabsTrigger>
-              <TabsTrigger value="ehr" className="gap-1.5"><Network className="h-3.5 w-3.5" />EHR modules</TabsTrigger>
-              <TabsTrigger value="ebp" className="gap-1.5"><Calculator className="h-3.5 w-3.5" />EBP & Tools</TabsTrigger>
-              <TabsTrigger value="handover" className="gap-1.5"><Send className="h-3.5 w-3.5" />Handover</TabsTrigger>
-            </TabsList>
+                <Box title="Medications" icon={Pill} accent="var(--color-tone-violet)" className="md:col-span-2 xl:col-span-3">
+                  <ul className="divide-y divide-border">
+                    {patient.medications.map((m) => {
+                      const tone =
+                        m.status === "due" ? "var(--color-tone-amber)"
+                        : m.status === "given" ? "var(--color-tone-mint)"
+                        : "var(--color-tone-sky)";
+                      return (
+                        <li key={m.name} className="flex items-center justify-between gap-3 py-3">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className="flex h-8 w-8 items-center justify-center rounded-lg"
+                              style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
+                            >
+                              <Pill className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-foreground">
+                                <span>{m.name} <span className="text-muted-foreground">· {m.dose}</span></span>
+                                {isNewDrug(m.name) && <NewDrugBadge name={m.name} />}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {m.route} · {m.freq} · next {m.nextDue}
+                              </div>
+                            </div>
+                          </div>
+                          <span
+                            className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+                            style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}
+                          >
+                            {m.status}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </Box>
+              </div>
+            </TabsContent>
 
             {/* EBP & TOOLS */}
-            <TabsContent value="ebp" className="mt-4 space-y-5">
+            <TabsContent value="ebp" className="mt-0 space-y-5">
               <EBPSearch patient={patient} />
               <DoseCalculator patient={patient} />
               <ProcedureGuides />
             </TabsContent>
 
             {/* TRENDS & ENTRY */}
-            <TabsContent value="trends" className="mt-4 space-y-5">
+            <TabsContent value="trends" className="mt-0 space-y-5">
               <VitalsTrend patient={patient} />
               <GcsTrend patient={patient} />
               <LabEntry />
@@ -395,18 +426,17 @@ function PatientPage() {
             </TabsContent>
 
             {/* CPR */}
-            <TabsContent value="cpr" className="mt-4">
+            <TabsContent value="cpr" className="mt-0">
               <CPRSheet patient={patient} />
             </TabsContent>
 
             {/* EHR */}
-            <TabsContent value="ehr" className="mt-4">
+            <TabsContent value="ehr" className="mt-0">
               <EHRModules />
             </TabsContent>
 
-
             {/* LABS */}
-            <TabsContent value="labs" className="mt-4">
+            <TabsContent value="labs" className="mt-0">
               <Box title="Latest results" icon={FlaskConical} accent="var(--color-tone-sky)">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
@@ -447,7 +477,7 @@ function PatientPage() {
             </TabsContent>
 
             {/* I/O */}
-            <TabsContent value="io" className="mt-4">
+            <TabsContent value="io" className="mt-0">
               <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
                 <Box title="Intake" icon={Droplet} accent="var(--color-tone-sky)">
                   <div className="text-3xl font-semibold text-foreground">{extras.io.totals.intake} <span className="text-sm font-normal text-muted-foreground">mL</span></div>
@@ -502,7 +532,7 @@ function PatientPage() {
             </TabsContent>
 
             {/* NOTES */}
-            <TabsContent value="notes" className="mt-4">
+            <TabsContent value="notes" className="mt-0">
               <Box title="Nursing notes — this shift" icon={NotebookPen} accent="var(--color-tone-violet)">
                 {dbPatient && !dbNotes?.length ? (
                   <p className="text-sm text-muted-foreground">No nursing notes recorded</p>
@@ -539,7 +569,7 @@ function PatientPage() {
             </TabsContent>
 
             {/* CARE PLAN */}
-            <TabsContent value="careplan" className="mt-4">
+            <TabsContent value="careplan" className="mt-0">
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 {extras.carePlan.map((cp, i) => {
                   const tone =
@@ -573,7 +603,7 @@ function PatientPage() {
             </TabsContent>
 
             {/* HANDOVER */}
-            <TabsContent value="handover" className="mt-4">
+            <TabsContent value="handover" className="mt-0">
               <HandoverTypeSelector value={handoverType} onChange={setHandoverType} />
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <HandoverExtraForm type={handoverType} patient={patient} />
@@ -624,14 +654,31 @@ function PatientPage() {
                 </Box>
               </div>
             </TabsContent>
-          </Tabs>
+          </div>
+
+          {/* Sticky action bar */}
+          <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-2 border-t border-border bg-card/95 px-4 py-2 backdrop-blur">
+            <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+              Auto-saved just now
+            </span>
+            <div className="ml-auto flex items-center gap-2">
+              <button className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary">
+                Save draft
+              </button>
+              <button className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
-      </main>
+      </Tabs>
 
       <AIAssistant />
     </div>
   );
 }
+
 
 function labFlagColor(flag: Lab["flag"]) {
   switch (flag) {
