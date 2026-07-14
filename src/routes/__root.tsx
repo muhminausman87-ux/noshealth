@@ -10,6 +10,8 @@ import {
 } from "@tanstack/react-router";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { QuickNav } from "@/components/QuickNav";
+import { useEffect, useState } from "react";
 
 import appCss from "../styles.css?url";
 import logo from "../assets/nos-logo.png.asset.json";
