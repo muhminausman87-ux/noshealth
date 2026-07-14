@@ -10,6 +10,8 @@ import {
 } from "@tanstack/react-router";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { QuickNav } from "@/components/QuickNav";
+import { useEffect, useState } from "react";
 
 import appCss from "../styles.css?url";
 import logo from "../assets/nos-logo.png.asset.json";
@@ -145,26 +147,50 @@ function RootComponent() {
           <Outlet />
         </div>
       ) : (
-        <SidebarProvider
-          style={{
-            "--sidebar-width": "17rem",
-            "--sidebar-width-icon": "3.25rem",
-          } as React.CSSProperties}
-        >
-          <div className="relative z-10 flex min-h-screen w-full">
-            <AppSidebar />
-            <SidebarInset className="min-w-0 bg-transparent">
-              <div className="sticky top-0 z-20 flex h-11 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur">
-                <SidebarTrigger />
-                <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                  NOS Clinical Workspace
-                </div>
-              </div>
-              <Outlet />
-            </SidebarInset>
-          </div>
-        </SidebarProvider>
+        <SidebarShell />
       )}
     </QueryClientProvider>
   );
 }
+
+const SIDEBAR_PREF_KEY = "nos-sidebar-open";
+
+function SidebarShell() {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(SIDEBAR_PREF_KEY);
+      if (stored === "1") setOpen(true);
+    } catch {}
+  }, []);
+  const handleOpenChange = (v: boolean) => {
+    setOpen(v);
+    try { localStorage.setItem(SIDEBAR_PREF_KEY, v ? "1" : "0"); } catch {}
+  };
+
+  return (
+    <SidebarProvider
+      open={open}
+      onOpenChange={handleOpenChange}
+      style={{
+        "--sidebar-width": "17rem",
+        "--sidebar-width-icon": "3.25rem",
+      } as React.CSSProperties}
+    >
+      <div className="relative z-10 flex min-h-screen w-full">
+        <AppSidebar />
+        <SidebarInset className="min-w-0 bg-transparent">
+          <div className="sticky top-0 z-20 flex h-11 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur">
+            <SidebarTrigger />
+            <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              NOS Clinical Workspace
+            </div>
+          </div>
+          <Outlet />
+        </SidebarInset>
+        <QuickNav />
+      </div>
+    </SidebarProvider>
+  );
+}
+
