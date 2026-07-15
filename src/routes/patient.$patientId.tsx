@@ -5,8 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Department } from "@/lib/departments";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, Calculator, ClipboardList,
-  Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
-  Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
+  Droplet, FileText, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
+  Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert,
+  Stethoscope, Thermometer, TimerReset, User, Workflow,
 } from "lucide-react";
 import { getPatient } from "@/lib/patients";
 import type { PatientFull, VitalSet } from "@/lib/patients";
@@ -155,34 +156,74 @@ function PatientPage() {
     : gcsTotal >= 9 ? "var(--color-tone-amber)"
     : "var(--color-destructive)";
 
+  // Chart section navigation (user-facing list)
+  const sections: { v: string; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
+    { v: "summary",   label: "Patient Summary",          Icon: BookOpen },
+    { v: "assess",    label: "Assessment",               Icon: Stethoscope },
+    { v: "trends",    label: "Vital Signs",              Icon: HeartPulse },
+    { v: "meds",      label: "Medication Administration", Icon: Pill },
+    { v: "labs",      label: "Laboratory Results",       Icon: FlaskConical },
+    { v: "radiology", label: "Radiology",                Icon: Scan },
+    { v: "io",        label: "Fluid Balance",            Icon: Droplet },
+    { v: "notes",     label: "Nursing Notes",            Icon: NotebookPen },
+    { v: "careplan",  label: "Care Plan",                Icon: ListChecks },
+    { v: "handover",  label: "SBAR / Handover",          Icon: Send },
+    { v: "procdoc",   label: "Procedure Documentation",  Icon: Workflow },
+    { v: "discharge", label: "Discharge Planning",       Icon: FileText },
+    { v: "billing",   label: "Billing Summary",          Icon: Receipt },
+    { v: "timeline",  label: "Clinical Timeline",        Icon: TimerReset },
+    { v: "cpr",       label: "CPR / Code Sheet",         Icon: HeartCrack },
+    { v: "ehr",       label: "EHR Modules",              Icon: Network },
+    { v: "ebp",       label: "EBP & Tools",              Icon: Calculator },
+  ];
+  const [activeSection, setActiveSection] = useState("summary");
+  const activeLabel = sections.find((s) => s.v === activeSection)?.label ?? "Patient Summary";
+
   return (
-    <div className="flex h-[calc(100vh-2.75rem)] flex-col overflow-hidden">
-      {/* Sticky compact patient banner */}
-      <header className="shrink-0 border-b border-border bg-card/90 backdrop-blur">
+    <div className="flex h-[calc(100vh-2.75rem)] flex-col overflow-hidden bg-background">
+      {/* Sticky patient banner — shown once */}
+      <header className="shrink-0 border-b border-border bg-card/95 backdrop-blur">
         <div className="flex items-center gap-3 px-4 py-2">
           <Link
             to="/"
             className="flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 text-xs hover:bg-secondary"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Dashboard
+            <ArrowLeft className="h-3.5 w-3.5" /> Patient list
           </Link>
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-primary">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
               <User className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold text-foreground">{patient.name}</div>
+              <div className="truncate text-sm font-semibold text-foreground">
+                {patient.name}
+                <span className="ml-2 text-[11px] font-normal text-muted-foreground">
+                  {patient.sex} · {patient.age} y
+                </span>
+              </div>
               <div className="truncate text-[11px] text-muted-foreground">
-                {patient.sex} · {patient.age} y · MRN {patient.mrn} · Room {patient.room}
+                MRN {patient.mrn} · {meta.name} · Bed {patient.room}
               </div>
             </div>
           </div>
+
+          <div className="ml-2 hidden min-w-0 flex-1 items-center gap-x-4 gap-y-1 lg:flex lg:flex-wrap">
+            <HeaderField k="Dx" v={patient.shortNote || patient.reasonForAdmission.split(".")[0]} />
+            <HeaderField k="Consultant" v="Dr. R. Nair" />
+            <HeaderField k="Primary Nurse" v={session.name ?? "N. On duty"} />
+            <HeaderField k="Isolation" v="Standard" />
+          </div>
+
           <div className="ml-auto flex items-center gap-1.5">
-            <span
-              className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
-              style={{ background: `color-mix(in oklab, ${meta.color} 18%, transparent)`, color: meta.color }}
-            >
-              {meta.short}
+            {patient.allergy ? (
+              <span className="inline-flex items-center gap-1 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
+                <ShieldAlert className="h-3 w-3" /> {patient.allergy.agent}
+              </span>
+            ) : (
+              <span className="rounded-md border border-border bg-card px-2 py-0.5 text-[11px] text-muted-foreground">NKA</span>
+            )}
+            <span className="rounded-md border border-border bg-card px-2 py-0.5 text-[11px] text-muted-foreground">
+              Code: {patient.codeStatus}
             </span>
             <span
               className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
@@ -201,36 +242,30 @@ function PatientPage() {
                       : "var(--color-tone-mint)",
               }}
             >
-              {patient.status}
+              Risk: {patient.status}
             </span>
           </div>
         </div>
       </header>
 
-      {/* Split workspace */}
-      <Tabs defaultValue="summary" orientation="vertical" className="flex min-h-0 flex-1">
-        {/* LEFT selection panel */}
-        <aside className="hidden w-[240px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
-          <div className="border-b border-border px-4 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+      {/* 3-column EMR workspace */}
+      <Tabs
+        value={activeSection}
+        onValueChange={setActiveSection}
+        orientation="vertical"
+        className="flex min-h-0 flex-1"
+      >
+        {/* LEFT — clinical navigation (20%) */}
+        <aside className="hidden w-1/5 min-w-[200px] max-w-[280px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
+          <div className="border-b border-border px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             Chart sections
           </div>
-          <TabsList className="flex h-auto flex-col items-stretch gap-0.5 rounded-none bg-transparent p-2">
-            {[
-              { v: "summary",  label: "Patient Summary",   Icon: BookOpen },
-              { v: "labs",     label: "Laboratory",        Icon: FlaskConical },
-              { v: "trends",   label: "Vitals & Trends",   Icon: LineChart },
-              { v: "io",       label: "Fluid Balance",     Icon: Droplet },
-              { v: "notes",    label: "Nursing Notes",     Icon: NotebookPen },
-              { v: "careplan", label: "Care Plan",         Icon: ListChecks },
-              { v: "cpr",      label: "CPR / Code Sheet",  Icon: HeartCrack },
-              { v: "ehr",      label: "EHR Modules",       Icon: Network },
-              { v: "ebp",      label: "EBP & Tools",       Icon: Calculator },
-              { v: "handover", label: "Handover",          Icon: Send },
-            ].map(({ v, label, Icon }) => (
+          <TabsList className="flex h-auto flex-col items-stretch gap-0.5 overflow-y-auto rounded-none bg-transparent p-2">
+            {sections.map(({ v, label, Icon }) => (
               <TabsTrigger
                 key={v}
                 value={v}
-                className="justify-start gap-2 rounded-md px-3 py-2 text-sm data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
+                className="justify-start gap-2 rounded-md px-2.5 py-1.5 text-[13px] data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className="truncate">{label}</span>
@@ -240,25 +275,32 @@ function PatientPage() {
           <div className="mt-auto border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-              Auto-save on · all changes synced
+              Auto-save on
             </span>
           </div>
         </aside>
 
-        {/* RIGHT documentation workspace — scrollable */}
+        {/* CENTER — clinical workspace (60%) */}
         <div className="relative flex min-w-0 flex-1 flex-col">
-          {/* Mobile: horizontal quick list */}
+          {/* Mobile section list */}
           <div className="border-b border-border bg-card/50 md:hidden">
             <TabsList className="flex w-full gap-1 overflow-x-auto bg-transparent p-2">
-              {["summary","labs","trends","io","notes","careplan","cpr","ehr","ebp","handover"].map((v) => (
-                <TabsTrigger key={v} value={v} className="shrink-0 text-xs capitalize">
-                  {v}
+              {sections.map(({ v, label }) => (
+                <TabsTrigger key={v} value={v} className="shrink-0 text-xs">
+                  {label}
                 </TabsTrigger>
               ))}
             </TabsList>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-24">
+          <div className="flex items-center justify-between border-b border-border bg-card/40 px-4 py-1.5">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {activeLabel}
+            </div>
+            <div className="text-[11px] text-muted-foreground">Last update: just now</div>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-20">
             {/* SUMMARY */}
             <TabsContent value="summary" className="mt-0 space-y-4">
               <div
@@ -654,7 +696,185 @@ function PatientPage() {
                 </Box>
               </div>
             </TabsContent>
+
+            {/* ASSESSMENT */}
+            <TabsContent value="assess" className="mt-0 space-y-4">
+              <Box title="Systems assessment" icon={Stethoscope} accent="var(--color-tone-sky)">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {[
+                    { s: "Neurological", f: "GCS 15, alert & oriented ×3, PERRLA, no focal deficits." },
+                    { s: "Cardiovascular", f: `HR ${patient.vitals.hr} regular, BP ${patient.vitals.bp}, peripheral pulses +2, no oedema.` },
+                    { s: "Respiratory", f: `RR ${patient.vitals.rr}, SpO₂ ${patient.vitals.spo2}% RA, bilateral air entry, occasional crackles RLL.` },
+                    { s: "GI / Nutrition", f: "Abdomen soft, non-tender, bowel sounds present. On soft diet." },
+                    { s: "Genitourinary", f: "Voiding clear urine, no catheter, no dysuria." },
+                    { s: "Skin / Integument", f: "Braden 18. Intact, no pressure injuries. IV site R forearm clean, dry." },
+                  ].map((r) => (
+                    <div key={r.s} className="rounded-lg border border-border bg-background/60 p-3">
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{r.s}</div>
+                      <p className="mt-1 text-sm text-foreground">{r.f}</p>
+                    </div>
+                  ))}
+                </div>
+              </Box>
+              <Box title="Clinical impression · AI Prototype" icon={Brain} accent="var(--color-tone-violet)">
+                <p className="text-sm leading-relaxed text-foreground">
+                  Trends suggest gradual clinical improvement; SpO₂ stable, temperature trending down.
+                  Continue current plan, reassess pain and respiratory effort every 4 hours.
+                </p>
+              </Box>
+            </TabsContent>
+
+            {/* MEDICATION ADMINISTRATION */}
+            <TabsContent value="meds" className="mt-0 space-y-4">
+              <Box title="Medication administration record (MAR)" icon={Pill} accent="var(--color-tone-violet)">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                        <th className="py-2 pr-3">Drug</th>
+                        <th className="py-2 pr-3">Dose</th>
+                        <th className="py-2 pr-3">Route</th>
+                        <th className="py-2 pr-3">Freq</th>
+                        <th className="py-2 pr-3">Next</th>
+                        <th className="py-2 pr-3">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {patient.medications.map((m) => {
+                        const tone = m.status === "due" ? "var(--color-tone-amber)"
+                          : m.status === "given" ? "var(--color-tone-mint)" : "var(--color-tone-sky)";
+                        return (
+                          <tr key={m.name}>
+                            <td className="py-2 pr-3 font-medium text-foreground">{m.name}</td>
+                            <td className="py-2 pr-3 text-muted-foreground">{m.dose}</td>
+                            <td className="py-2 pr-3 text-muted-foreground">{m.route}</td>
+                            <td className="py-2 pr-3 text-muted-foreground">{m.freq}</td>
+                            <td className="py-2 pr-3 text-muted-foreground">{m.nextDue}</td>
+                            <td className="py-2 pr-3">
+                              <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase" style={{ background: `color-mix(in oklab, ${tone} 18%, transparent)`, color: tone }}>{m.status}</span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </Box>
+            </TabsContent>
+
+            {/* RADIOLOGY */}
+            <TabsContent value="radiology" className="mt-0 space-y-4">
+              <Box title="Imaging studies" icon={Scan} accent="var(--color-tone-teal)">
+                <ul className="divide-y divide-border">
+                  {[
+                    { study: "Chest X-Ray PA", date: "2026-05-26 09:12", status: "Reported", finding: "Right lower lobe consolidation, no effusion." },
+                    { study: "CT Chest (contrast)", date: "2026-05-26 16:40", status: "Reported", finding: "Consolidation confirmed. No PE." },
+                    { study: "USG Abdomen", date: "2026-05-27 07:20", status: "Pending", finding: "Awaiting radiologist read." },
+                  ].map((r) => (
+                    <li key={r.study} className="flex items-start justify-between gap-3 py-2.5">
+                      <div>
+                        <div className="text-sm font-medium text-foreground">{r.study}</div>
+                        <div className="text-xs text-muted-foreground">{r.date} · {r.finding}</div>
+                      </div>
+                      <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase text-secondary-foreground">{r.status}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Box>
+            </TabsContent>
+
+            {/* PROCEDURE DOCUMENTATION */}
+            <TabsContent value="procdoc" className="mt-0 space-y-4">
+              <Box title="Procedures — this admission" icon={Workflow} accent="var(--color-tone-sky)">
+                <ul className="divide-y divide-border">
+                  {[
+                    { p: "Peripheral IV cannulation", when: "2026-05-25 10:14", by: "N. Priya", note: "20G, R forearm, first attempt." },
+                    { p: "Nebulisation — Salbutamol", when: "2026-05-26 06:00", by: "N. Aisha", note: "Tolerated well, SpO₂ 96→98%." },
+                    { p: "Blood culture ×2", when: "2026-05-25 22:30", by: "N. Priya", note: "Aseptic technique, sent to lab." },
+                  ].map((x) => (
+                    <li key={x.p} className="py-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-foreground">{x.p}</span>
+                        <span className="text-xs text-muted-foreground">{x.when} · {x.by}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{x.note}</p>
+                    </li>
+                  ))}
+                </ul>
+              </Box>
+            </TabsContent>
+
+            {/* DISCHARGE PLANNING */}
+            <TabsContent value="discharge" className="mt-0 space-y-4">
+              <Box title="Discharge readiness" icon={FileText} accent="var(--color-tone-mint)">
+                <ul className="space-y-2 text-sm">
+                  {[
+                    ["Medical stability", true],
+                    ["Medication reconciliation", true],
+                    ["Patient education completed", false],
+                    ["Follow-up appointment scheduled", false],
+                    ["Home support / transport arranged", true],
+                  ].map(([k, ok]) => (
+                    <li key={String(k)} className="flex items-center justify-between rounded-lg border border-border bg-background/60 px-3 py-2">
+                      <span className="text-foreground">{String(k)}</span>
+                      <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase" style={{ background: ok ? "color-mix(in oklab, var(--color-tone-mint) 18%, transparent)" : "color-mix(in oklab, var(--color-tone-amber) 18%, transparent)", color: ok ? "var(--color-tone-mint)" : "var(--color-tone-amber)" }}>{ok ? "Done" : "Pending"}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Box>
+              <Box title="Estimated date of discharge · AI Prototype" icon={TimerReset} accent="var(--color-tone-violet)">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-3xl font-semibold text-foreground">2026-05-30</span>
+                  <span className="text-xs text-muted-foreground">Confidence 78% · updated hourly</span>
+                </div>
+              </Box>
+            </TabsContent>
+
+            {/* BILLING */}
+            <TabsContent value="billing" className="mt-0 space-y-4">
+              <Box title="Billing summary" icon={Receipt} accent="var(--color-tone-amber)">
+                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                  {[
+                    ["Bed & nursing", "₹ 24,500"],
+                    ["Pharmacy", "₹ 8,720"],
+                    ["Investigations", "₹ 12,340"],
+                    ["Procedures", "₹ 3,900"],
+                    ["Consultation", "₹ 5,000"],
+                    ["Consumables", "₹ 2,180"],
+                    ["Sub-total", "₹ 56,640"],
+                    ["Estimated balance", "₹ 12,300"],
+                  ].map(([k, v]) => (
+                    <div key={k} className="rounded-lg border border-border bg-background/60 px-3 py-2">
+                      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{k}</div>
+                      <div className="mt-0.5 text-sm font-semibold text-foreground">{v}</div>
+                    </div>
+                  ))}
+                </div>
+              </Box>
+            </TabsContent>
+
+            {/* CLINICAL TIMELINE */}
+            <TabsContent value="timeline" className="mt-0 space-y-4">
+              <Box title="Clinical timeline — this admission" icon={TimerReset} accent="var(--color-tone-teal)">
+                <ol className="relative space-y-4 border-l border-border pl-4">
+                  {[
+                    { t: "Day 0 · 22:14", e: "Admitted via ED — CAP suspected, IV Ceftriaxone started." },
+                    { t: "Day 1 · 06:00", e: "Overnight stable. SpO₂ 94→96% RA. Ongoing IV antibiotics." },
+                    { t: "Day 1 · 14:20", e: "Chest X-Ray confirms RLL consolidation." },
+                    { t: "Day 2 · 09:00", e: "Afebrile x 12h. Oral step-down planned tomorrow if trend continues." },
+                    { t: "Day 2 · 15:30", e: "Physiotherapy: chest clearance, ambulation on flat surface." },
+                  ].map((x) => (
+                    <li key={x.t} className="relative">
+                      <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-primary" />
+                      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{x.t}</div>
+                      <div className="text-sm text-foreground">{x.e}</div>
+                    </li>
+                  ))}
+                </ol>
+              </Box>
+            </TabsContent>
           </div>
+
 
           {/* Sticky action bar */}
           <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-2 border-t border-border bg-card/95 px-4 py-2 backdrop-blur">
@@ -672,7 +892,31 @@ function PatientPage() {
             </div>
           </div>
         </div>
+
+        {/* RIGHT — clinical action panel (20%) */}
+        <aside className="hidden w-1/5 min-w-[240px] max-w-[340px] shrink-0 flex-col border-l border-border bg-card/60 lg:flex">
+          <div className="flex items-center justify-between border-b border-border px-4 py-2">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Documentation
+            </div>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+              {activeLabel}
+            </span>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto p-3">
+            <RightPanel section={activeSection} patient={patient} />
+          </div>
+          <div className="flex items-center gap-2 border-t border-border px-3 py-2">
+            <button className="flex-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs font-medium hover:bg-secondary">
+              Save
+            </button>
+            <button className="flex-1 rounded-md bg-primary px-2.5 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
+              Submit
+            </button>
+          </div>
+        </aside>
       </Tabs>
+
 
       <AIAssistant />
     </div>
@@ -759,3 +1003,188 @@ function Vital({
     </div>
   );
 }
+
+function HeaderField({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="min-w-0">
+      <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{k}</div>
+      <div className="truncate text-[12px] font-medium text-foreground">{v}</div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+      <div className="mt-1">{children}</div>
+    </label>
+  );
+}
+
+const inputCls =
+  "w-full rounded-md border border-border bg-background/70 px-2.5 py-1.5 text-sm outline-none focus:border-primary";
+
+function RightPanel({ section, patient }: { section: string; patient: PatientFull }) {
+  switch (section) {
+    case "trends":
+    case "summary":
+      return (
+        <div className="space-y-3">
+          <Field label="HR (bpm)"><input className={inputCls} defaultValue={patient.vitals.hr} /></Field>
+          <Field label="BP (mmHg)"><input className={inputCls} defaultValue={patient.vitals.bp} /></Field>
+          <Field label="RR (/min)"><input className={inputCls} defaultValue={patient.vitals.rr} /></Field>
+          <Field label="SpO₂ (%)"><input className={inputCls} defaultValue={patient.vitals.spo2} /></Field>
+          <Field label="Temperature (°C)"><input className={inputCls} defaultValue={patient.vitals.temp} /></Field>
+          <Field label="Pain score (0–10)"><input className={inputCls} type="number" min={0} max={10} defaultValue={patient.pain.score} /></Field>
+          <Field label="GCS (E/V/M)">
+            <div className="flex gap-1.5">
+              <input className={inputCls} defaultValue={patient.gcs.eye} />
+              <input className={inputCls} defaultValue={patient.gcs.verbal} />
+              <input className={inputCls} defaultValue={patient.gcs.motor} />
+            </div>
+          </Field>
+        </div>
+      );
+    case "assess":
+      return (
+        <div className="space-y-3">
+          <Field label="Assessment findings"><textarea rows={4} className={inputCls} placeholder="Objective findings…" /></Field>
+          <Field label="Clinical impression"><textarea rows={3} className={inputCls} placeholder="Working impression…" /></Field>
+          <Field label="Priority">
+            <select className={inputCls} defaultValue="routine">
+              <option value="routine">Routine</option>
+              <option value="urgent">Urgent</option>
+              <option value="stat">STAT</option>
+            </select>
+          </Field>
+        </div>
+      );
+    case "meds":
+      return (
+        <div className="space-y-3">
+          <Field label="Medication">
+            <select className={inputCls}>
+              {patient.medications.map((m) => <option key={m.name}>{m.name}</option>)}
+            </select>
+          </Field>
+          <Field label="Administration route"><input className={inputCls} placeholder="IV / PO / SC…" /></Field>
+          <Field label="Barcode scan">
+            <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-background/40 px-2.5 py-2 text-xs text-muted-foreground">
+              <ScanBarcode className="h-4 w-4" /> Scan patient & drug
+            </div>
+          </Field>
+          <Field label="Remarks"><textarea rows={3} className={inputCls} placeholder="Response, adverse events…" /></Field>
+        </div>
+      );
+    case "notes":
+      return (
+        <div className="space-y-3">
+          <Field label="Note type">
+            <select className={inputCls} defaultValue="progress">
+              <option value="progress">Progress</option>
+              <option value="event">Event</option>
+              <option value="handover">Handover</option>
+            </select>
+          </Field>
+          <Field label="Note body"><textarea rows={6} className={inputCls} placeholder="Structured documentation…" /></Field>
+          <button className="w-full rounded-md border border-dashed border-primary/40 bg-primary/5 px-2.5 py-1.5 text-xs font-semibold text-primary">
+            ✨ AI documentation assist · AI Prototype
+          </button>
+        </div>
+      );
+    case "labs":
+      return (
+        <div className="space-y-3">
+          <Field label="Order status">
+            <select className={inputCls}>
+              <option>Ordered</option><option>Collected</option><option>Resulted</option>
+            </select>
+          </Field>
+          <Field label="Collection time"><input className={inputCls} type="datetime-local" /></Field>
+          <Field label="Critical result acknowledged">
+            <label className="flex items-center gap-2 text-xs text-foreground">
+              <input type="checkbox" className="h-4 w-4 rounded border-border" /> Acknowledge critical value
+            </label>
+          </Field>
+          <Field label="Comments"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "radiology":
+      return (
+        <div className="space-y-3">
+          <Field label="Modality">
+            <select className={inputCls}><option>X-Ray</option><option>CT</option><option>MRI</option><option>USG</option></select>
+          </Field>
+          <Field label="Region"><input className={inputCls} placeholder="Chest, abdomen…" /></Field>
+          <Field label="Clinical indication"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "io":
+      return (
+        <div className="space-y-3">
+          <Field label="Intake — type"><input className={inputCls} placeholder="Oral / IV / NG…" /></Field>
+          <Field label="Volume in (mL)"><input className={inputCls} type="number" /></Field>
+          <Field label="Output — type"><input className={inputCls} placeholder="Urine / Drain…" /></Field>
+          <Field label="Volume out (mL)"><input className={inputCls} type="number" /></Field>
+        </div>
+      );
+    case "careplan":
+      return (
+        <div className="space-y-3">
+          <Field label="Problem"><input className={inputCls} /></Field>
+          <Field label="Goal"><input className={inputCls} /></Field>
+          <Field label="Interventions"><textarea rows={4} className={inputCls} /></Field>
+          <Field label="Evaluation"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "handover":
+      return (
+        <div className="space-y-3">
+          <Field label="Situation"><textarea rows={3} className={inputCls} /></Field>
+          <Field label="Background"><textarea rows={3} className={inputCls} /></Field>
+          <Field label="Assessment"><textarea rows={3} className={inputCls} /></Field>
+          <Field label="Recommendation"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "procdoc":
+      return (
+        <div className="space-y-3">
+          <Field label="Procedure"><input className={inputCls} placeholder="e.g. IV cannulation" /></Field>
+          <Field label="Performed by"><input className={inputCls} /></Field>
+          <Field label="Time"><input className={inputCls} type="datetime-local" /></Field>
+          <Field label="Outcome / notes"><textarea rows={4} className={inputCls} /></Field>
+        </div>
+      );
+    case "discharge":
+      return (
+        <div className="space-y-3">
+          <Field label="Planned discharge date"><input className={inputCls} type="date" /></Field>
+          <Field label="Follow-up plan"><textarea rows={4} className={inputCls} /></Field>
+          <Field label="Patient education"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "billing":
+      return (
+        <div className="space-y-3">
+          <Field label="Payer"><input className={inputCls} placeholder="Insurance / Self…" /></Field>
+          <Field label="Pre-authorisation #"><input className={inputCls} /></Field>
+          <Field label="Notes"><textarea rows={4} className={inputCls} /></Field>
+        </div>
+      );
+    case "timeline":
+      return (
+        <div className="space-y-3">
+          <Field label="Event time"><input className={inputCls} type="datetime-local" /></Field>
+          <Field label="Event"><textarea rows={5} className={inputCls} placeholder="Describe the clinical event…" /></Field>
+        </div>
+      );
+    default:
+      return (
+        <div className="rounded-md border border-dashed border-border bg-background/40 p-3 text-xs text-muted-foreground">
+          Select a chart section to open its documentation form.
+        </div>
+      );
+  }
+}
+
