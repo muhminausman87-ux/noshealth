@@ -202,7 +202,7 @@ function PatientPage() {
                 </span>
               </div>
               <div className="truncate text-[11px] text-muted-foreground">
-                MRN {patient.mrn} · {meta.label} · Bed {patient.room}
+                MRN {patient.mrn} · {meta.name} · Bed {patient.room}
               </div>
             </div>
           </div>
