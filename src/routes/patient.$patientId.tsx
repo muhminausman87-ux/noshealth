@@ -5,8 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Department } from "@/lib/departments";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, Calculator, ClipboardList,
-  Droplet, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
-  Network, NotebookPen, Pill, Send, ShieldAlert, Stethoscope, Thermometer, User,
+  Droplet, FileText, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
+  Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert,
+  Stethoscope, Thermometer, TimerReset, User, Workflow,
 } from "lucide-react";
 import { getPatient } from "@/lib/patients";
 import type { PatientFull, VitalSet } from "@/lib/patients";
