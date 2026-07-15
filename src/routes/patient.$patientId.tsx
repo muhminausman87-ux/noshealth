@@ -1003,3 +1003,188 @@ function Vital({
     </div>
   );
 }
+
+function HeaderField({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="min-w-0">
+      <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{k}</div>
+      <div className="truncate text-[12px] font-medium text-foreground">{v}</div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+      <div className="mt-1">{children}</div>
+    </label>
+  );
+}
+
+const inputCls =
+  "w-full rounded-md border border-border bg-background/70 px-2.5 py-1.5 text-sm outline-none focus:border-primary";
+
+function RightPanel({ section, patient }: { section: string; patient: PatientFull }) {
+  switch (section) {
+    case "trends":
+    case "summary":
+      return (
+        <div className="space-y-3">
+          <Field label="HR (bpm)"><input className={inputCls} defaultValue={patient.vitals.hr} /></Field>
+          <Field label="BP (mmHg)"><input className={inputCls} defaultValue={patient.vitals.bp} /></Field>
+          <Field label="RR (/min)"><input className={inputCls} defaultValue={patient.vitals.rr} /></Field>
+          <Field label="SpO₂ (%)"><input className={inputCls} defaultValue={patient.vitals.spo2} /></Field>
+          <Field label="Temperature (°C)"><input className={inputCls} defaultValue={patient.vitals.temp} /></Field>
+          <Field label="Pain score (0–10)"><input className={inputCls} type="number" min={0} max={10} defaultValue={patient.pain.score} /></Field>
+          <Field label="GCS (E/V/M)">
+            <div className="flex gap-1.5">
+              <input className={inputCls} defaultValue={patient.gcs.eye} />
+              <input className={inputCls} defaultValue={patient.gcs.verbal} />
+              <input className={inputCls} defaultValue={patient.gcs.motor} />
+            </div>
+          </Field>
+        </div>
+      );
+    case "assess":
+      return (
+        <div className="space-y-3">
+          <Field label="Assessment findings"><textarea rows={4} className={inputCls} placeholder="Objective findings…" /></Field>
+          <Field label="Clinical impression"><textarea rows={3} className={inputCls} placeholder="Working impression…" /></Field>
+          <Field label="Priority">
+            <select className={inputCls} defaultValue="routine">
+              <option value="routine">Routine</option>
+              <option value="urgent">Urgent</option>
+              <option value="stat">STAT</option>
+            </select>
+          </Field>
+        </div>
+      );
+    case "meds":
+      return (
+        <div className="space-y-3">
+          <Field label="Medication">
+            <select className={inputCls}>
+              {patient.medications.map((m) => <option key={m.name}>{m.name}</option>)}
+            </select>
+          </Field>
+          <Field label="Administration route"><input className={inputCls} placeholder="IV / PO / SC…" /></Field>
+          <Field label="Barcode scan">
+            <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-background/40 px-2.5 py-2 text-xs text-muted-foreground">
+              <ScanBarcode className="h-4 w-4" /> Scan patient & drug
+            </div>
+          </Field>
+          <Field label="Remarks"><textarea rows={3} className={inputCls} placeholder="Response, adverse events…" /></Field>
+        </div>
+      );
+    case "notes":
+      return (
+        <div className="space-y-3">
+          <Field label="Note type">
+            <select className={inputCls} defaultValue="progress">
+              <option value="progress">Progress</option>
+              <option value="event">Event</option>
+              <option value="handover">Handover</option>
+            </select>
+          </Field>
+          <Field label="Note body"><textarea rows={6} className={inputCls} placeholder="Structured documentation…" /></Field>
+          <button className="w-full rounded-md border border-dashed border-primary/40 bg-primary/5 px-2.5 py-1.5 text-xs font-semibold text-primary">
+            ✨ AI documentation assist · AI Prototype
+          </button>
+        </div>
+      );
+    case "labs":
+      return (
+        <div className="space-y-3">
+          <Field label="Order status">
+            <select className={inputCls}>
+              <option>Ordered</option><option>Collected</option><option>Resulted</option>
+            </select>
+          </Field>
+          <Field label="Collection time"><input className={inputCls} type="datetime-local" /></Field>
+          <Field label="Critical result acknowledged">
+            <label className="flex items-center gap-2 text-xs text-foreground">
+              <input type="checkbox" className="h-4 w-4 rounded border-border" /> Acknowledge critical value
+            </label>
+          </Field>
+          <Field label="Comments"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "radiology":
+      return (
+        <div className="space-y-3">
+          <Field label="Modality">
+            <select className={inputCls}><option>X-Ray</option><option>CT</option><option>MRI</option><option>USG</option></select>
+          </Field>
+          <Field label="Region"><input className={inputCls} placeholder="Chest, abdomen…" /></Field>
+          <Field label="Clinical indication"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "io":
+      return (
+        <div className="space-y-3">
+          <Field label="Intake — type"><input className={inputCls} placeholder="Oral / IV / NG…" /></Field>
+          <Field label="Volume in (mL)"><input className={inputCls} type="number" /></Field>
+          <Field label="Output — type"><input className={inputCls} placeholder="Urine / Drain…" /></Field>
+          <Field label="Volume out (mL)"><input className={inputCls} type="number" /></Field>
+        </div>
+      );
+    case "careplan":
+      return (
+        <div className="space-y-3">
+          <Field label="Problem"><input className={inputCls} /></Field>
+          <Field label="Goal"><input className={inputCls} /></Field>
+          <Field label="Interventions"><textarea rows={4} className={inputCls} /></Field>
+          <Field label="Evaluation"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "handover":
+      return (
+        <div className="space-y-3">
+          <Field label="Situation"><textarea rows={3} className={inputCls} /></Field>
+          <Field label="Background"><textarea rows={3} className={inputCls} /></Field>
+          <Field label="Assessment"><textarea rows={3} className={inputCls} /></Field>
+          <Field label="Recommendation"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "procdoc":
+      return (
+        <div className="space-y-3">
+          <Field label="Procedure"><input className={inputCls} placeholder="e.g. IV cannulation" /></Field>
+          <Field label="Performed by"><input className={inputCls} /></Field>
+          <Field label="Time"><input className={inputCls} type="datetime-local" /></Field>
+          <Field label="Outcome / notes"><textarea rows={4} className={inputCls} /></Field>
+        </div>
+      );
+    case "discharge":
+      return (
+        <div className="space-y-3">
+          <Field label="Planned discharge date"><input className={inputCls} type="date" /></Field>
+          <Field label="Follow-up plan"><textarea rows={4} className={inputCls} /></Field>
+          <Field label="Patient education"><textarea rows={3} className={inputCls} /></Field>
+        </div>
+      );
+    case "billing":
+      return (
+        <div className="space-y-3">
+          <Field label="Payer"><input className={inputCls} placeholder="Insurance / Self…" /></Field>
+          <Field label="Pre-authorisation #"><input className={inputCls} /></Field>
+          <Field label="Notes"><textarea rows={4} className={inputCls} /></Field>
+        </div>
+      );
+    case "timeline":
+      return (
+        <div className="space-y-3">
+          <Field label="Event time"><input className={inputCls} type="datetime-local" /></Field>
+          <Field label="Event"><textarea rows={5} className={inputCls} placeholder="Describe the clinical event…" /></Field>
+        </div>
+      );
+    default:
+      return (
+        <div className="rounded-md border border-dashed border-border bg-background/40 p-3 text-xs text-muted-foreground">
+          Select a chart section to open its documentation form.
+        </div>
+      );
+  }
+}
+
