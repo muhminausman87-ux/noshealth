@@ -156,9 +156,152 @@ function PatientPage() {
     : gcsTotal >= 9 ? "var(--color-tone-amber)"
     : "var(--color-destructive)";
 
+  // Chart section navigation (user-facing list)
+  const sections: { v: string; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
+    { v: "summary",   label: "Patient Summary",          Icon: BookOpen },
+    { v: "assess",    label: "Assessment",               Icon: Stethoscope },
+    { v: "trends",    label: "Vital Signs",              Icon: HeartPulse },
+    { v: "meds",      label: "Medication Administration", Icon: Pill },
+    { v: "labs",      label: "Laboratory Results",       Icon: FlaskConical },
+    { v: "radiology", label: "Radiology",                Icon: Scan },
+    { v: "io",        label: "Fluid Balance",            Icon: Droplet },
+    { v: "notes",     label: "Nursing Notes",            Icon: NotebookPen },
+    { v: "careplan",  label: "Care Plan",                Icon: ListChecks },
+    { v: "handover",  label: "SBAR / Handover",          Icon: Send },
+    { v: "procdoc",   label: "Procedure Documentation",  Icon: Workflow },
+    { v: "discharge", label: "Discharge Planning",       Icon: FileText },
+    { v: "billing",   label: "Billing Summary",          Icon: Receipt },
+    { v: "timeline",  label: "Clinical Timeline",        Icon: TimerReset },
+    { v: "cpr",       label: "CPR / Code Sheet",         Icon: HeartCrack },
+    { v: "ehr",       label: "EHR Modules",              Icon: Network },
+    { v: "ebp",       label: "EBP & Tools",              Icon: Calculator },
+  ];
+  const [activeSection, setActiveSection] = useState("summary");
+  const activeLabel = sections.find((s) => s.v === activeSection)?.label ?? "Patient Summary";
+
   return (
-    <div className="flex h-[calc(100vh-2.75rem)] flex-col overflow-hidden">
-      {/* Sticky compact patient banner */}
+    <div className="flex h-[calc(100vh-2.75rem)] flex-col overflow-hidden bg-background">
+      {/* Sticky patient banner — shown once */}
+      <header className="shrink-0 border-b border-border bg-card/95 backdrop-blur">
+        <div className="flex items-center gap-3 px-4 py-2">
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 text-xs hover:bg-secondary"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Patient list
+          </Link>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+              <User className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="truncate text-sm font-semibold text-foreground">
+                {patient.name}
+                <span className="ml-2 text-[11px] font-normal text-muted-foreground">
+                  {patient.sex} · {patient.age} y
+                </span>
+              </div>
+              <div className="truncate text-[11px] text-muted-foreground">
+                MRN {patient.mrn} · {meta.label} · Bed {patient.room}
+              </div>
+            </div>
+          </div>
+
+          <div className="ml-2 hidden min-w-0 flex-1 items-center gap-x-4 gap-y-1 lg:flex lg:flex-wrap">
+            <HeaderField k="Dx" v={patient.shortNote || patient.reasonForAdmission.split(".")[0]} />
+            <HeaderField k="Consultant" v="Dr. R. Nair" />
+            <HeaderField k="Primary Nurse" v={session.name ?? "N. On duty"} />
+            <HeaderField k="Isolation" v="Standard" />
+          </div>
+
+          <div className="ml-auto flex items-center gap-1.5">
+            {patient.allergy ? (
+              <span className="inline-flex items-center gap-1 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
+                <ShieldAlert className="h-3 w-3" /> {patient.allergy.agent}
+              </span>
+            ) : (
+              <span className="rounded-md border border-border bg-card px-2 py-0.5 text-[11px] text-muted-foreground">NKA</span>
+            )}
+            <span className="rounded-md border border-border bg-card px-2 py-0.5 text-[11px] text-muted-foreground">
+              Code: {patient.codeStatus}
+            </span>
+            <span
+              className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider"
+              style={{
+                background:
+                  patient.status === "critical"
+                    ? "color-mix(in oklab, var(--color-destructive) 18%, transparent)"
+                    : patient.status === "watch"
+                      ? "color-mix(in oklab, var(--color-tone-amber) 18%, transparent)"
+                      : "color-mix(in oklab, var(--color-tone-mint) 18%, transparent)",
+                color:
+                  patient.status === "critical"
+                    ? "var(--color-destructive)"
+                    : patient.status === "watch"
+                      ? "var(--color-tone-amber)"
+                      : "var(--color-tone-mint)",
+              }}
+            >
+              Risk: {patient.status}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* 3-column EMR workspace */}
+      <Tabs
+        value={activeSection}
+        onValueChange={setActiveSection}
+        orientation="vertical"
+        className="flex min-h-0 flex-1"
+      >
+        {/* LEFT — clinical navigation (20%) */}
+        <aside className="hidden w-1/5 min-w-[200px] max-w-[280px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
+          <div className="border-b border-border px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Chart sections
+          </div>
+          <TabsList className="flex h-auto flex-col items-stretch gap-0.5 overflow-y-auto rounded-none bg-transparent p-2">
+            {sections.map(({ v, label, Icon }) => (
+              <TabsTrigger
+                key={v}
+                value={v}
+                className="justify-start gap-2 rounded-md px-2.5 py-1.5 text-[13px] data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <div className="mt-auto border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+              Auto-save on
+            </span>
+          </div>
+        </aside>
+
+        {/* CENTER — clinical workspace (60%) */}
+        <div className="relative flex min-w-0 flex-1 flex-col">
+          {/* Mobile section list */}
+          <div className="border-b border-border bg-card/50 md:hidden">
+            <TabsList className="flex w-full gap-1 overflow-x-auto bg-transparent p-2">
+              {sections.map(({ v, label }) => (
+                <TabsTrigger key={v} value={v} className="shrink-0 text-xs">
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+
+          <div className="flex items-center justify-between border-b border-border bg-card/40 px-4 py-1.5">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {activeLabel}
+            </div>
+            <div className="text-[11px] text-muted-foreground">Last update: just now</div>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-20">
+
       <header className="shrink-0 border-b border-border bg-card/90 backdrop-blur">
         <div className="flex items-center gap-3 px-4 py-2">
           <Link
