@@ -256,7 +256,7 @@ function PatientPage() {
         className="flex min-h-0 flex-1"
       >
         {/* LEFT — clinical navigation (20%) */}
-        <aside className="hidden w-1/5 min-w-[200px] max-w-[280px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
+        <aside className="flex w-[20%] min-w-[200px] shrink-0 flex-col border-r border-border bg-card/60">
           <div className="border-b border-border px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             Chart sections
           </div>
