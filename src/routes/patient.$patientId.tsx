@@ -256,7 +256,7 @@ function PatientPage() {
         className="flex min-h-0 flex-1"
       >
         {/* LEFT — clinical navigation (20%) */}
-        <aside className="hidden w-1/5 min-w-[200px] max-w-[280px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
+        <aside className="flex w-[20%] min-w-[200px] shrink-0 flex-col border-r border-border bg-card/60">
           <div className="border-b border-border px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             Chart sections
           </div>
@@ -281,17 +281,8 @@ function PatientPage() {
         </aside>
 
         {/* CENTER — clinical workspace (60%) */}
-        <div className="relative flex min-w-0 flex-1 flex-col">
-          {/* Mobile section list */}
-          <div className="border-b border-border bg-card/50 md:hidden">
-            <TabsList className="flex w-full gap-1 overflow-x-auto bg-transparent p-2">
-              {sections.map(({ v, label }) => (
-                <TabsTrigger key={v} value={v} className="shrink-0 text-xs">
-                  {label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
+        <div className="relative flex w-[60%] min-w-0 flex-1 flex-col">
+
 
           <div className="flex items-center justify-between border-b border-border bg-card/40 px-4 py-1.5">
             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -894,7 +885,7 @@ function PatientPage() {
         </div>
 
         {/* RIGHT — clinical action panel (20%) */}
-        <aside className="hidden w-1/5 min-w-[240px] max-w-[340px] shrink-0 flex-col border-l border-border bg-card/60 lg:flex">
+        <aside className="flex w-[20%] min-w-[240px] shrink-0 flex-col border-l border-border bg-card/60">
           <div className="flex items-center justify-between border-b border-border px-4 py-2">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Documentation
