@@ -281,17 +281,8 @@ function PatientPage() {
         </aside>
 
         {/* CENTER — clinical workspace (60%) */}
-        <div className="relative flex min-w-0 flex-1 flex-col">
-          {/* Mobile section list */}
-          <div className="border-b border-border bg-card/50 md:hidden">
-            <TabsList className="flex w-full gap-1 overflow-x-auto bg-transparent p-2">
-              {sections.map(({ v, label }) => (
-                <TabsTrigger key={v} value={v} className="shrink-0 text-xs">
-                  {label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
+        <div className="relative flex w-[60%] min-w-0 flex-1 flex-col">
+
 
           <div className="flex items-center justify-between border-b border-border bg-card/40 px-4 py-1.5">
             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
