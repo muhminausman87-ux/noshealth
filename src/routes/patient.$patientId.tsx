@@ -885,7 +885,7 @@ function PatientPage() {
         </div>
 
         {/* RIGHT — clinical action panel (20%) */}
-        <aside className="hidden w-1/5 min-w-[240px] max-w-[340px] shrink-0 flex-col border-l border-border bg-card/60 lg:flex">
+        <aside className="flex w-[20%] min-w-[240px] shrink-0 flex-col border-l border-border bg-card/60">
           <div className="flex items-center justify-between border-b border-border px-4 py-2">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Documentation
