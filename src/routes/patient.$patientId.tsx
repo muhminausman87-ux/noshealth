@@ -6,9 +6,10 @@ import type { Department } from "@/lib/departments";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, BrainCircuit, Calculator, ClipboardList,
   Droplet, FileText, FlaskConical, Footprints, Gauge, HeartCrack, HeartPulse, LineChart, ListChecks,
-  Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert, ShieldCheck,
+  Menu, Network, NotebookPen, PanelLeft, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert, ShieldCheck,
   Stethoscope, Thermometer, TimerReset, User, Workflow,
 } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { getPatient } from "@/lib/patients";
 import type { PatientFull, VitalSet } from "@/lib/patients";
 import { getClinicalExtras, type Lab } from "@/lib/patient-extras";
@@ -33,6 +34,7 @@ function PatientPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [handoverType, setHandoverType] = useState<HandoverType>("shift");
   const [activeSection, setActiveSection] = useState("summary");
+  const [chartOpen, setChartOpen] = useState(false);
 
   useEffect(() => {
     const s = getSession();
@@ -253,42 +255,57 @@ function PatientPage() {
       {/* 3-column EMR workspace */}
       <Tabs
         value={activeSection}
-        onValueChange={setActiveSection}
+        onValueChange={(v) => { setActiveSection(v); setChartOpen(false); }}
         orientation="vertical"
         className="flex min-h-0 flex-1"
       >
-        {/* LEFT — clinical navigation (20%) */}
-        <aside className="flex w-[20%] min-w-[200px] shrink-0 flex-col border-r border-border bg-card/60">
-          <div className="border-b border-border px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Chart sections
-          </div>
-          <TabsList className="flex h-auto flex-col items-stretch gap-0.5 overflow-y-auto rounded-none bg-transparent p-2">
-            {sections.map(({ v, label, Icon }) => (
-              <TabsTrigger
-                key={v}
-                value={v}
-                className="justify-start gap-2 rounded-md px-2.5 py-1.5 text-[13px] data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <div className="mt-auto border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-              Auto-save on
-            </span>
-          </div>
-        </aside>
+        {/* Chart Sections drawer (slide-out) */}
+        <Sheet open={chartOpen} onOpenChange={setChartOpen}>
+          <SheetContent side="left" className="w-[300px] p-0 sm:max-w-sm">
+            <SheetHeader className="border-b border-border px-4 py-3">
+              <SheetTitle className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Chart sections
+              </SheetTitle>
+            </SheetHeader>
+            <TabsList className="flex h-auto flex-col items-stretch gap-0.5 overflow-y-auto rounded-none bg-transparent p-2">
+              {sections.map(({ v, label, Icon }) => (
+                <TabsTrigger
+                  key={v}
+                  value={v}
+                  className="justify-start gap-2 rounded-md px-2.5 py-2 text-[13px] data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+                Auto-save on
+              </span>
+            </div>
+          </SheetContent>
+        </Sheet>
 
-        {/* CENTER — clinical workspace (60%) */}
-        <div className="relative flex w-[60%] min-w-0 flex-1 flex-col">
+        {/* CENTER — clinical workspace */}
+        <div className="relative flex min-w-0 flex-1 flex-col">
 
 
           <div className="flex items-center justify-between border-b border-border bg-card/40 px-4 py-1.5">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              {activeLabel}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setChartOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:bg-muted hover:text-foreground"
+                aria-label="Open chart sections"
+              >
+                <PanelLeft className="h-3.5 w-3.5" />
+                Chart sections
+              </button>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {activeLabel}
+              </div>
             </div>
             <div className="text-[11px] text-muted-foreground">Last update: just now</div>
           </div>
