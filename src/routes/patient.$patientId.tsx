@@ -1,12 +1,12 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Department } from "@/lib/departments";
 import {
-  Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, Calculator, ClipboardList,
-  Droplet, FileText, FlaskConical, HeartCrack, HeartPulse, LineChart, ListChecks,
-  Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert,
+  Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, BrainCircuit, Calculator, ClipboardList,
+  Droplet, FileText, FlaskConical, Footprints, Gauge, HeartCrack, HeartPulse, LineChart, ListChecks,
+  Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert, ShieldCheck,
   Stethoscope, Thermometer, TimerReset, User, Workflow,
 } from "lucide-react";
 import { getPatient } from "@/lib/patients";
@@ -213,6 +213,8 @@ function PatientPage() {
             <HeaderField k="Primary Nurse" v={session.name ?? "N. On duty"} />
             <HeaderField k="Isolation" v="Standard" />
           </div>
+
+          <PatientAcuityStrip patient={patient} />
 
           <div className="ml-auto flex items-center gap-1.5">
             {patient.allergy ? (
@@ -1178,4 +1180,106 @@ function RightPanel({ section, patient }: { section: string; patient: PatientFul
       );
   }
 }
+
+function PatientAcuityStrip({ patient }: { patient: PatientFull }) {
+  const acuity = useMemo(() => {
+    const level =
+      patient.status === "critical" ? (patient.dept === "icu" ? 5 : 4)
+      : patient.status === "watch" ? (patient.dept === "icu" ? 4 : 3)
+      : patient.dept === "icu" ? 2 : 1;
+    const tone =
+      level === 5 ? "var(--color-destructive)"
+      : level === 4 ? "var(--color-tone-rose)"
+      : level === 3 ? "var(--color-tone-amber)"
+      : level === 2 ? "var(--color-tone-sky)"
+      : "var(--color-tone-mint)";
+    return {
+      level,
+      tone,
+      news2: patient.status === "critical" ? 8 : patient.status === "watch" ? 4 : 1,
+      careHours: patient.status === "critical" ? 12.0 : patient.status === "watch" ? 6.5 : 3.5,
+      fallRisk: patient.status === "critical" ? "High" : patient.status === "watch" ? "Moderate" : "Low",
+      braden: patient.status === "critical" ? 12 : patient.status === "watch" ? 16 : 22,
+      sepsis: patient.status === "critical" ? "In progress" : "Completed",
+      isolation: patient.dept === "icu" ? "Contact" : "Standard",
+      aiRisk: patient.status === "critical" ? 94 : patient.status === "watch" ? 67 : 22,
+    };
+  }, [patient.status, patient.dept]);
+
+  const chipBase =
+    "flex flex-col rounded-md border border-border bg-card px-2 py-1 min-w-[3.25rem]";
+  const chipLabel = "text-[9px] font-medium uppercase tracking-wider text-muted-foreground";
+  const chipValue = "text-xs font-semibold text-foreground";
+
+  return (
+    <div className="hidden items-center gap-2 xl:flex">
+      <div
+        className="flex items-center gap-1.5 rounded-md border px-2 py-1"
+        style={{
+          borderColor: `color-mix(in oklab, ${acuity.tone} 45%, transparent)`,
+          background: `color-mix(in oklab, ${acuity.tone} 12%, var(--color-card))`,
+        }}
+      >
+        <Gauge className="h-3.5 w-3.5 shrink-0" style={{ color: acuity.tone }} />
+        <div>
+          <div className={chipLabel}>Acuity</div>
+          <div className="text-xs font-bold" style={{ color: acuity.tone }}>
+            Level {acuity.level}
+          </div>
+        </div>
+      </div>
+
+      <div className={chipBase}>
+        <div className={chipLabel}>NEWS2</div>
+        <div className={chipValue}>{acuity.news2}</div>
+      </div>
+
+      <div className={chipBase}>
+        <div className={chipLabel}>Care hrs</div>
+        <div className={chipValue}>{acuity.careHours.toFixed(1)}h</div>
+      </div>
+
+      <div className={chipBase}>
+        <div className={chipLabel}>Fall risk</div>
+        <div className="flex items-center gap-1 text-xs font-semibold text-foreground">
+          <Footprints className="h-3 w-3 text-muted-foreground" />
+          {acuity.fallRisk}
+        </div>
+      </div>
+
+      <div className={chipBase}>
+        <div className={chipLabel}>Braden</div>
+        <div className={chipValue}>{acuity.braden}</div>
+      </div>
+
+      <div className={chipBase}>
+        <div className={chipLabel}>Sepsis</div>
+        <div className="flex items-center gap-1 text-xs font-semibold text-foreground">
+          <ShieldCheck className="h-3 w-3 text-success" />
+          {acuity.sepsis}
+        </div>
+      </div>
+
+      <div className={chipBase}>
+        <div className={chipLabel}>Isolation</div>
+        <div className={chipValue}>{acuity.isolation}</div>
+      </div>
+
+      <div
+        className="flex items-center gap-1.5 rounded-md border px-2 py-1"
+        style={{
+          borderColor: "color-mix(in oklab, var(--color-primary) 35%, transparent)",
+          background: "color-mix(in oklab, var(--color-primary) 8%, var(--color-card))",
+        }}
+      >
+        <BrainCircuit className="h-3.5 w-3.5 shrink-0 text-primary" />
+        <div>
+          <div className={chipLabel}>AI Risk · Prototype</div>
+          <div className="text-xs font-bold text-primary">{acuity.aiRisk}%</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
