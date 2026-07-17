@@ -3,7 +3,12 @@
   "sdk_version": "0.20.0",
   "path": "/mcp",
   "auth": {
-    "type": "none"
+    "type": "oauth",
+    "issuer": "https://qoardzhahcunknrfwsjq.supabase.co/auth/v1",
+    "require_oauth_client_claim": false,
+    "accepted_audiences": [
+      "authenticated"
+    ]
   },
   "mcp": {
     "server": {
