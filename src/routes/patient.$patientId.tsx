@@ -214,6 +214,8 @@ function PatientPage() {
             <HeaderField k="Isolation" v="Standard" />
           </div>
 
+          <PatientAcuityStrip patient={patient} />
+
           <div className="ml-auto flex items-center gap-1.5">
             {patient.allergy ? (
               <span className="inline-flex items-center gap-1 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive">
