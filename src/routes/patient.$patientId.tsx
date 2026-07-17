@@ -6,9 +6,10 @@ import type { Department } from "@/lib/departments";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, BrainCircuit, Calculator, ClipboardList,
   Droplet, FileText, FlaskConical, Footprints, Gauge, HeartCrack, HeartPulse, LineChart, ListChecks,
-  Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert, ShieldCheck,
+  Menu, Network, NotebookPen, PanelLeft, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert, ShieldCheck,
   Stethoscope, Thermometer, TimerReset, User, Workflow,
 } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { getPatient } from "@/lib/patients";
 import type { PatientFull, VitalSet } from "@/lib/patients";
 import { getClinicalExtras, type Lab } from "@/lib/patient-extras";
