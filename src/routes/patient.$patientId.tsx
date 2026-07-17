@@ -34,6 +34,7 @@ function PatientPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [handoverType, setHandoverType] = useState<HandoverType>("shift");
   const [activeSection, setActiveSection] = useState("summary");
+  const [chartOpen, setChartOpen] = useState(false);
 
   useEffect(() => {
     const s = getSession();
