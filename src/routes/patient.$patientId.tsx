@@ -1183,7 +1183,10 @@ function RightPanel({ section, patient }: { section: string; patient: PatientFul
 
 function PatientAcuityStrip({ patient }: { patient: PatientFull }) {
   const acuity = useMemo(() => {
-    const level = patient.status === "critical" ? 5 : patient.status === "watch" ? 3 : 2;
+    const level =
+      patient.status === "critical" ? (patient.dept === "icu" ? 5 : 4)
+      : patient.status === "watch" ? (patient.dept === "icu" ? 4 : 3)
+      : patient.dept === "icu" ? 2 : 1;
     const tone =
       level === 5 ? "var(--color-destructive)"
       : level === 4 ? "var(--color-tone-rose)"
