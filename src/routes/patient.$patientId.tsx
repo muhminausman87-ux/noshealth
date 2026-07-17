@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Department } from "@/lib/departments";
 import {
   Activity, AlertTriangle, ArrowLeft, BookOpen, Brain, BrainCircuit, Calculator, ClipboardList,
-  Clock, Droplet, FileText, FlaskConical, Footprints, Gauge, HeartCrack, HeartPulse, LineChart, ListChecks,
+  Droplet, FileText, FlaskConical, Footprints, Gauge, HeartCrack, HeartPulse, LineChart, ListChecks,
   Network, NotebookPen, Pill, Receipt, Scan, ScanBarcode, Send, ShieldAlert, ShieldCheck,
   Stethoscope, Thermometer, TimerReset, User, Workflow,
 } from "lucide-react";
