@@ -32,6 +32,7 @@ function PatientPage() {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
   const [handoverType, setHandoverType] = useState<HandoverType>("shift");
+  const [activeSection, setActiveSection] = useState("summary");
 
   useEffect(() => {
     const s = getSession();
@@ -176,7 +177,6 @@ function PatientPage() {
     { v: "ehr",       label: "EHR Modules",              Icon: Network },
     { v: "ebp",       label: "EBP & Tools",              Icon: Calculator },
   ];
-  const [activeSection, setActiveSection] = useState("summary");
   const activeLabel = sections.find((s) => s.v === activeSection)?.label ?? "Patient Summary";
 
   return (
