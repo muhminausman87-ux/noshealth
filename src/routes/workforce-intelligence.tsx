@@ -15,6 +15,7 @@ import { AdminHome } from "@/components/AdminHome";
 import { AIWorkforceRisk } from "@/components/AIWorkforceRisk";
 import { WorkforcePillars } from "@/components/WorkforcePillars";
 import { AIOperationsCenter } from "@/components/AIOperationsCenter";
+import { NursingCapacityIntelligence } from "@/components/NursingCapacityIntelligence";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
 import { getSession, type Session } from "@/lib/auth";
