@@ -98,9 +98,12 @@ function WorkforceIntelligencePage() {
   return (
     <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+        {/* Primary: Nursing Capacity Intelligence — patient acuity ↔ nursing workload */}
+        <NursingCapacityIntelligence />
 
         {/* Strategic pillars — philosophy, nurse voice, leader support, champions */}
         <WorkforcePillars />
+
 
         {/* AI Nursing Operations Center — CNO command center */}
         <AIOperationsCenter />
