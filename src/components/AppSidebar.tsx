@@ -118,7 +118,7 @@ export function AppSidebar({ collapsible = "icon" }: { collapsible?: "icon" | "o
   );
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
+    <Sidebar collapsible={collapsible} className="border-r border-border">
       <SidebarHeader className="border-b border-border/60 py-3">
         <Link to="/" className="flex items-center gap-2 px-2">
           <img src={logo.url} alt="NOS Ecosystem" className="h-8 w-8 rounded-md object-contain" />
