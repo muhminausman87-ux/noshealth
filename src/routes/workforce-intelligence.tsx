@@ -15,6 +15,7 @@ import { AdminHome } from "@/components/AdminHome";
 import { AIWorkforceRisk } from "@/components/AIWorkforceRisk";
 import { WorkforcePillars } from "@/components/WorkforcePillars";
 import { AIOperationsCenter } from "@/components/AIOperationsCenter";
+import { NursingCapacityIntelligence } from "@/components/NursingCapacityIntelligence";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
 import { getSession, type Session } from "@/lib/auth";
@@ -97,9 +98,12 @@ function WorkforceIntelligencePage() {
   return (
     <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+        {/* Primary: Nursing Capacity Intelligence — patient acuity ↔ nursing workload */}
+        <NursingCapacityIntelligence />
 
         {/* Strategic pillars — philosophy, nurse voice, leader support, champions */}
         <WorkforcePillars />
+
 
         {/* AI Nursing Operations Center — CNO command center */}
         <AIOperationsCenter />
