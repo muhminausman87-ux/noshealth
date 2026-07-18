@@ -259,7 +259,34 @@ function PatientPage() {
         orientation="vertical"
         className="flex min-h-0 flex-1"
       >
-        {/* Chart Sections drawer (slide-out) */}
+        {/* Chart Sections — permanent left rail */}
+        <aside className="hidden w-[240px] shrink-0 flex-col border-r border-border bg-card/60 md:flex">
+          <div className="border-b border-border px-3 py-2">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Chart sections
+            </div>
+          </div>
+          <TabsList className="flex h-auto flex-1 flex-col items-stretch gap-0.5 overflow-y-auto rounded-none bg-transparent p-2">
+            {sections.map(({ v, label, Icon }) => (
+              <TabsTrigger
+                key={v}
+                value={v}
+                className="justify-start gap-2 rounded-md px-2.5 py-2 text-[13px] data-[state=active]:bg-primary/10 data-[state=active]:font-semibold data-[state=active]:text-primary"
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+              Auto-save on
+            </span>
+          </div>
+        </aside>
+
+        {/* Mobile Chart Sections drawer */}
         <Sheet open={chartOpen} onOpenChange={setChartOpen}>
           <SheetContent side="left" className="w-[300px] p-0 sm:max-w-sm">
             <SheetHeader className="border-b border-border px-4 py-3">
@@ -279,12 +306,6 @@ function PatientPage() {
                 </TabsTrigger>
               ))}
             </TabsList>
-            <div className="border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-                Auto-save on
-              </span>
-            </div>
           </SheetContent>
         </Sheet>
 
@@ -297,7 +318,7 @@ function PatientPage() {
               <button
                 type="button"
                 onClick={() => setChartOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:bg-muted hover:text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
                 aria-label="Open chart sections"
               >
                 <PanelLeft className="h-3.5 w-3.5" />
@@ -309,6 +330,7 @@ function PatientPage() {
             </div>
             <div className="text-[11px] text-muted-foreground">Last update: just now</div>
           </div>
+
 
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-20">
             {/* SUMMARY */}

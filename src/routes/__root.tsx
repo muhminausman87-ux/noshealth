@@ -156,16 +156,25 @@ function RootComponent() {
 const SIDEBAR_PREF_KEY = "nos-sidebar-open";
 
 function SidebarShell() {
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const isPatientWorkspace = pathname.startsWith("/patient/");
   const [open, setOpen] = useState(false);
   useEffect(() => {
     try {
       const stored = localStorage.getItem(SIDEBAR_PREF_KEY);
-      if (stored === "1") setOpen(true);
+      if (stored === "1" && !isPatientWorkspace) setOpen(true);
     } catch {}
-  }, []);
+  }, [isPatientWorkspace]);
+  // Auto-collapse when entering the patient workspace
+  useEffect(() => {
+    if (isPatientWorkspace) setOpen(false);
+  }, [isPatientWorkspace]);
+
   const handleOpenChange = (v: boolean) => {
     setOpen(v);
-    try { localStorage.setItem(SIDEBAR_PREF_KEY, v ? "1" : "0"); } catch {}
+    if (!isPatientWorkspace) {
+      try { localStorage.setItem(SIDEBAR_PREF_KEY, v ? "1" : "0"); } catch {}
+    }
   };
 
   return (
@@ -178,17 +187,17 @@ function SidebarShell() {
       } as React.CSSProperties}
     >
       <div className="relative z-10 flex min-h-screen w-full">
-        <AppSidebar />
+        <AppSidebar collapsible={isPatientWorkspace ? "offcanvas" : "icon"} />
         <SidebarInset className="min-w-0 bg-transparent">
           <div className="sticky top-0 z-20 flex h-11 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur">
             <SidebarTrigger />
             <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              NOS Clinical Workspace
+              {isPatientWorkspace ? "Patient Clinical Workspace" : "NOS Clinical Workspace"}
             </div>
           </div>
           <Outlet />
         </SidebarInset>
-        <QuickNav />
+        {!isPatientWorkspace && <QuickNav />}
       </div>
     </SidebarProvider>
   );
