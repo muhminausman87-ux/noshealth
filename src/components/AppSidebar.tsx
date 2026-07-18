@@ -63,7 +63,7 @@ const OPERATIONS: NavItem[] = [
   { title: "Settings", icon: Settings, soon: true },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ collapsible = "icon" }: { collapsible?: "icon" | "offcanvas" | "none" }) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
