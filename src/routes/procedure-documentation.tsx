@@ -4,6 +4,7 @@ import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
+import { PlatformPositioning } from "@/components/PlatformPositioning";
 import {
   ClipboardList,
   Package,
