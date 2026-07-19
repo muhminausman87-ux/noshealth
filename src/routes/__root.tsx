@@ -208,6 +208,7 @@ function SidebarShell() {
               </span>
             </div>
           </footer>
+        </SidebarInset>
         {!isPatientWorkspace && <QuickNav />}
       </div>
     </SidebarProvider>
