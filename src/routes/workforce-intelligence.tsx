@@ -24,8 +24,8 @@ import { getSession, type Session } from "@/lib/auth";
 export const Route = createFileRoute("/workforce-intelligence")({
   head: () => ({
     meta: [
-      { title: "Workforce Intelligence · NOS Ecosystem" },
-      { name: "description", content: "Executive workforce intelligence dashboard for nurse managers and hospital administrators." },
+      { title: "Workforce Intelligence · NOS Nursing Intelligence Layer" },
+      { name: "description", content: "AI-powered nursing capacity, wellbeing and skill-mix intelligence connecting patient acuity with the workforce needed to respond safely." },
     ],
   }),
   component: WorkforceIntelligencePage,
