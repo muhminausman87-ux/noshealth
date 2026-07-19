@@ -15,8 +15,8 @@ import { getSession, type Session } from "@/lib/auth";
 export const Route = createFileRoute("/workflow-intelligence")({
   head: () => ({
     meta: [
-      { title: "Nursing Workflow Intelligence · NOS Ecosystem" },
-      { name: "description", content: "AI-assisted coordination of laboratory, radiology, wound care and IV workflows to reduce nursing workload." },
+      { title: "Workflow Intelligence · NOS Nursing Intelligence Layer" },
+      { name: "description", content: "AI-coordinated clinical action across lab, radiology, wound care and IV workflows — turning patient acuity and nursing capacity into the next best operational step." },
     ],
   }),
   component: WorkflowIntelligencePage,
