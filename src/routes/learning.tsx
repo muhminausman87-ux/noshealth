@@ -80,7 +80,7 @@ function LearningPage() {
               Learning & Development
             </h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Competency management, training, certifications, and professional growth
+              Competency, training, and professional growth — a future capability supporting the three Nursing Intelligence pillars.
             </p>
           </div>
           <span className="shrink-0 rounded-full border border-warning/40 bg-warning/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
