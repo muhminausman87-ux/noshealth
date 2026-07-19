@@ -125,7 +125,7 @@ export function EcosystemLayout({ children }: { children: ReactNode }) {
                 NOS <span className="text-primary">Ecosystem</span>
               </div>
               <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
-                Modules
+                Nursing Intelligence Layer
               </div>
             </div>
           )}
