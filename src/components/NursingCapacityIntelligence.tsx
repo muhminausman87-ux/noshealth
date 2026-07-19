@@ -176,7 +176,7 @@ export function NursingCapacityIntelligence() {
       <div className="border-t border-border/60 p-5">
         <div className="mb-2 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <div className="text-sm font-semibold text-foreground">AI Prototype Recommendation</div>
+          <div className="text-sm font-semibold text-foreground">Operational Recommendation (AI Prototype)</div>
           <span className="rounded-full border border-primary/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
             AI Prototype
           </span>

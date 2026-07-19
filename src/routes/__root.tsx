@@ -78,16 +78,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NOS Ecosystem" },
-      { name: "description", content: "Intelligent healthcare workflow platform streamlining patient care, clinical coordination, nursing operations, and hospital decision-making through AI-powered i" },
+      { title: "NOS · Nursing Intelligence Layer" },
+      { name: "description", content: "NOS is an AI-powered Nursing Intelligence Layer that works with your existing hospital EHR — connecting patient acuity, nursing capacity and clinical workflow to support safer care and better operational decisions." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "NOS Ecosystem" },
-      { property: "og:description", content: "Intelligent healthcare workflow platform streamlining patient care, clinical coordination, nursing operations, and hospital decision-making through AI-powered i" },
+      { property: "og:title", content: "NOS · Nursing Intelligence Layer" },
+      { property: "og:description", content: "An AI-powered Nursing Intelligence Layer on top of existing hospital EHRs — connecting patient acuity, nursing capacity and clinical workflow." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "NOS Ecosystem" },
-      { name: "twitter:description", content: "Intelligent healthcare workflow platform streamlining patient care, clinical coordination, nursing operations, and hospital decision-making through AI-powered i" },
+      { name: "twitter:title", content: "NOS · Nursing Intelligence Layer" },
+      { name: "twitter:description", content: "An AI-powered Nursing Intelligence Layer on top of existing hospital EHRs — connecting patient acuity, nursing capacity and clinical workflow." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6MQKTtwu2PYhWShBPYc7w4nAGdu1/social-images/social-1782296106998-1000877035.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6MQKTtwu2PYhWShBPYc7w4nAGdu1/social-images/social-1782296106998-1000877035.webp" },
     ],
@@ -196,6 +196,18 @@ function SidebarShell() {
             </div>
           </div>
           <Outlet />
+          <footer className="border-t border-border/70 bg-card/60 px-4 py-3 text-[11px] leading-snug text-muted-foreground">
+            <div className="mx-auto max-w-[1400px]">
+              <span className="font-medium text-foreground">NOS · Nursing Intelligence Layer</span>{" "}
+              — works alongside your existing hospital EHR to help teams answer three questions:
+              which patients need the most nursing care right now, do we have the nursing capacity
+              to respond safely, and what operational action should happen next.
+              <span className="mt-1 block text-muted-foreground/80">
+                NOS supports clinical and operational decision-making. It does not replace
+                professional clinical judgment or existing hospital information systems.
+              </span>
+            </div>
+          </footer>
         </SidebarInset>
         {!isPatientWorkspace && <QuickNav />}
       </div>
