@@ -33,21 +33,21 @@ export const NOS_MODULES: NosModule[] = [
     key: "workforce",
     to: "/workforce-intelligence",
     title: "Workforce Intelligence",
-    subtitle: "AI-powered workforce management and operational analytics",
+    subtitle: "Nursing capacity, wellbeing and skill mix — do we have capacity to respond safely?",
     icon: Brain,
   },
   {
     key: "workflow",
     to: "/workflow-intelligence",
     title: "Workflow Intelligence",
-    subtitle: "AI-assisted coordination of clinical workflows across departments",
+    subtitle: "AI-coordinated clinical action across departments — what should we do next?",
     icon: Activity,
   },
   {
     key: "ebp",
     to: "/ebp",
     title: "Evidence-Based Practice",
-    subtitle: "Clinical evidence, guidelines, and best practices",
+    subtitle: "Future capability supporting the Nursing Intelligence pillars",
     icon: BookOpen,
     comingSoon: true,
   },
@@ -55,7 +55,7 @@ export const NOS_MODULES: NosModule[] = [
     key: "research",
     to: "/research",
     title: "Research & Innovation",
-    subtitle: "Research projects, publications, and healthcare innovation",
+    subtitle: "Future capability supporting the Nursing Intelligence pillars",
     icon: FlaskConical,
     comingSoon: true,
   },
@@ -63,7 +63,7 @@ export const NOS_MODULES: NosModule[] = [
     key: "learning",
     to: "/learning",
     title: "Learning & Development",
-    subtitle: "Competency, training, certifications, and professional growth",
+    subtitle: "Future capability supporting the Nursing Intelligence pillars",
     icon: GraduationCap,
     comingSoon: true,
   },
@@ -71,11 +71,12 @@ export const NOS_MODULES: NosModule[] = [
     key: "executive",
     to: "/executive-intelligence",
     title: "Executive Intelligence",
-    subtitle: "Hospital performance, quality, workforce, and strategic insights",
+    subtitle: "Future capability supporting the Nursing Intelligence pillars",
     icon: LineChart,
     comingSoon: true,
   },
 ];
+
 
 export function EcosystemLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
