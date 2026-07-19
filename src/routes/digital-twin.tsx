@@ -549,7 +549,7 @@ function ExecutiveSummary() {
         </ul>
       </div>
 
-      <SummaryBlock icon={Sparkles} title="AI Recommendations" items={[
+      <SummaryBlock icon={Sparkles} title="Operational Recommendations (AI Prototype)" items={[
         "Deploy 1 float nurse from Med-Surg to ED for 18:00–22:00.",
         "Escalate 2 critical lab results (Bed 7 K+ 6.8 · Bed 12 Troponin ↑).",
         "Recognize Med-Surg team for sustained 91% coverage.",
@@ -656,7 +656,7 @@ function DeptSidePanel({ dept, onClose }: { dept: Dept; onClose: () => void }) {
             <div className="mb-2 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
-                <div className="text-sm font-semibold text-foreground">AI Recommendations</div>
+                <div className="text-sm font-semibold text-foreground">Operational Recommendations (AI Prototype)</div>
               </div>
               <StatusPill tone="info">AI Prototype</StatusPill>
             </div>
