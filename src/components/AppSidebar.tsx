@@ -136,9 +136,9 @@ export function AppSidebar({ collapsible = "icon" }: { collapsible?: "icon" | "o
         </Link>
       </SidebarHeader>
       <SidebarContent className="gap-0">
-        {renderGroup("Clinical", CLINICAL)}
-        {renderGroup("Intelligence", INTELLIGENCE)}
-        {renderGroup("Knowledge", KNOWLEDGE)}
+        {renderGroup("Patient Intelligence", PATIENT_INTEL)}
+        {renderGroup("Workforce & Workflow Intelligence", WORKFORCE_WORKFLOW)}
+        {renderGroup("Future Capabilities", FUTURE)}
         {renderGroup("Operations", OPERATIONS)}
       </SidebarContent>
     </Sidebar>
