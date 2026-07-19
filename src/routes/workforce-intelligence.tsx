@@ -18,13 +18,14 @@ import { AIOperationsCenter } from "@/components/AIOperationsCenter";
 import { NursingCapacityIntelligence } from "@/components/NursingCapacityIntelligence";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
+import { PlatformPositioning } from "@/components/PlatformPositioning";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
   head: () => ({
     meta: [
-      { title: "Workforce Intelligence · NOS Ecosystem" },
-      { name: "description", content: "Executive workforce intelligence dashboard for nurse managers and hospital administrators." },
+      { title: "Workforce Intelligence · NOS Nursing Intelligence Layer" },
+      { name: "description", content: "AI-powered nursing capacity, wellbeing and skill-mix intelligence connecting patient acuity with the workforce needed to respond safely." },
     ],
   }),
   component: WorkforceIntelligencePage,
@@ -98,8 +99,12 @@ function WorkforceIntelligencePage() {
   return (
     <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+        {/* Platform positioning — one story: connect acuity with capacity */}
+        <PlatformPositioning active="workforce" />
+
         {/* Primary: Nursing Capacity Intelligence — patient acuity ↔ nursing workload */}
         <NursingCapacityIntelligence />
+
 
         {/* Strategic pillars — philosophy, nurse voice, leader support, champions */}
         <WorkforcePillars />

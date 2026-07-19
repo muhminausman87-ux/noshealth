@@ -80,11 +80,11 @@ function EBPPage() {
               Evidence-Based Practice
             </h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Clinical evidence, guidelines, and best practices
+              Clinical evidence, guidelines, and best practices — a future capability supporting the three Nursing Intelligence pillars.
             </p>
           </div>
           <span className="shrink-0 rounded-full border border-warning/40 bg-warning/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
-            Coming Soon
+            Future Capability
           </span>
         </header>
 

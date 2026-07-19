@@ -80,11 +80,11 @@ function ExecutivePage() {
               Executive Intelligence
             </h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              Hospital performance, quality, workforce, and strategic insights
+              Hospital performance, quality, workforce, and strategic insights — a future capability built on Patient, Workforce and Workflow Intelligence.
             </p>
           </div>
           <span className="shrink-0 rounded-full border border-warning/40 bg-warning/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
-            Coming Soon
+            Future Capability
           </span>
         </header>
 

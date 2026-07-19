@@ -4,6 +4,7 @@ import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
+import { PlatformPositioning } from "@/components/PlatformPositioning";
 import {
   ClipboardList,
   Package,
@@ -307,6 +308,9 @@ function ProcedureDocPage() {
   return (
     <EcosystemLayout>
       <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mb-6">
+          <PlatformPositioning active="patient" />
+        </div>
         {/* Header */}
         <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-3">

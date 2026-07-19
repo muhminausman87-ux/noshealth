@@ -37,22 +37,22 @@ type NavItem = {
   soon?: boolean;
 };
 
-const CLINICAL: NavItem[] = [
+const PATIENT_INTEL: NavItem[] = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Patients", url: "/", icon: UserRound },
   { title: "Procedure Documentation", url: "/procedure-documentation", icon: ClipboardList },
-  { title: "Clinical Excellence Hub", url: "/clinical-excellence", icon: Award },
-  { title: "Evidence-Based Practice", url: "/ebp", icon: BookOpen },
 ];
 
-const INTELLIGENCE: NavItem[] = [
+const WORKFORCE_WORKFLOW: NavItem[] = [
   { title: "Workforce Intelligence", url: "/workforce-intelligence", icon: Users },
-  { title: "Nursing Workflow Intelligence", url: "/workflow-intelligence", icon: Workflow },
-  { title: "Executive Intelligence", url: "/executive-intelligence", icon: LineChart },
+  { title: "Workflow Intelligence", url: "/workflow-intelligence", icon: Workflow },
   { title: "Hospital Digital Twin", url: "/digital-twin", icon: Activity },
 ];
 
-const KNOWLEDGE: NavItem[] = [
+const FUTURE: NavItem[] = [
+  { title: "Clinical Excellence", url: "/clinical-excellence", icon: Award },
+  { title: "Evidence-Based Practice", url: "/ebp", icon: BookOpen },
+  { title: "Executive Intelligence", url: "/executive-intelligence", icon: LineChart },
   { title: "Research & Innovation", url: "/research", icon: FlaskConical },
   { title: "Learning & Development", url: "/learning", icon: GraduationCap },
 ];
@@ -62,6 +62,7 @@ const OPERATIONS: NavItem[] = [
   { title: "Administration", icon: Building2, soon: true },
   { title: "Settings", icon: Settings, soon: true },
 ];
+
 
 export function AppSidebar({ collapsible = "icon" }: { collapsible?: "icon" | "offcanvas" | "none" }) {
   const { state } = useSidebar();
@@ -135,9 +136,9 @@ export function AppSidebar({ collapsible = "icon" }: { collapsible?: "icon" | "o
         </Link>
       </SidebarHeader>
       <SidebarContent className="gap-0">
-        {renderGroup("Clinical", CLINICAL)}
-        {renderGroup("Intelligence", INTELLIGENCE)}
-        {renderGroup("Knowledge", KNOWLEDGE)}
+        {renderGroup("Patient Intelligence", PATIENT_INTEL)}
+        {renderGroup("Workforce & Workflow Intelligence", WORKFORCE_WORKFLOW)}
+        {renderGroup("Future Capabilities", FUTURE)}
         {renderGroup("Operations", OPERATIONS)}
       </SidebarContent>
     </Sidebar>
