@@ -196,7 +196,18 @@ function SidebarShell() {
             </div>
           </div>
           <Outlet />
-        </SidebarInset>
+          <footer className="border-t border-border/70 bg-card/60 px-4 py-3 text-[11px] leading-snug text-muted-foreground">
+            <div className="mx-auto max-w-[1400px]">
+              <span className="font-medium text-foreground">NOS · Nursing Intelligence Layer</span>{" "}
+              — works alongside your existing hospital EHR to help teams answer three questions:
+              which patients need the most nursing care right now, do we have the nursing capacity
+              to respond safely, and what operational action should happen next.
+              <span className="mt-1 block text-muted-foreground/80">
+                NOS supports clinical and operational decision-making. It does not replace
+                professional clinical judgment or existing hospital information systems.
+              </span>
+            </div>
+          </footer>
         {!isPatientWorkspace && <QuickNav />}
       </div>
     </SidebarProvider>
