@@ -159,23 +159,16 @@ function SidebarShell() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const isPatientWorkspace = pathname.startsWith("/patient/");
   const [open, setOpen] = useState(false);
+
+  // Always collapse back to the slim icon rail after navigating to a new page.
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(SIDEBAR_PREF_KEY);
-      if (stored === "1" && !isPatientWorkspace) setOpen(true);
-    } catch {}
-  }, [isPatientWorkspace]);
-  // Auto-collapse when entering the patient workspace
-  useEffect(() => {
-    if (isPatientWorkspace) setOpen(false);
-  }, [isPatientWorkspace]);
+    setOpen(false);
+  }, [pathname]);
 
   const handleOpenChange = (v: boolean) => {
     setOpen(v);
-    if (!isPatientWorkspace) {
-      try { localStorage.setItem(SIDEBAR_PREF_KEY, v ? "1" : "0"); } catch {}
-    }
   };
+
 
   return (
     <SidebarProvider
