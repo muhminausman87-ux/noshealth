@@ -78,9 +78,25 @@ const RECOMMENDATIONS = [
 ];
 
 // ---------------- Component ----------------
+const TABS = [
+  { id: "overview",        label: "Overview" },
+  { id: "capacity",        label: "Nursing Capacity" },
+  { id: "operations",      label: "Operations Center" },
+  { id: "pillars",         label: "Strategic Pillars & Nurse Voice" },
+  { id: "risk",            label: "Workforce Risk (AI)" },
+  { id: "staffing",        label: "Staffing Analytics" },
+  { id: "burnout",         label: "Burnout Intelligence" },
+  { id: "acuity",          label: "Acuity & Workload" },
+  { id: "recommendations", label: "AI Recommendations" },
+  { id: "kpis",            label: "Operational KPIs" },
+  { id: "decisions",       label: "Executive Decision Support" },
+] as const;
+type TabId = typeof TABS[number]["id"];
+
 function WorkforceIntelligencePage() {
   const navigate = useNavigate();
   const [session, setSess] = useState<Session | null>(null);
+  const [tab, setTab] = useState<TabId>("overview");
 
   useEffect(() => {
     const s = getSession();
@@ -96,21 +112,6 @@ function WorkforceIntelligencePage() {
   const totalPatients = DEPTS.reduce((a, d) => a + d.patients, 0);
   const ratio = (totalPatients / totalOnDuty).toFixed(1);
 
-  const TABS = [
-    { id: "overview",        label: "Overview" },
-    { id: "capacity",        label: "Nursing Capacity" },
-    { id: "operations",      label: "Operations Center" },
-    { id: "pillars",         label: "Strategic Pillars & Nurse Voice" },
-    { id: "risk",            label: "Workforce Risk (AI)" },
-    { id: "staffing",        label: "Staffing Analytics" },
-    { id: "burnout",         label: "Burnout Intelligence" },
-    { id: "acuity",          label: "Acuity & Workload" },
-    { id: "recommendations", label: "AI Recommendations" },
-    { id: "kpis",            label: "Operational KPIs" },
-    { id: "decisions",       label: "Executive Decision Support" },
-  ] as const;
-  type TabId = typeof TABS[number]["id"];
-  const [tab, setTab] = useState<TabId>("overview");
 
   return (
     <EcosystemLayout>
