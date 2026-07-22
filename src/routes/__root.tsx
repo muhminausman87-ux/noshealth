@@ -172,6 +172,7 @@ function SidebarShell() {
 
   return (
     <SidebarProvider
+      defaultOpen={false}
       open={open}
       onOpenChange={handleOpenChange}
       style={{
