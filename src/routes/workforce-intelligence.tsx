@@ -18,7 +18,7 @@ import { AIOperationsCenter } from "@/components/AIOperationsCenter";
 import { NursingCapacityIntelligence } from "@/components/NursingCapacityIntelligence";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
-import { PlatformPositioning } from "@/components/PlatformPositioning";
+
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/workforce-intelligence")({
@@ -78,25 +78,9 @@ const RECOMMENDATIONS = [
 ];
 
 // ---------------- Component ----------------
-const TABS = [
-  { id: "overview",        label: "Overview" },
-  { id: "capacity",        label: "Nursing Capacity" },
-  { id: "operations",      label: "Operations Center" },
-  { id: "pillars",         label: "Strategic Pillars & Nurse Voice" },
-  { id: "risk",            label: "Workforce Risk (AI)" },
-  { id: "staffing",        label: "Staffing Analytics" },
-  { id: "burnout",         label: "Burnout Intelligence" },
-  { id: "acuity",          label: "Acuity & Workload" },
-  { id: "recommendations", label: "AI Recommendations" },
-  { id: "kpis",            label: "Operational KPIs" },
-  { id: "decisions",       label: "Executive Decision Support" },
-] as const;
-type TabId = typeof TABS[number]["id"];
-
 function WorkforceIntelligencePage() {
   const navigate = useNavigate();
   const [session, setSess] = useState<Session | null>(null);
-  const [tab, setTab] = useState<TabId>("overview");
 
   useEffect(() => {
     const s = getSession();
@@ -115,336 +99,294 @@ function WorkforceIntelligencePage() {
 
   return (
     <EcosystemLayout>
-      <main className="mx-auto max-w-[1400px] space-y-5 px-4 py-6 sm:px-6">
-        <PlatformPositioning active="workforce" />
+      <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+        <header>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">Workforce Intelligence</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Nursing capacity, wellbeing and skill-mix intelligence connecting patient acuity with the workforce needed to respond safely.
+          </p>
+        </header>
 
-        <nav
-          role="tablist"
-          aria-label="Workforce Intelligence sections"
-          className="sticky top-11 z-10 -mx-4 flex gap-1 overflow-x-auto border-b border-border bg-background/95 px-4 py-2 backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:px-2"
-        >
-          {TABS.map((t) => {
-            const on = tab === t.id;
-            return (
-              <button
-                key={t.id}
-                role="tab"
-                aria-selected={on}
-                onClick={() => setTab(t.id)}
-                className={`whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium transition ${
-                  on
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                {t.label}
-              </button>
-            );
-          })}
-        </nav>
 
-        {tab === "overview" && (
-          <section>
-            <SectionTitle icon={Users} title="Workforce Overview" />
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
-              <Kpi icon={Users} label="Nurses on Duty" value={totalOnDuty} tone="info" />
-              <Kpi icon={UserMinus} label="On Leave" value={9} tone="warning" hint="4 planned · 5 sick" />
-              <Kpi icon={CalendarClock} label="Open Shifts" value={12} tone="danger" hint="Next 72h" />
-              <Kpi icon={Briefcase} label="Vacant Positions" value={16} tone="warning" hint="Recruiting" />
-              <Kpi icon={Gauge} label="Overall Coverage" value="89%" tone="success" />
+        <section>
+          <SectionTitle icon={Users} title="Workforce Overview" />
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
+            <Kpi icon={Users} label="Nurses on Duty" value={totalOnDuty} tone="info" />
+            <Kpi icon={UserMinus} label="On Leave" value={9} tone="warning" hint="4 planned · 5 sick" />
+            <Kpi icon={CalendarClock} label="Open Shifts" value={12} tone="danger" hint="Next 72h" />
+            <Kpi icon={Briefcase} label="Vacant Positions" value={16} tone="warning" hint="Recruiting" />
+            <Kpi icon={Gauge} label="Overall Coverage" value="89%" tone="success" />
+          </div>
+
+          <div className="mt-3 rounded-xl border border-border bg-card p-4">
+            <div className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Department staffing status</div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {DEPTS.map((d) => {
+                const tone = d.coverage >= 92 ? "success" : d.coverage >= 85 ? "warning" : "danger";
+                return (
+                  <div key={d.key} className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2">
+                    <div>
+                      <div className="text-sm font-medium">{d.key}</div>
+                      <div className="text-[11px] text-muted-foreground">{d.onDuty} nurses · {d.patients} pts</div>
+                    </div>
+                    <StatusPill tone={tone}>{d.coverage}%</StatusPill>
+                  </div>
+                );
+              })}
             </div>
+          </div>
+        </section>
 
-            <div className="mt-3 rounded-xl border border-border bg-card p-4">
-              <div className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Department staffing status</div>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {DEPTS.map((d) => {
-                  const tone = d.coverage >= 92 ? "success" : d.coverage >= 85 ? "warning" : "danger";
+        <NursingCapacityIntelligence />
+
+        <AIOperationsCenter />
+        <AdminHome />
+
+        <WorkforcePillars />
+
+        <AIWorkforceRisk />
+
+        <section>
+          <SectionTitle icon={Activity} title="Staffing Analytics" />
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Widget title="Staffing by Department" icon={Users} className="lg:col-span-2">
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={DEPTS}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="key" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Bar dataKey="onDuty" name="On duty" fill="hsl(210 85% 55%)" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="patients" name="Patients" fill="hsl(160 65% 45%)" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Widget>
+
+            <Widget title="Skill Mix Distribution" icon={Layers}>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={SKILL_MIX} dataKey="value" nameKey="name" innerRadius={45} outerRadius={80} paddingAngle={2}>
+                      {SKILL_MIX.map((s) => <Cell key={s.name} fill={s.color} />)}
+                    </Pie>
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </Widget>
+
+            <Widget title="Nurse-to-Patient Ratio" icon={Gauge}>
+              <div className="flex flex-col items-center justify-center py-4">
+                <div className="text-4xl font-bold text-primary">1 : {ratio}</div>
+                <div className="mt-1 text-xs text-muted-foreground">Hospital-wide average</div>
+                <div className="mt-4 w-full space-y-1.5">
+                  {DEPTS.slice(0, 4).map((d) => (
+                    <div key={d.key} className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{d.key}</span>
+                      <span className="font-mono">1 : {(d.patients / d.onDuty).toFixed(1)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Widget>
+
+            <Widget title="Shift Coverage" icon={CalendarClock}>
+              <div className="space-y-2.5">
+                {["Morning", "Evening", "Night"].map((s, i) => {
+                  const v = [94, 82, 88][i];
                   return (
-                    <div key={d.key} className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2">
-                      <div>
-                        <div className="text-sm font-medium">{d.key}</div>
-                        <div className="text-[11px] text-muted-foreground">{d.onDuty} nurses · {d.patients} pts</div>
+                    <div key={s}>
+                      <div className="mb-1 flex justify-between text-xs">
+                        <span className="font-medium">{s}</span>
+                        <span className="text-muted-foreground">{v}%</span>
                       </div>
-                      <StatusPill tone={tone}>{d.coverage}%</StatusPill>
+                      <div className="h-2 overflow-hidden rounded-full bg-secondary">
+                        <div className="h-full rounded-full bg-primary" style={{ width: `${v}%` }} />
+                      </div>
                     </div>
                   );
                 })}
               </div>
-            </div>
+            </Widget>
 
-            <div className="mt-4 rounded-xl border border-dashed border-border bg-muted/30 p-4 text-xs text-muted-foreground">
-              Select a section above to open it individually — Nursing Capacity, Operations Center, Nurse Voice, Workforce Risk, and more.
-            </div>
-          </section>
-        )}
-
-        {tab === "capacity" && <NursingCapacityIntelligence />}
-
-        {tab === "operations" && (
-          <>
-            <AIOperationsCenter />
-            <AdminHome />
-          </>
-        )}
-
-        {tab === "pillars" && <WorkforcePillars />}
-
-        {tab === "risk" && <AIWorkforceRisk />}
-
-        {tab === "staffing" && (
-          <section>
-            <SectionTitle icon={Activity} title="Staffing Analytics" />
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Widget title="Staffing by Department" icon={Users} className="lg:col-span-2">
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={DEPTS}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="key" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                      <Bar dataKey="onDuty" name="On duty" fill="hsl(210 85% 55%)" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="patients" name="Patients" fill="hsl(160 65% 45%)" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </Widget>
-
-              <Widget title="Skill Mix Distribution" icon={Layers}>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={SKILL_MIX} dataKey="value" nameKey="name" innerRadius={45} outerRadius={80} paddingAngle={2}>
-                        {SKILL_MIX.map((s) => <Cell key={s.name} fill={s.color} />)}
-                      </Pie>
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </Widget>
-
-              <Widget title="Nurse-to-Patient Ratio" icon={Gauge}>
-                <div className="flex flex-col items-center justify-center py-4">
-                  <div className="text-4xl font-bold text-primary">1 : {ratio}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">Hospital-wide average</div>
-                  <div className="mt-4 w-full space-y-1.5">
-                    {DEPTS.slice(0, 4).map((d) => (
-                      <div key={d.key} className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">{d.key}</span>
-                        <span className="font-mono">1 : {(d.patients / d.onDuty).toFixed(1)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Widget>
-
-              <Widget title="Shift Coverage" icon={CalendarClock}>
-                <div className="space-y-2.5">
-                  {["Morning", "Evening", "Night"].map((s, i) => {
-                    const v = [94, 82, 88][i];
-                    return (
-                      <div key={s}>
-                        <div className="mb-1 flex justify-between text-xs">
-                          <span className="font-medium">{s}</span>
-                          <span className="text-muted-foreground">{v}%</span>
-                        </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                          <div className="h-full rounded-full bg-primary" style={{ width: `${v}%` }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Widget>
-
-              <Widget title="Overtime Hours (7 weeks)" icon={TrendingUp}>
-                <div className="h-40">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={OVERTIME_TREND}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="w" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                      <Line type="monotone" dataKey="h" stroke="hsl(25 90% 55%)" strokeWidth={2} dot={{ r: 3 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </Widget>
-            </div>
-          </section>
-        )}
-
-        {tab === "burnout" && (
-          <section>
-            <SectionTitle icon={Flame} title="Burnout Intelligence" pill="Prototype" />
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Widget title="Burnout Risk Score" icon={Flame}>
-                <div className="flex flex-col items-center py-3">
-                  <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-warning/30 to-destructive/30">
-                    <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-card">
-                      <div className="text-3xl font-bold text-warning-foreground">58</div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Moderate</div>
-                    </div>
-                  </div>
-                  <StatusPill tone="warning">+12 vs last week</StatusPill>
-                </div>
-              </Widget>
-
-              <Widget title="Fatigue Trend (7d)" icon={HeartPulse} className="lg:col-span-2">
-                <div className="h-40">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={FATIGUE}>
-                      <defs>
-                        <linearGradient id="fatigueG" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(0 75% 60%)" stopOpacity={0.4} />
-                          <stop offset="100%" stopColor="hsl(0 75% 60%)" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="d" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                      <Area type="monotone" dataKey="score" stroke="hsl(0 75% 55%)" strokeWidth={2} fill="url(#fatigueG)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </Widget>
-
-              <Kpi icon={CalendarClock} label="Consecutive Shifts (avg)" value="4.2" tone="warning" hint="Threshold: 3" />
-              <Kpi icon={AlertTriangle} label="Missed Breaks (this week)" value={38} tone="danger" hint="+9 vs last week" />
-              <Kpi icon={TrendingUp} label="High-workload Nurses" value={22} tone="warning" hint="≥ 1.3× workload index" />
-            </div>
-          </section>
-        )}
-
-        {tab === "acuity" && (
-          <section>
-            <SectionTitle icon={Activity} title="Patient Acuity & Workload" />
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Widget title="Acuity Distribution by Department" icon={Layers} className="lg:col-span-2">
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={DEPTS}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="key" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="acuityHigh" stackId="a" name="High" fill="hsl(0 75% 55%)" />
-                      <Bar dataKey="acuityMed"  stackId="a" name="Med"  fill="hsl(35 85% 55%)" />
-                      <Bar dataKey="acuityLow"  stackId="a" name="Low"  fill="hsl(160 60% 45%)" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </Widget>
-
-              <Widget title="Workload Heatmap" icon={Flame}>
-                <div className="space-y-1.5">
-                  {DEPTS.map((d) => {
-                    const load = d.patients / d.onDuty;
-                    const pct = Math.min(100, (load / 6) * 100);
-                    const color = load > 4 ? "hsl(0 75% 55%)" : load > 2.5 ? "hsl(35 85% 55%)" : "hsl(160 60% 45%)";
-                    return (
-                      <div key={d.key} className="flex items-center gap-2">
-                        <div className="w-20 text-xs text-muted-foreground">{d.key}</div>
-                        <div className="h-5 flex-1 overflow-hidden rounded bg-secondary">
-                          <div className="h-full rounded transition-all" style={{ width: `${pct}%`, background: color }} />
-                        </div>
-                        <div className="w-10 text-right text-xs font-mono">{load.toFixed(1)}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Widget>
-
-              <Kpi icon={HeartPulse} label="High Dependency Patients" value={DEPTS.reduce((a, d) => a + d.acuityHigh, 0)} tone="danger" />
-
-              <Widget title="Staffing Demand Forecast (24h)" icon={TrendingUp} className="lg:col-span-2">
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={DEMAND_FORECAST}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="t" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Line type="monotone" dataKey="now" name="Actual" stroke="hsl(210 85% 55%)" strokeWidth={2} />
-                      <Line type="monotone" dataKey="fc"  name="AI Forecast" stroke="hsl(280 60% 60%)" strokeWidth={2} strokeDasharray="5 5" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </Widget>
-            </div>
-          </section>
-        )}
-
-        {tab === "recommendations" && (
-          <section>
-            <SectionTitle icon={Sparkles} title="Operational Recommendations (AI Prototype)" pill="Prototype" />
-            <div className="grid gap-3 md:grid-cols-2">
-              {RECOMMENDATIONS.map((r) => (
-                <div key={r.title} className="flex gap-3 rounded-xl border border-border bg-card p-4 shadow-sm">
-                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    r.tone === "danger" ? "bg-destructive/15 text-destructive" :
-                    r.tone === "warning" ? "bg-warning/20 text-warning-foreground" :
-                    "bg-primary/10 text-primary"
-                  }`}>
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-semibold">{r.title}</h4>
-                      <StatusPill tone={r.tone}>AI</StatusPill>
-                    </div>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{r.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {tab === "kpis" && (
-          <section>
-            <SectionTitle icon={Gauge} title="Operational KPIs" />
-            <div className="grid gap-4 lg:grid-cols-3">
-              <div className="grid grid-cols-2 gap-3">
-                <Kpi icon={TrendingUp} label="Staff Retention" value="91%" tone="success" hint="12-mo rolling" />
-                <Kpi icon={UserMinus} label="Absenteeism" value="4.2%" tone="warning" hint="Target ≤ 3%" />
-                <Kpi icon={TrendingDown} label="Overtime Trend" value="+18%" tone="danger" hint="vs last month" />
-                <Kpi icon={Briefcase} label="Utilization" value="87%" tone="info" />
+            <Widget title="Overtime Hours (7 weeks)" icon={TrendingUp}>
+              <div className="h-40">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={OVERTIME_TREND}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="w" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Line type="monotone" dataKey="h" stroke="hsl(25 90% 55%)" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
+            </Widget>
+          </div>
+        </section>
 
-              <Widget title="Vacancy Trend" icon={Briefcase} className="lg:col-span-2">
-                <div className="h-56">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={VACANCY_TREND}>
-                      <defs>
-                        <linearGradient id="vacG" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(210 85% 55%)" stopOpacity={0.4} />
-                          <stop offset="100%" stopColor="hsl(210 85% 55%)" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="m" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                      <Area type="monotone" dataKey="v" name="Vacancies" stroke="hsl(210 85% 55%)" strokeWidth={2} fill="url(#vacG)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+        <section>
+          <SectionTitle icon={Flame} title="Burnout Intelligence" pill="Prototype" />
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Widget title="Burnout Risk Score" icon={Flame}>
+              <div className="flex flex-col items-center py-3">
+                <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-warning/30 to-destructive/30">
+                  <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-card">
+                    <div className="text-3xl font-bold text-warning-foreground">58</div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Moderate</div>
+                  </div>
                 </div>
-              </Widget>
-            </div>
-          </section>
-        )}
+                <StatusPill tone="warning">+12 vs last week</StatusPill>
+              </div>
+            </Widget>
 
-        {tab === "decisions" && (
-          <>
-            <ExecutiveDecisionSupport module="workforce" />
-            <AIIntelligenceLayer module="workforce" />
-          </>
-        )}
+            <Widget title="Fatigue Trend (7d)" icon={HeartPulse} className="lg:col-span-2">
+              <div className="h-40">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={FATIGUE}>
+                    <defs>
+                      <linearGradient id="fatigueG" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(0 75% 60%)" stopOpacity={0.4} />
+                        <stop offset="100%" stopColor="hsl(0 75% 60%)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="d" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Area type="monotone" dataKey="score" stroke="hsl(0 75% 55%)" strokeWidth={2} fill="url(#fatigueG)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </Widget>
+
+            <Kpi icon={CalendarClock} label="Consecutive Shifts (avg)" value="4.2" tone="warning" hint="Threshold: 3" />
+            <Kpi icon={AlertTriangle} label="Missed Breaks (this week)" value={38} tone="danger" hint="+9 vs last week" />
+            <Kpi icon={TrendingUp} label="High-workload Nurses" value={22} tone="warning" hint="≥ 1.3× workload index" />
+          </div>
+        </section>
+
+        <section>
+          <SectionTitle icon={Activity} title="Patient Acuity & Workload" />
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Widget title="Acuity Distribution by Department" icon={Layers} className="lg:col-span-2">
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={DEPTS}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="key" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Bar dataKey="acuityHigh" stackId="a" name="High" fill="hsl(0 75% 55%)" />
+                    <Bar dataKey="acuityMed"  stackId="a" name="Med"  fill="hsl(35 85% 55%)" />
+                    <Bar dataKey="acuityLow"  stackId="a" name="Low"  fill="hsl(160 60% 45%)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Widget>
+
+            <Widget title="Workload Heatmap" icon={Flame}>
+              <div className="space-y-1.5">
+                {DEPTS.map((d) => {
+                  const load = d.patients / d.onDuty;
+                  const pct = Math.min(100, (load / 6) * 100);
+                  const color = load > 4 ? "hsl(0 75% 55%)" : load > 2.5 ? "hsl(35 85% 55%)" : "hsl(160 60% 45%)";
+                  return (
+                    <div key={d.key} className="flex items-center gap-2">
+                      <div className="w-20 text-xs text-muted-foreground">{d.key}</div>
+                      <div className="h-5 flex-1 overflow-hidden rounded bg-secondary">
+                        <div className="h-full rounded transition-all" style={{ width: `${pct}%`, background: color }} />
+                      </div>
+                      <div className="w-10 text-right text-xs font-mono">{load.toFixed(1)}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Widget>
+
+            <Kpi icon={HeartPulse} label="High Dependency Patients" value={DEPTS.reduce((a, d) => a + d.acuityHigh, 0)} tone="danger" />
+
+            <Widget title="Staffing Demand Forecast (24h)" icon={TrendingUp} className="lg:col-span-2">
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={DEMAND_FORECAST}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="t" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Line type="monotone" dataKey="now" name="Actual" stroke="hsl(210 85% 55%)" strokeWidth={2} />
+                    <Line type="monotone" dataKey="fc"  name="AI Forecast" stroke="hsl(280 60% 60%)" strokeWidth={2} strokeDasharray="5 5" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </Widget>
+          </div>
+        </section>
+
+        <section>
+          <SectionTitle icon={Sparkles} title="Operational Recommendations (AI Prototype)" pill="Prototype" />
+          <div className="grid gap-3 md:grid-cols-2">
+            {RECOMMENDATIONS.map((r) => (
+              <div key={r.title} className="flex gap-3 rounded-xl border border-border bg-card p-4 shadow-sm">
+                <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                  r.tone === "danger" ? "bg-destructive/15 text-destructive" :
+                  r.tone === "warning" ? "bg-warning/20 text-warning-foreground" :
+                  "bg-primary/10 text-primary"
+                }`}>
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-semibold">{r.title}</h4>
+                    <StatusPill tone={r.tone}>AI</StatusPill>
+                  </div>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{r.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <SectionTitle icon={Gauge} title="Operational KPIs" />
+          <div className="grid gap-4 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3">
+              <Kpi icon={TrendingUp} label="Staff Retention" value="91%" tone="success" hint="12-mo rolling" />
+              <Kpi icon={UserMinus} label="Absenteeism" value="4.2%" tone="warning" hint="Target ≤ 3%" />
+              <Kpi icon={TrendingDown} label="Overtime Trend" value="+18%" tone="danger" hint="vs last month" />
+              <Kpi icon={Briefcase} label="Utilization" value="87%" tone="info" />
+            </div>
+
+            <Widget title="Vacancy Trend" icon={Briefcase} className="lg:col-span-2">
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={VACANCY_TREND}>
+                    <defs>
+                      <linearGradient id="vacG" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(210 85% 55%)" stopOpacity={0.4} />
+                        <stop offset="100%" stopColor="hsl(210 85% 55%)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="m" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                    <Area type="monotone" dataKey="v" name="Vacancies" stroke="hsl(210 85% 55%)" strokeWidth={2} fill="url(#vacG)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </Widget>
+          </div>
+        </section>
+
+        <ExecutiveDecisionSupport module="workforce" />
+        <AIIntelligenceLayer module="workforce" />
+
 
         <footer className="pt-2 pb-8 text-center text-[11px] text-muted-foreground">
           Workforce Intelligence · Prototype dashboard · Data shown is illustrative and not connected to live records.
