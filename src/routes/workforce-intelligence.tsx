@@ -78,25 +78,9 @@ const RECOMMENDATIONS = [
 ];
 
 // ---------------- Component ----------------
-const TABS = [
-  { id: "overview",        label: "Overview" },
-  { id: "capacity",        label: "Nursing Capacity" },
-  { id: "operations",      label: "Operations Center" },
-  { id: "pillars",         label: "Strategic Pillars & Nurse Voice" },
-  { id: "risk",            label: "Workforce Risk (AI)" },
-  { id: "staffing",        label: "Staffing Analytics" },
-  { id: "burnout",         label: "Burnout Intelligence" },
-  { id: "acuity",          label: "Acuity & Workload" },
-  { id: "recommendations", label: "AI Recommendations" },
-  { id: "kpis",            label: "Operational KPIs" },
-  { id: "decisions",       label: "Executive Decision Support" },
-] as const;
-type TabId = typeof TABS[number]["id"];
-
 function WorkforceIntelligencePage() {
   const navigate = useNavigate();
   const [session, setSess] = useState<Session | null>(null);
-  const [tab, setTab] = useState<TabId>("overview");
 
   useEffect(() => {
     const s = getSession();
@@ -115,33 +99,14 @@ function WorkforceIntelligencePage() {
 
   return (
     <EcosystemLayout>
-      <main className="mx-auto max-w-[1400px] space-y-5 px-4 py-6 sm:px-6">
-        <PlatformPositioning active="workforce" />
+      <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+        <header>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">Workforce Intelligence</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Nursing capacity, wellbeing and skill-mix intelligence connecting patient acuity with the workforce needed to respond safely.
+          </p>
+        </header>
 
-        <nav
-          role="tablist"
-          aria-label="Workforce Intelligence sections"
-          className="sticky top-11 z-10 -mx-4 flex gap-1 overflow-x-auto border-b border-border bg-background/95 px-4 py-2 backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:px-2"
-        >
-          {TABS.map((t) => {
-            const on = tab === t.id;
-            return (
-              <button
-                key={t.id}
-                role="tab"
-                aria-selected={on}
-                onClick={() => setTab(t.id)}
-                className={`whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-medium transition ${
-                  on
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                {t.label}
-              </button>
-            );
-          })}
-        </nav>
 
         {tab === "overview" && (
           <section>
