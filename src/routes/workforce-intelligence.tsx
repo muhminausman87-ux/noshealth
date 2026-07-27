@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Users, UserMinus, CalendarClock, Flame,
   HeartPulse, Sparkles, AlertTriangle, Gauge, ShieldAlert, CheckCircle2,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
 import { StatusPill } from "@/components/Widget";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
@@ -37,6 +38,7 @@ const LEADERSHIP_ACTIONS = [
 function WorkforceIntelligencePage() {
   const navigate = useNavigate();
   const [session, setSess] = useState<Session | null>(null);
+  const [showMoreInsights, setShowMoreInsights] = useState(false);
 
   useEffect(() => {
     const s = getSession();
@@ -132,17 +134,8 @@ function WorkforceIntelligencePage() {
           </div>
         </section>
 
-        {/* 4. Workforce Health */}
-        <section>
-          <SectionTitle icon={HeartPulse} title="Workforce Health" pill="AI Prototype" />
-          <div className="grid gap-3 md:grid-cols-3">
-            <Kpi icon={Flame} label="Burnout Risk" value={58} tone="warning" hint="Moderate · +12 vs last week" />
-            <Kpi icon={AlertTriangle} label="Staffing Gap" value="9%" tone="danger" hint="Evening shift most affected" />
-            <Kpi icon={CheckCircle2} label="Workforce Health Score" value="72 / 100" tone="success" hint="Composite index" />
-          </div>
-        </section>
+        {/* 4. Executive AI Summary — Expected Impact */}
 
-        {/* 5. Executive AI Summary */}
         <section className="rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/[0.06] via-card to-card p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">
@@ -172,6 +165,33 @@ function WorkforceIntelligencePage() {
             Demo data · AI Prototype outputs support — not replace — clinical and operational judgement.
           </p>
         </section>
+
+        <button
+          type="button"
+          onClick={() => setShowMoreInsights((v) => !v)}
+          className="mx-auto flex w-full max-w-md items-center justify-center gap-2 rounded-xl border border-border bg-card py-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-secondary"
+        >
+          {showMoreInsights ? (
+            <>
+              <ChevronUp className="h-4 w-4" /> Show Less
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4" /> View More Insights
+            </>
+          )}
+        </button>
+
+        {showMoreInsights && (
+          <section>
+            <SectionTitle icon={HeartPulse} title="Workforce Health" pill="AI Prototype" />
+            <div className="grid gap-3 md:grid-cols-3">
+              <Kpi icon={Flame} label="Burnout Risk" value={58} tone="warning" hint="Moderate · +12 vs last week" />
+              <Kpi icon={AlertTriangle} label="Staffing Gap" value="9%" tone="danger" hint="Evening shift most affected" />
+              <Kpi icon={CheckCircle2} label="Workforce Health Score" value="72 / 100" tone="success" hint="Composite index" />
+            </div>
+          </section>
+        )}
 
         <footer className="pt-2 pb-8 text-center text-[11px] text-muted-foreground">
           Workforce Intelligence · Prototype dashboard · Data shown is illustrative and not connected to live records.
