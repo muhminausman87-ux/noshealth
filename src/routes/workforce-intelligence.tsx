@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Users, UserMinus, CalendarClock, Flame,
   HeartPulse, Sparkles, AlertTriangle, Gauge, ShieldAlert, CheckCircle2,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
 import { StatusPill } from "@/components/Widget";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
