@@ -134,17 +134,8 @@ function WorkforceIntelligencePage() {
           </div>
         </section>
 
-        {/* 4. Workforce Health */}
-        <section>
-          <SectionTitle icon={HeartPulse} title="Workforce Health" pill="AI Prototype" />
-          <div className="grid gap-3 md:grid-cols-3">
-            <Kpi icon={Flame} label="Burnout Risk" value={58} tone="warning" hint="Moderate · +12 vs last week" />
-            <Kpi icon={AlertTriangle} label="Staffing Gap" value="9%" tone="danger" hint="Evening shift most affected" />
-            <Kpi icon={CheckCircle2} label="Workforce Health Score" value="72 / 100" tone="success" hint="Composite index" />
-          </div>
-        </section>
+        {/* 4. Executive AI Summary — Expected Impact */}
 
-        {/* 5. Executive AI Summary */}
         <section className="rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/[0.06] via-card to-card p-5 shadow-sm">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">
