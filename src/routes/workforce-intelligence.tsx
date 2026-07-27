@@ -38,6 +38,7 @@ const LEADERSHIP_ACTIONS = [
 function WorkforceIntelligencePage() {
   const navigate = useNavigate();
   const [session, setSess] = useState<Session | null>(null);
+  const [showMoreInsights, setShowMoreInsights] = useState(false);
 
   useEffect(() => {
     const s = getSession();
