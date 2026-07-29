@@ -78,7 +78,7 @@ export function AppSidebar({
         <SidebarGroup>
           {!collapsed && (
             <SidebarGroupLabel className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-              <Icon className="h-3 w-3" style={{ color: workspace.color }} />
+              <Icon className="h-3 w-3" />
               {workspace.name}
             </SidebarGroupLabel>
           )}
