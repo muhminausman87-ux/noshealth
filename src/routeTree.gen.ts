@@ -9,32 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
+import { Route as WorkforceRouteImport } from './routes/workforce'
 import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
+import { Route as WellbeingRouteImport } from './routes/wellbeing'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
 import { Route as NursingWorkforceTwinRouteImport } from './routes/nursing-workforce-twin'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LearningRouteImport } from './routes/learning'
+import { Route as GrowthRouteImport } from './routes/growth'
 import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
+import { Route as ExecutiveRouteImport } from './routes/executive'
+import { Route as ExcellenceRouteImport } from './routes/excellence'
 import { Route as EbpRouteImport } from './routes/ebp'
 import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
 import { Route as ClinicalExcellenceRouteImport } from './routes/clinical-excellence'
+import { Route as ClinicalRouteImport } from './routes/clinical'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
+const WorkspaceRoute = WorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
   id: '/workforce-intelligence',
   path: '/workforce-intelligence',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkforceRoute = WorkforceRouteImport.update({
+  id: '/workforce',
+  path: '/workforce',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkflowIntelligenceRoute = WorkflowIntelligenceRouteImport.update({
   id: '/workflow-intelligence',
   path: '/workflow-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WellbeingRoute = WellbeingRouteImport.update({
+  id: '/wellbeing',
+  path: '/wellbeing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResearchRoute = ResearchRouteImport.update({
@@ -67,9 +89,24 @@ const LearningRoute = LearningRouteImport.update({
   path: '/learning',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GrowthRoute = GrowthRouteImport.update({
+  id: '/growth',
+  path: '/growth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExecutiveIntelligenceRoute = ExecutiveIntelligenceRouteImport.update({
   id: '/executive-intelligence',
   path: '/executive-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExecutiveRoute = ExecutiveRouteImport.update({
+  id: '/executive',
+  path: '/executive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExcellenceRoute = ExcellenceRouteImport.update({
+  id: '/excellence',
+  path: '/excellence',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EbpRoute = EbpRouteImport.update({
@@ -85,6 +122,11 @@ const DigitalTwinRoute = DigitalTwinRouteImport.update({
 const ClinicalExcellenceRoute = ClinicalExcellenceRouteImport.update({
   id: '/clinical-excellence',
   path: '/clinical-excellence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClinicalRoute = ClinicalRouteImport.update({
+  id: '/clinical',
+  path: '/clinical',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -118,18 +160,25 @@ const Char91DotmcpChar93InvokeToolToolRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/clinical': typeof ClinicalRoute
   '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
+  '/excellence': typeof ExcellenceRoute
+  '/executive': typeof ExecutiveRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
+  '/growth': typeof GrowthRoute
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
+  '/wellbeing': typeof WellbeingRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
+  '/workforce': typeof WorkforceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/workspace': typeof WorkspaceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
@@ -137,18 +186,25 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/clinical': typeof ClinicalRoute
   '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
+  '/excellence': typeof ExcellenceRoute
+  '/executive': typeof ExecutiveRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
+  '/growth': typeof GrowthRoute
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
+  '/wellbeing': typeof WellbeingRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
+  '/workforce': typeof WorkforceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/workspace': typeof WorkspaceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
@@ -157,18 +213,25 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/clinical': typeof ClinicalRoute
   '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
   '/ebp': typeof EbpRoute
+  '/excellence': typeof ExcellenceRoute
+  '/executive': typeof ExecutiveRoute
   '/executive-intelligence': typeof ExecutiveIntelligenceRoute
+  '/growth': typeof GrowthRoute
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
+  '/wellbeing': typeof WellbeingRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
+  '/workforce': typeof WorkforceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/workspace': typeof WorkspaceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
@@ -178,18 +241,25 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
     | '/ebp'
+    | '/excellence'
+    | '/executive'
     | '/executive-intelligence'
+    | '/growth'
     | '/learning'
     | '/login'
     | '/mcp'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
+    | '/wellbeing'
     | '/workflow-intelligence'
+    | '/workforce'
     | '/workforce-intelligence'
+    | '/workspace'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
@@ -197,18 +267,25 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
     | '/ebp'
+    | '/excellence'
+    | '/executive'
     | '/executive-intelligence'
+    | '/growth'
     | '/learning'
     | '/login'
     | '/mcp'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
+    | '/wellbeing'
     | '/workflow-intelligence'
+    | '/workforce'
     | '/workforce-intelligence'
+    | '/workspace'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
@@ -216,18 +293,25 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
     | '/ebp'
+    | '/excellence'
+    | '/executive'
     | '/executive-intelligence'
+    | '/growth'
     | '/learning'
     | '/login'
     | '/mcp'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
+    | '/wellbeing'
     | '/workflow-intelligence'
+    | '/workforce'
     | '/workforce-intelligence'
+    | '/workspace'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
@@ -236,18 +320,25 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClinicalRoute: typeof ClinicalRoute
   ClinicalExcellenceRoute: typeof ClinicalExcellenceRoute
   DigitalTwinRoute: typeof DigitalTwinRoute
   EbpRoute: typeof EbpRoute
+  ExcellenceRoute: typeof ExcellenceRoute
+  ExecutiveRoute: typeof ExecutiveRoute
   ExecutiveIntelligenceRoute: typeof ExecutiveIntelligenceRoute
+  GrowthRoute: typeof GrowthRoute
   LearningRoute: typeof LearningRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
   NursingWorkforceTwinRoute: typeof NursingWorkforceTwinRoute
   ProcedureDocumentationRoute: typeof ProcedureDocumentationRoute
   ResearchRoute: typeof ResearchRoute
+  WellbeingRoute: typeof WellbeingRoute
   WorkflowIntelligenceRoute: typeof WorkflowIntelligenceRoute
+  WorkforceRoute: typeof WorkforceRoute
   WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
+  WorkspaceRoute: typeof WorkspaceRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   PatientPatientIdRoute: typeof PatientPatientIdRoute
@@ -256,6 +347,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workspace': {
+      id: '/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof WorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workforce-intelligence': {
       id: '/workforce-intelligence'
       path: '/workforce-intelligence'
@@ -263,11 +361,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkforceIntelligenceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/workforce': {
+      id: '/workforce'
+      path: '/workforce'
+      fullPath: '/workforce'
+      preLoaderRoute: typeof WorkforceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workflow-intelligence': {
       id: '/workflow-intelligence'
       path: '/workflow-intelligence'
       fullPath: '/workflow-intelligence'
       preLoaderRoute: typeof WorkflowIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wellbeing': {
+      id: '/wellbeing'
+      path: '/wellbeing'
+      fullPath: '/wellbeing'
+      preLoaderRoute: typeof WellbeingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/research': {
@@ -312,11 +424,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearningRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/growth': {
+      id: '/growth'
+      path: '/growth'
+      fullPath: '/growth'
+      preLoaderRoute: typeof GrowthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/executive-intelligence': {
       id: '/executive-intelligence'
       path: '/executive-intelligence'
       fullPath: '/executive-intelligence'
       preLoaderRoute: typeof ExecutiveIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/executive': {
+      id: '/executive'
+      path: '/executive'
+      fullPath: '/executive'
+      preLoaderRoute: typeof ExecutiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/excellence': {
+      id: '/excellence'
+      path: '/excellence'
+      fullPath: '/excellence'
+      preLoaderRoute: typeof ExcellenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ebp': {
@@ -338,6 +471,13 @@ declare module '@tanstack/react-router' {
       path: '/clinical-excellence'
       fullPath: '/clinical-excellence'
       preLoaderRoute: typeof ClinicalExcellenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clinical': {
+      id: '/clinical'
+      path: '/clinical'
+      fullPath: '/clinical'
+      preLoaderRoute: typeof ClinicalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -380,18 +520,25 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClinicalRoute: ClinicalRoute,
   ClinicalExcellenceRoute: ClinicalExcellenceRoute,
   DigitalTwinRoute: DigitalTwinRoute,
   EbpRoute: EbpRoute,
+  ExcellenceRoute: ExcellenceRoute,
+  ExecutiveRoute: ExecutiveRoute,
   ExecutiveIntelligenceRoute: ExecutiveIntelligenceRoute,
+  GrowthRoute: GrowthRoute,
   LearningRoute: LearningRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
   NursingWorkforceTwinRoute: NursingWorkforceTwinRoute,
   ProcedureDocumentationRoute: ProcedureDocumentationRoute,
   ResearchRoute: ResearchRoute,
+  WellbeingRoute: WellbeingRoute,
   WorkflowIntelligenceRoute: WorkflowIntelligenceRoute,
+  WorkforceRoute: WorkforceRoute,
   WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
+  WorkspaceRoute: WorkspaceRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,

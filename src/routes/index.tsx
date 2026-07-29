@@ -40,7 +40,7 @@ function Index() {
   useEffect(() => {
     const s = getSession();
     if (!s) { navigate({ to: "/login" }); return; }
-    if (s.role === "admin") { navigate({ to: "/workforce-intelligence" }); return; }
+    if (s.role === "admin") { navigate({ to: "/workspace" }); return; }
     setSess(s);
     setDept(s.activeDept);
   }, [navigate]);

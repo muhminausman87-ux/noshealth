@@ -6,6 +6,7 @@ import {
   SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY,
   DEMO_ACCOUNTS, FOUNDER_LINKEDIN,
 } from "@/lib/auth";
+import { landingForRole } from "@/lib/workspaces";
 import logo from "@/assets/nos-logo.png.asset.json";
 
 export const Route = createFileRoute("/login")({
@@ -32,8 +33,7 @@ function LoginPage() {
     setLoading(true);
     try {
       const s = await signInWithEmail(username.trim(), password);
-      const isAdmin = (s as any)?.role === "admin";
-      navigate({ to: isAdmin ? "/workforce-intelligence" : "/" });
+      navigate({ to: landingForRole(s.role) });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid email or password.");
     } finally {
