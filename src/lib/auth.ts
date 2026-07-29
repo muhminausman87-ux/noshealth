@@ -167,13 +167,14 @@ export const SUPPORT_PHONE_DISPLAY = "852 685 497";
 
 export const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/muhmina-usman-a9b54557";
 
-// Demo accounts to show on the login screen (passwords intentionally visible for demo).
+// Demo accounts to show on the login screen. Every account uses password `demo1234`.
+// These map to real rows in auth.users so Supabase sign-in succeeds.
 export const DEMO_ACCOUNTS: { role: string; username: string; password: string; name: string }[] = [
-  { role: "Admin / Nursing Director", username: "admin",  password: "admin123", name: "Dr. R. Menon" },
-  { role: "Nurse (ED)",               username: "achen",  password: "nurse123", name: "RN A. Chen" },
-  { role: "Nurse (ICU)",              username: "spriya", password: "nurse123", name: "RN S. Priya" },
-  { role: "Doctor (Medicine)",        username: "dpatel", password: "doc123",   name: "Dr. P. Patel" },
-  { role: "Doctor (Surgeon)",         username: "dshah",  password: "doc123",   name: "Dr. M. Shah" },
-  { role: "Lab Technician",           username: "lab1",   password: "lab123",   name: "Tech S. Roy" },
-  { role: "Radiology",                username: "rad1",   password: "rad123",   name: "Rad. T. Bose" },
+  { role: "Admin / Nursing Director",       username: "admin@demo.nos",     password: "demo1234", name: "Dr. R. Menon" },
+  { role: "Nurse",                          username: "nurse@demo.nos",     password: "demo1234", name: "RN A. Chen" },
+  { role: "Doctor",                         username: "doctor@demo.nos",    password: "demo1234", name: "Dr. P. Patel" },
+  { role: "Lab Technician",                 username: "lab@demo.nos",       password: "demo1234", name: "Tech S. Roy" },
+  { role: "Radiology",                      username: "radiology@demo.nos", password: "demo1234", name: "Rad. T. Bose" },
+  { role: "HR / Workforce Operations",      username: "hr@demo.nos",        password: "demo1234", name: "HR M. Iqbal" },
+  { role: "Executive Intelligence (CNO)",   username: "exec@demo.nos",      password: "demo1234", name: "CNO K. Rao" },
 ];
