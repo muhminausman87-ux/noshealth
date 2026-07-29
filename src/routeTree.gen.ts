@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
 import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
 import { Route as ResearchRouteImport } from './routes/research'
@@ -27,6 +28,11 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
+const WorkspaceRoute = WorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
   id: '/workforce-intelligence',
   path: '/workforce-intelligence',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/workspace': typeof WorkspaceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/workspace': typeof WorkspaceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/research': typeof ResearchRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
   '/workforce-intelligence': typeof WorkforceIntelligenceRoute
+  '/workspace': typeof WorkspaceRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/patient/$patientId': typeof PatientPatientIdRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/workflow-intelligence'
     | '/workforce-intelligence'
+    | '/workspace'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/workflow-intelligence'
     | '/workforce-intelligence'
+    | '/workspace'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/research'
     | '/workflow-intelligence'
     | '/workforce-intelligence'
+    | '/workspace'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/patient/$patientId'
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   ResearchRoute: typeof ResearchRoute
   WorkflowIntelligenceRoute: typeof WorkflowIntelligenceRoute
   WorkforceIntelligenceRoute: typeof WorkforceIntelligenceRoute
+  WorkspaceRoute: typeof WorkspaceRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   PatientPatientIdRoute: typeof PatientPatientIdRoute
@@ -256,6 +269,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workspace': {
+      id: '/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof WorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/workforce-intelligence': {
       id: '/workforce-intelligence'
       path: '/workforce-intelligence'
@@ -392,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResearchRoute: ResearchRoute,
   WorkflowIntelligenceRoute: WorkflowIntelligenceRoute,
   WorkforceIntelligenceRoute: WorkforceIntelligenceRoute,
+  WorkspaceRoute: WorkspaceRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
