@@ -14,6 +14,88 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          institution_id: string | null
+          metadata: Json
+          occurred_at: string
+          result: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          institution_id?: string | null
+          metadata?: Json
+          occurred_at?: string
+          result?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          institution_id?: string | null
+          metadata?: Json
+          occurred_at?: string
+          result?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_events_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_responsibilities: {
+        Row: {
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"] | null
+          id: string
+          institution_id: string
+          responsibility: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          id?: string
+          institution_id: string
+          responsibility: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          id?: string
+          institution_id?: string
+          responsibility?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_responsibilities_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gcs_scores: {
         Row: {
           created_at: string
@@ -60,6 +142,89 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      institution_policies: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"] | null
+          escalation_pathway: Json
+          id: string
+          institution_id: string
+          kind: string
+          summary: string | null
+          title: string
+          trigger_expression: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          escalation_pathway?: Json
+          id?: string
+          institution_id: string
+          kind?: string
+          summary?: string | null
+          title: string
+          trigger_expression?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          escalation_pathway?: Json
+          id?: string
+          institution_id?: string
+          kind?: string
+          summary?: string | null
+          title?: string
+          trigger_expression?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_policies_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institutions: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+          status: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       medications: {
         Row: {
@@ -155,6 +320,63 @@ export type Database = {
           },
         ]
       }
+      patient_assignments: {
+        Row: {
+          active: boolean
+          assigned_at: string
+          care_role: string
+          created_at: string
+          employee_id: string
+          ended_at: string | null
+          id: string
+          institution_id: string
+          patient_id: string
+          shift: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          assigned_at?: string
+          care_role?: string
+          created_at?: string
+          employee_id: string
+          ended_at?: string | null
+          id?: string
+          institution_id: string
+          patient_id: string
+          shift?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          assigned_at?: string
+          care_role?: string
+          created_at?: string
+          employee_id?: string
+          ended_at?: string | null
+          id?: string
+          institution_id?: string
+          patient_id?: string
+          shift?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_assignments_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_assignments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patients: {
         Row: {
           admitted_on: string
@@ -168,6 +390,7 @@ export type Database = {
           full_name: string
           history_summary: string | null
           id: string
+          institution_id: string | null
           mrn: string
           primary_nurse_id: string | null
           reason_for_admission: string
@@ -189,6 +412,7 @@ export type Database = {
           full_name: string
           history_summary?: string | null
           id?: string
+          institution_id?: string | null
           mrn: string
           primary_nurse_id?: string | null
           reason_for_admission: string
@@ -210,6 +434,7 @@ export type Database = {
           full_name?: string
           history_summary?: string | null
           id?: string
+          institution_id?: string | null
           mrn?: string
           primary_nurse_id?: string | null
           reason_for_admission?: string
@@ -235,6 +460,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "patients_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "patients_primary_nurse_id_fkey"
             columns: ["primary_nurse_id"]
             isOneToOne: false
@@ -249,6 +481,7 @@ export type Database = {
           created_at: string
           full_name: string
           id: string
+          institution_id: string | null
           title: string
           updated_at: string
           username: string | null
@@ -258,6 +491,7 @@ export type Database = {
           created_at?: string
           full_name?: string
           id: string
+          institution_id?: string | null
           title?: string
           updated_at?: string
           username?: string | null
@@ -267,11 +501,20 @@ export type Database = {
           created_at?: string
           full_name?: string
           id?: string
+          institution_id?: string | null
           title?: string
           updated_at?: string
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
