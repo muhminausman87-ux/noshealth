@@ -18,10 +18,16 @@ export async function signInWithEmail(email: string, password: string): Promise<
 
   const userId = data.user.id;
 
-  const [{ data: profile, error: pErr }, { data: roles, error: rErr }] = await Promise.all([
-    supabase.from("profiles").select("full_name, title, assigned_dept, username").eq("id", userId).maybeSingle(),
-    supabase.from("user_roles").select("role").eq("user_id", userId),
-  ]);
+  const [{ data: profile, error: pErr }, { data: roles, error: rErr }, { data: resp }] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("full_name, title, assigned_dept, username, institution_id, institutions(name)")
+        .eq("id", userId)
+        .maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", userId),
+      supabase.from("employee_responsibilities").select("responsibility").eq("user_id", userId),
+    ]);
   if (pErr) throw new Error(pErr.message);
   if (rErr) throw new Error(rErr.message);
 
@@ -37,6 +43,18 @@ export async function signInWithEmail(email: string, password: string): Promise<
   const title = profile?.title || "";
   const username = profile?.username || data.user.email || "";
 
+  // Responsibilities come from the institution's configuration. When an
+  // institution has not configured them yet, fall back to the job role so the
+  // user is never locked out of their own workspace.
+  const stored = (resp ?? []).map((r) => r.responsibility as Responsibility);
+  const responsibilities: Responsibility[] = stored.length
+    ? stored
+    : role === "admin"
+      ? ["institution_admin"]
+      : role === "staff"
+        ? ["bedside_nurse"]
+        : [];
+
   const session: Session = {
     username,
     name,
@@ -45,10 +63,22 @@ export async function signInWithEmail(email: string, password: string): Promise<
     assignedDept,
     activeDept,
     pulled: false,
+    institutionId: profile?.institution_id ?? undefined,
+    institutionName:
+      (profile as { institutions?: { name: string } | null } | null)?.institutions?.name ??
+      undefined,
+    responsibilities,
   };
   setSession(session);
+  void recordAudit({
+    institutionId: session.institutionId,
+    action: "auth.login",
+    entityType: "user",
+    entityId: userId,
+  });
   return session;
 }
+
 
 /** Sign out of Supabase and clear the local session. */
 export async function signOut(): Promise<void> {
