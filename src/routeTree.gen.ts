@@ -9,119 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorkspaceRouteImport } from './routes/workspace'
-import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
-import { Route as WorkforceRouteImport } from './routes/workforce'
-import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
-import { Route as WellbeingRouteImport } from './routes/wellbeing'
-import { Route as ResearchRouteImport } from './routes/research'
-import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
-import { Route as NursingWorkforceTwinRouteImport } from './routes/nursing-workforce-twin'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as LearningRouteImport } from './routes/learning'
-import { Route as GrowthRouteImport } from './routes/growth'
-import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
-import { Route as ExecutiveRouteImport } from './routes/executive'
-import { Route as ExcellenceRouteImport } from './routes/excellence'
-import { Route as EbpRouteImport } from './routes/ebp'
-import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
-import { Route as ClinicalExcellenceRouteImport } from './routes/clinical-excellence'
-import { Route as ClinicalRouteImport } from './routes/clinical'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as ClinicalRouteImport } from './routes/clinical'
+import { Route as ClinicalExcellenceRouteImport } from './routes/clinical-excellence'
+import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
+import { Route as EbpRouteImport } from './routes/ebp'
+import { Route as ExcellenceRouteImport } from './routes/excellence'
+import { Route as ExecutiveRouteImport } from './routes/executive'
+import { Route as ExecutiveIntelligenceRouteImport } from './routes/executive-intelligence'
+import { Route as GrowthRouteImport } from './routes/growth'
+import { Route as LearningRouteImport } from './routes/learning'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as NursingWorkforceTwinRouteImport } from './routes/nursing-workforce-twin'
+import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
+import { Route as ResearchRouteImport } from './routes/research'
+import { Route as WellbeingRouteImport } from './routes/wellbeing'
+import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
+import { Route as WorkforceRouteImport } from './routes/workforce'
+import { Route as WorkforceIntelligenceRouteImport } from './routes/workforce-intelligence'
+import { Route as WorkspaceRouteImport } from './routes/workspace'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as PatientPatientIdRouteImport } from './routes/patient.$patientId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
-const WorkspaceRoute = WorkspaceRouteImport.update({
-  id: '/workspace',
-  path: '/workspace',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
-  id: '/workforce-intelligence',
-  path: '/workforce-intelligence',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WorkforceRoute = WorkforceRouteImport.update({
-  id: '/workforce',
-  path: '/workforce',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WorkflowIntelligenceRoute = WorkflowIntelligenceRouteImport.update({
-  id: '/workflow-intelligence',
-  path: '/workflow-intelligence',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WellbeingRoute = WellbeingRouteImport.update({
-  id: '/wellbeing',
-  path: '/wellbeing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResearchRoute = ResearchRouteImport.update({
-  id: '/research',
-  path: '/research',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProcedureDocumentationRoute = ProcedureDocumentationRouteImport.update({
-  id: '/procedure-documentation',
-  path: '/procedure-documentation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NursingWorkforceTwinRoute = NursingWorkforceTwinRouteImport.update({
-  id: '/nursing-workforce-twin',
-  path: '/nursing-workforce-twin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearningRoute = LearningRouteImport.update({
-  id: '/learning',
-  path: '/learning',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GrowthRoute = GrowthRouteImport.update({
-  id: '/growth',
-  path: '/growth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExecutiveIntelligenceRoute = ExecutiveIntelligenceRouteImport.update({
-  id: '/executive-intelligence',
-  path: '/executive-intelligence',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExecutiveRoute = ExecutiveRouteImport.update({
-  id: '/executive',
-  path: '/executive',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExcellenceRoute = ExcellenceRouteImport.update({
-  id: '/excellence',
-  path: '/excellence',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EbpRoute = EbpRouteImport.update({
-  id: '/ebp',
-  path: '/ebp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DigitalTwinRoute = DigitalTwinRouteImport.update({
-  id: '/digital-twin',
-  path: '/digital-twin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClinicalExcellenceRoute = ClinicalExcellenceRouteImport.update({
-  id: '/clinical-excellence',
-  path: '/clinical-excellence',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClinicalRoute = ClinicalRouteImport.update({
@@ -129,28 +44,113 @@ const ClinicalRoute = ClinicalRouteImport.update({
   path: '/clinical',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ClinicalExcellenceRoute = ClinicalExcellenceRouteImport.update({
+  id: '/clinical-excellence',
+  path: '/clinical-excellence',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PatientPatientIdRoute = PatientPatientIdRouteImport.update({
-  id: '/patient/$patientId',
-  path: '/patient/$patientId',
+const DigitalTwinRoute = DigitalTwinRouteImport.update({
+  id: '/digital-twin',
+  path: '/digital-twin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const EbpRoute = EbpRouteImport.update({
+  id: '/ebp',
+  path: '/ebp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExcellenceRoute = ExcellenceRouteImport.update({
+  id: '/excellence',
+  path: '/excellence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExecutiveRoute = ExecutiveRouteImport.update({
+  id: '/executive',
+  path: '/executive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExecutiveIntelligenceRoute = ExecutiveIntelligenceRouteImport.update({
+  id: '/executive-intelligence',
+  path: '/executive-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GrowthRoute = GrowthRouteImport.update({
+  id: '/growth',
+  path: '/growth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningRoute = LearningRouteImport.update({
+  id: '/learning',
+  path: '/learning',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NursingWorkforceTwinRoute = NursingWorkforceTwinRouteImport.update({
+  id: '/nursing-workforce-twin',
+  path: '/nursing-workforce-twin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcedureDocumentationRoute = ProcedureDocumentationRouteImport.update({
+  id: '/procedure-documentation',
+  path: '/procedure-documentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResearchRoute = ResearchRouteImport.update({
+  id: '/research',
+  path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WellbeingRoute = WellbeingRouteImport.update({
+  id: '/wellbeing',
+  path: '/wellbeing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkflowIntelligenceRoute = WorkflowIntelligenceRouteImport.update({
+  id: '/workflow-intelligence',
+  path: '/workflow-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceRoute = WorkforceRouteImport.update({
+  id: '/workforce',
+  path: '/workforce',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkforceIntelligenceRoute = WorkforceIntelligenceRouteImport.update({
+  id: '/workforce-intelligence',
+  path: '/workforce-intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspaceRoute = WorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotmcpChar93ListToolsRoute =
   Char91DotmcpChar93ListToolsRouteImport.update({
     id: '/.mcp/list-tools',
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PatientPatientIdRoute = PatientPatientIdRouteImport.update({
+  id: '/patient/$patientId',
+  path: '/patient/$patientId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -347,130 +347,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/workspace': {
-      id: '/workspace'
-      path: '/workspace'
-      fullPath: '/workspace'
-      preLoaderRoute: typeof WorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/workforce-intelligence': {
-      id: '/workforce-intelligence'
-      path: '/workforce-intelligence'
-      fullPath: '/workforce-intelligence'
-      preLoaderRoute: typeof WorkforceIntelligenceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/workforce': {
-      id: '/workforce'
-      path: '/workforce'
-      fullPath: '/workforce'
-      preLoaderRoute: typeof WorkforceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/workflow-intelligence': {
-      id: '/workflow-intelligence'
-      path: '/workflow-intelligence'
-      fullPath: '/workflow-intelligence'
-      preLoaderRoute: typeof WorkflowIntelligenceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/wellbeing': {
-      id: '/wellbeing'
-      path: '/wellbeing'
-      fullPath: '/wellbeing'
-      preLoaderRoute: typeof WellbeingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/research': {
-      id: '/research'
-      path: '/research'
-      fullPath: '/research'
-      preLoaderRoute: typeof ResearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/procedure-documentation': {
-      id: '/procedure-documentation'
-      path: '/procedure-documentation'
-      fullPath: '/procedure-documentation'
-      preLoaderRoute: typeof ProcedureDocumentationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nursing-workforce-twin': {
-      id: '/nursing-workforce-twin'
-      path: '/nursing-workforce-twin'
-      fullPath: '/nursing-workforce-twin'
-      preLoaderRoute: typeof NursingWorkforceTwinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/learning': {
-      id: '/learning'
-      path: '/learning'
-      fullPath: '/learning'
-      preLoaderRoute: typeof LearningRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/growth': {
-      id: '/growth'
-      path: '/growth'
-      fullPath: '/growth'
-      preLoaderRoute: typeof GrowthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/executive-intelligence': {
-      id: '/executive-intelligence'
-      path: '/executive-intelligence'
-      fullPath: '/executive-intelligence'
-      preLoaderRoute: typeof ExecutiveIntelligenceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/executive': {
-      id: '/executive'
-      path: '/executive'
-      fullPath: '/executive'
-      preLoaderRoute: typeof ExecutiveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/excellence': {
-      id: '/excellence'
-      path: '/excellence'
-      fullPath: '/excellence'
-      preLoaderRoute: typeof ExcellenceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ebp': {
-      id: '/ebp'
-      path: '/ebp'
-      fullPath: '/ebp'
-      preLoaderRoute: typeof EbpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/digital-twin': {
-      id: '/digital-twin'
-      path: '/digital-twin'
-      fullPath: '/digital-twin'
-      preLoaderRoute: typeof DigitalTwinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/clinical-excellence': {
-      id: '/clinical-excellence'
-      path: '/clinical-excellence'
-      fullPath: '/clinical-excellence'
-      preLoaderRoute: typeof ClinicalExcellenceRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clinical': {
@@ -480,18 +361,137 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClinicalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/clinical-excellence': {
+      id: '/clinical-excellence'
+      path: '/clinical-excellence'
+      fullPath: '/clinical-excellence'
+      preLoaderRoute: typeof ClinicalExcellenceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/patient/$patientId': {
-      id: '/patient/$patientId'
-      path: '/patient/$patientId'
-      fullPath: '/patient/$patientId'
-      preLoaderRoute: typeof PatientPatientIdRouteImport
+    '/digital-twin': {
+      id: '/digital-twin'
+      path: '/digital-twin'
+      fullPath: '/digital-twin'
+      preLoaderRoute: typeof DigitalTwinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ebp': {
+      id: '/ebp'
+      path: '/ebp'
+      fullPath: '/ebp'
+      preLoaderRoute: typeof EbpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/excellence': {
+      id: '/excellence'
+      path: '/excellence'
+      fullPath: '/excellence'
+      preLoaderRoute: typeof ExcellenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/executive': {
+      id: '/executive'
+      path: '/executive'
+      fullPath: '/executive'
+      preLoaderRoute: typeof ExecutiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/executive-intelligence': {
+      id: '/executive-intelligence'
+      path: '/executive-intelligence'
+      fullPath: '/executive-intelligence'
+      preLoaderRoute: typeof ExecutiveIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/growth': {
+      id: '/growth'
+      path: '/growth'
+      fullPath: '/growth'
+      preLoaderRoute: typeof GrowthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning': {
+      id: '/learning'
+      path: '/learning'
+      fullPath: '/learning'
+      preLoaderRoute: typeof LearningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nursing-workforce-twin': {
+      id: '/nursing-workforce-twin'
+      path: '/nursing-workforce-twin'
+      fullPath: '/nursing-workforce-twin'
+      preLoaderRoute: typeof NursingWorkforceTwinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/procedure-documentation': {
+      id: '/procedure-documentation'
+      path: '/procedure-documentation'
+      fullPath: '/procedure-documentation'
+      preLoaderRoute: typeof ProcedureDocumentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/research': {
+      id: '/research'
+      path: '/research'
+      fullPath: '/research'
+      preLoaderRoute: typeof ResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wellbeing': {
+      id: '/wellbeing'
+      path: '/wellbeing'
+      fullPath: '/wellbeing'
+      preLoaderRoute: typeof WellbeingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workflow-intelligence': {
+      id: '/workflow-intelligence'
+      path: '/workflow-intelligence'
+      fullPath: '/workflow-intelligence'
+      preLoaderRoute: typeof WorkflowIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce': {
+      id: '/workforce'
+      path: '/workforce'
+      fullPath: '/workforce'
+      preLoaderRoute: typeof WorkforceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workforce-intelligence': {
+      id: '/workforce-intelligence'
+      path: '/workforce-intelligence'
+      fullPath: '/workforce-intelligence'
+      preLoaderRoute: typeof WorkforceIntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace': {
+      id: '/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof WorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/oauth-protected-resource': {
@@ -501,11 +501,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+    '/patient/$patientId': {
+      id: '/patient/$patientId'
+      path: '/patient/$patientId'
+      fullPath: '/patient/$patientId'
+      preLoaderRoute: typeof PatientPatientIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
