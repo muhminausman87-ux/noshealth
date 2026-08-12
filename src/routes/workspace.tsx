@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, LogOut } from "lucide-react";
 import { WORKSPACE_LIST } from "@/lib/workspaces";
 import { getSession, signOut, type Session } from "@/lib/auth";
+import { allowedWorkspaces } from "@/lib/access";
 import logo from "@/assets/nos-logo.png.asset.json";
 
 export const Route = createFileRoute("/workspace")({
@@ -38,6 +39,16 @@ function WorkspaceSelector() {
     setSess(s);
   }, [navigate]);
 
+  const allowed = session
+    ? allowedWorkspaces({
+        role: session.role,
+        department: session.assignedDept,
+        institutionId: session.institutionId,
+        responsibilities: session.responsibilities ?? [],
+      })
+    : [];
+  const visible = WORKSPACE_LIST.filter((w) => allowed.includes(w.id));
+
   const handleLogout = async () => {
     await signOut();
     navigate({ to: "/login" });
@@ -58,8 +69,8 @@ function WorkspaceSelector() {
               Choose a workspace
             </h1>
             <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              NOS is organised into six independent workspaces. Open one to load only its modules
-              and navigation.
+              You see only the workspaces authorised for your institution, role and
+              responsibility. Open one to load just its modules and navigation.
             </p>
           </div>
         </div>
@@ -72,7 +83,7 @@ function WorkspaceSelector() {
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {WORKSPACE_LIST.map((w) => {
+        {visible.map((w) => {
           const Icon = w.icon;
           return (
             <Link

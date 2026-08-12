@@ -22,6 +22,7 @@ import {
   type Workspace,
 } from "@/lib/workspaces";
 import { getSession, signOut, type Session } from "@/lib/auth";
+import { allowedWorkspaces, type AccessContext } from "@/lib/access";
 
 export function AppSidebar({
   collapsible = "icon",
@@ -41,7 +42,16 @@ export function AppSidebar({
   const workspace: Workspace =
     getWorkspaceForPath(pathname) ?? WORKSPACES.clinical;
 
-  const isAdmin = session?.role === "admin";
+  const ctx: AccessContext | null = session
+    ? {
+        role: session.role,
+        department: session.assignedDept,
+        institutionId: session.institutionId,
+        responsibilities: session.responsibilities ?? [],
+      }
+    : null;
+  // Navigation is generated from institution + role + department + responsibility.
+  const canSwitchWorkspace = ctx ? allowedWorkspaces(ctx).length > 1 : false;
   const Icon = workspace.icon;
 
   const handleLogout = async () => {
@@ -67,7 +77,9 @@ export function AppSidebar({
                 className="truncate text-[10px] uppercase tracking-wider"
                 style={{ color: workspace.color }}
               >
-                {workspace.short} Workspace
+                {session?.institutionName
+                  ? `${session.institutionName} · ${workspace.short}`
+                  : `${workspace.short} Workspace`}
               </div>
             </div>
           )}
@@ -127,7 +139,7 @@ export function AppSidebar({
 
       <SidebarFooter className="border-t border-border/60">
         <SidebarMenu>
-          {isAdmin && (
+          {canSwitchWorkspace && (
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Switch workspace">
                 <Link to="/workspace" className="flex items-center gap-2">
