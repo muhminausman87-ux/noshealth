@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      acuity_events: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          event_type: string
+          from_score: number | null
+          id: string
+          institution_id: string
+          note: string | null
+          occurred_at: string
+          patient_id: string
+          to_score: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          event_type?: string
+          from_score?: number | null
+          id?: string
+          institution_id: string
+          note?: string | null
+          occurred_at?: string
+          patient_id: string
+          to_score?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          event_type?: string
+          from_score?: number | null
+          id?: string
+          institution_id?: string
+          note?: string | null
+          occurred_at?: string
+          patient_id?: string
+          to_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acuity_events_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acuity_events_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_events: {
         Row: {
           action: string
@@ -279,6 +333,65 @@ export type Database = {
           },
         ]
       }
+      nursing_capacity: {
+        Row: {
+          available_minutes: number
+          break_minutes: number
+          competency_level: string
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"]
+          employee_id: string
+          id: string
+          institution_id: string
+          notes: string | null
+          on_leave: boolean
+          responsibility_level: string
+          shift: string
+          shift_date: string
+          updated_at: string
+        }
+        Insert: {
+          available_minutes?: number
+          break_minutes?: number
+          competency_level?: string
+          created_at?: string
+          department: Database["public"]["Enums"]["dept_code"]
+          employee_id: string
+          id?: string
+          institution_id: string
+          notes?: string | null
+          on_leave?: boolean
+          responsibility_level?: string
+          shift?: string
+          shift_date?: string
+          updated_at?: string
+        }
+        Update: {
+          available_minutes?: number
+          break_minutes?: number
+          competency_level?: string
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"]
+          employee_id?: string
+          id?: string
+          institution_id?: string
+          notes?: string | null
+          on_leave?: boolean
+          responsibility_level?: string
+          shift?: string
+          shift_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nursing_capacity_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nursing_notes: {
         Row: {
           author_id: string | null
@@ -315,6 +428,81 @@ export type Database = {
             foreignKeyName: "nursing_notes_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_acuity: {
+        Row: {
+          acuity_level: string
+          complexity_indicators: Json
+          computation_source: string
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"] | null
+          id: string
+          institution_id: string
+          mews_current: number | null
+          mews_previous: number | null
+          mews_previous_at: string | null
+          mews_recorded_at: string
+          patient_id: string
+          recorded_by: string | null
+          updated_at: string
+          workload_factors: Json
+          workload_level: string
+          workload_score: number
+        }
+        Insert: {
+          acuity_level?: string
+          complexity_indicators?: Json
+          computation_source?: string
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          id?: string
+          institution_id: string
+          mews_current?: number | null
+          mews_previous?: number | null
+          mews_previous_at?: string | null
+          mews_recorded_at?: string
+          patient_id: string
+          recorded_by?: string | null
+          updated_at?: string
+          workload_factors?: Json
+          workload_level?: string
+          workload_score?: number
+        }
+        Update: {
+          acuity_level?: string
+          complexity_indicators?: Json
+          computation_source?: string
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          id?: string
+          institution_id?: string
+          mews_current?: number | null
+          mews_previous?: number | null
+          mews_previous_at?: string | null
+          mews_recorded_at?: string
+          patient_id?: string
+          recorded_by?: string | null
+          updated_at?: string
+          workload_factors?: Json
+          workload_level?: string
+          workload_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_acuity_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_acuity_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: true
             referencedRelation: "patients"
             referencedColumns: ["id"]
           },
@@ -583,6 +771,75 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "vitals_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_tasks: {
+        Row: {
+          assigned_to: string | null
+          completed_at: string | null
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"] | null
+          detail: string | null
+          due_at: string | null
+          id: string
+          institution_id: string
+          label: string
+          patient_id: string | null
+          status: string
+          task_type: string
+          time_sensitive: boolean
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          detail?: string | null
+          due_at?: string | null
+          id?: string
+          institution_id: string
+          label: string
+          patient_id?: string | null
+          status?: string
+          task_type: string
+          time_sensitive?: boolean
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"] | null
+          detail?: string | null
+          due_at?: string | null
+          id?: string
+          institution_id?: string
+          label?: string
+          patient_id?: string | null
+          status?: string
+          task_type?: string
+          time_sensitive?: boolean
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_tasks_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_tasks_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
