@@ -1,6 +1,7 @@
 import type { Department } from "./departments";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { recordAudit, type Responsibility } from "./access";
 
 export type Role = "staff" | "admin" | "doctor" | "lab" | "radiology";
 type DbRole = Database["public"]["Enums"]["app_role"];
@@ -136,6 +137,11 @@ export interface Session {
   assignedDept?: Department;
   activeDept: Department;
   pulled: boolean;
+  /** Tenant boundary — every institution-owned query is scoped to this. */
+  institutionId?: string;
+  institutionName?: string;
+  /** Responsibility-based access (see src/lib/access.ts). */
+  responsibilities?: Responsibility[];
 }
 
 const KEY = "synccare.session";
