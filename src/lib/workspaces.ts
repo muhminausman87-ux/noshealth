@@ -88,6 +88,7 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     icon: Users,
     landing: "/workforce",
     modules: [
+      { label: "Nursing Workforce Intelligence", icon: LineChart, to: "/nursing-workforce-intelligence" },
       { label: "Workforce Intelligence", icon: LineChart, to: "/workforce-intelligence" },
       { label: "Nursing Capacity Intelligence", icon: Activity, to: "/workforce-intelligence" },
       { label: "Staffing Analytics", icon: LayoutDashboard, to: "/workforce-intelligence" },

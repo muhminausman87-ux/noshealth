@@ -21,6 +21,7 @@ import { Route as GrowthRouteImport } from './routes/growth'
 import { Route as LearningRouteImport } from './routes/learning'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as NursingWorkforceIntelligenceRouteImport } from './routes/nursing-workforce-intelligence'
 import { Route as NursingWorkforceTwinRouteImport } from './routes/nursing-workforce-twin'
 import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
 import { Route as ResearchRouteImport } from './routes/research'
@@ -95,6 +96,12 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NursingWorkforceIntelligenceRoute =
+  NursingWorkforceIntelligenceRouteImport.update({
+    id: '/nursing-workforce-intelligence',
+    path: '/nursing-workforce-intelligence',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const NursingWorkforceTwinRoute = NursingWorkforceTwinRouteImport.update({
   id: '/nursing-workforce-twin',
   path: '/nursing-workforce-twin',
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/nursing-workforce-intelligence': typeof NursingWorkforceIntelligenceRoute
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
@@ -204,6 +212,7 @@ export interface FileRoutesByTo {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/nursing-workforce-intelligence': typeof NursingWorkforceIntelligenceRoute
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
@@ -232,6 +241,7 @@ export interface FileRoutesById {
   '/learning': typeof LearningRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/nursing-workforce-intelligence': typeof NursingWorkforceIntelligenceRoute
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/nursing-workforce-intelligence'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/nursing-workforce-intelligence'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
@@ -315,6 +327,7 @@ export interface FileRouteTypes {
     | '/learning'
     | '/login'
     | '/mcp'
+    | '/nursing-workforce-intelligence'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
@@ -343,6 +356,7 @@ export interface RootRouteChildren {
   LearningRoute: typeof LearningRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  NursingWorkforceIntelligenceRoute: typeof NursingWorkforceIntelligenceRoute
   NursingWorkforceTwinRoute: typeof NursingWorkforceTwinRoute
   ProcedureDocumentationRoute: typeof ProcedureDocumentationRoute
   ResearchRoute: typeof ResearchRoute
@@ -442,6 +456,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nursing-workforce-intelligence': {
+      id: '/nursing-workforce-intelligence'
+      path: '/nursing-workforce-intelligence'
+      fullPath: '/nursing-workforce-intelligence'
+      preLoaderRoute: typeof NursingWorkforceIntelligenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/nursing-workforce-twin': {
@@ -551,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearningRoute: LearningRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  NursingWorkforceIntelligenceRoute: NursingWorkforceIntelligenceRoute,
   NursingWorkforceTwinRoute: NursingWorkforceTwinRoute,
   ProcedureDocumentationRoute: ProcedureDocumentationRoute,
   ResearchRoute: ResearchRoute,
