@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, LogOut } from "lucide-react";
 import { WORKSPACE_LIST } from "@/lib/workspaces";
 import { getSession, signOut, type Session } from "@/lib/auth";
+import { allowedWorkspaces } from "@/lib/access";
 import logo from "@/assets/nos-logo.png.asset.json";
 
 export const Route = createFileRoute("/workspace")({
