@@ -88,11 +88,54 @@ function ExecutivePage() {
           </span>
         </header>
 
+        <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold tracking-tight text-foreground">Institutional signals</h2>
+            <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              Synthesis
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Summaries only — each signal is owned and actioned in its source module.
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <ContextualSignal
+              layer="workforce"
+              tone="danger"
+              title="ICU capacity pressure projected at 14:00"
+              detail="Recommendation and decision record are owned by Workforce Intelligence."
+              meta="AI Prototype · Nurse Manager"
+            />
+            <ContextualSignal
+              layer="excellence"
+              tone="warning"
+              title="IPC compliance: 94%"
+              detail="Audit and quality workflows are owned by Clinical Excellence."
+              meta="Quality lead"
+            />
+            <ContextualSignal
+              layer="workflow"
+              tone="warning"
+              title="Workflow bottleneck on evening handover"
+              detail="Task sequencing is owned by Workflow Intelligence."
+              meta="Charge nurse"
+            />
+            <ContextualSignal
+              layer="wellbeing"
+              tone="info"
+              title="Evening shift recovery signal requires attention"
+              detail="Fatigue and recovery analytics are owned by Employee Wellbeing."
+              meta="Wellbeing lead"
+            />
+          </div>
+        </section>
+
         <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {EXEC_ITEMS.map((item) => (
             <RoadmapCard key={item.title} item={item} />
           ))}
         </section>
+
 
         <RoadmapVisionFooter />
       </main>
