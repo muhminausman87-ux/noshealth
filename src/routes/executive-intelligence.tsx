@@ -9,6 +9,8 @@ import {
   Users,
 } from "lucide-react";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
+import { ContextualSignal } from "@/components/SourceLink";
+
 import { RoadmapCard, RoadmapVisionFooter } from "@/components/ModuleRoadmap";
 import type { RoadmapItem } from "@/components/ModuleRoadmap";
 
