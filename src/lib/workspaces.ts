@@ -88,16 +88,17 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     icon: Users,
     landing: "/workforce",
     modules: [
+      // Source of truth for capacity vs demand decisions.
       { label: "Nursing Workforce Intelligence", icon: LineChart, to: "/nursing-workforce-intelligence" },
-      { label: "Workforce Intelligence", icon: LineChart, to: "/workforce-intelligence" },
-      { label: "Nursing Capacity Intelligence", icon: Activity, to: "/workforce-intelligence" },
-      { label: "Staffing Analytics", icon: LayoutDashboard, to: "/workforce-intelligence" },
+      // Operational overview dashboard (capacity, risk, nurse voice, staffing analytics live here).
+      { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce-intelligence" },
+      { label: "Nursing Workforce Digital Twin", icon: Activity, to: "/nursing-workforce-twin" },
+      { label: "Unit Capacity", icon: Shield, to: "/unit-capacity" },
+      { label: "Workflow Intelligence", icon: Brain, to: "/workflow-intelligence" },
       { label: "Float Pool", icon: Users },
       { label: "Shift Management", icon: ClipboardList },
-      { label: "Nurse Voice", icon: HeartHandshake, to: "/workforce-intelligence" },
-      { label: "Workforce Risk", icon: Shield, to: "/workforce-intelligence" },
-      { label: "AI Operational Recommendations", icon: Brain, to: "/workflow-intelligence" },
     ],
+
   },
   wellbeing: {
     id: "wellbeing",
