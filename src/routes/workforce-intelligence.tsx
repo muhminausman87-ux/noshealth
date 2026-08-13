@@ -208,6 +208,11 @@ function WorkforceIntelligencePage() {
               <Kpi icon={AlertTriangle} label="Staffing Gap" value="9%" tone="danger" hint="Evening shift most affected" />
               <Kpi icon={CheckCircle2} label="Workforce Health Score" value="72 / 100" tone="success" hint="Composite index" />
             </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Burnout, fatigue and recovery are owned by Employee Wellbeing.{" "}
+              <SourceLink layer="wellbeing" />
+            </p>
+
           </section>
         )}
 
