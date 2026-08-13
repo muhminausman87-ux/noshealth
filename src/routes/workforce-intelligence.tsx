@@ -8,6 +8,8 @@ import {
 import { StatusPill } from "@/components/Widget";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { NursingCapacityIntelligence } from "@/components/NursingCapacityIntelligence";
+import { ContextualSignal, SourceLink } from "@/components/SourceLink";
+
 
 import { getSession, type Session } from "@/lib/auth";
 
@@ -151,16 +153,32 @@ function WorkforceIntelligencePage() {
             ICU is operating above safe capacity while Med-Surg and Maternity carry spare hours.
             Burnout risk is trending up on the evening shift.
           </p>
-          <div className="mt-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Recommended next actions
-            </div>
-            <ul className="space-y-1.5 text-sm text-foreground">
-              <li className="flex gap-2"><span className="text-primary">1.</span> Reallocate one float RN from Med-Surg to ICU for the evening shift.</li>
-              <li className="flex gap-2"><span className="text-primary">2.</span> Defer non-urgent admissions on units above 100% capacity until night shift.</li>
-              <li className="flex gap-2"><span className="text-primary">3.</span> Guarantee protected meal breaks on ED and ICU to ease burnout trend.</li>
-            </ul>
+          <div className="mt-3 grid gap-2 sm:grid-cols-3">
+            <ContextualSignal
+              layer="clinical"
+              tone="info"
+              title="2 high-acuity patients driving demand"
+              detail="Patient records stay in the Clinical Workspace."
+              linkLabel="View contributing patients"
+            />
+            <ContextualSignal
+              layer="wellbeing"
+              tone="warning"
+              title="Evening shift recovery signal"
+              detail="Fatigue and break management are owned by Wellbeing."
+            />
+            <ContextualSignal
+              layer="workflow"
+              tone="neutral"
+              title="Capacity pressure affecting workflow"
+              detail="Task sequencing and bottlenecks live in Workflow Intelligence."
+            />
           </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Detailed recommendations and the accept / override decision record are owned by this module —
+            see “Recommended Leadership Actions” above.
+          </p>
+
           <p className="mt-4 text-[11px] italic text-muted-foreground">
             Demo data · AI Prototype outputs support — not replace — clinical and operational judgement.
           </p>
