@@ -687,6 +687,84 @@ export function SchedulingEngine({ session }: { session: Session }) {
         </>
       )}
 
+      {/* ----------------------------------------------- regulatory baseline */}
+      {tab === "regulatory" && <RegulatoryBaselinePanel base={base} onChange={setBase} />}
+
+      {/* -------------------------------------- staffing standards & workload */}
+      {tab === "standards" && (
+        <StaffingStandardsPanel
+          standards={standards}
+          onStandards={setStandards}
+          workload={workload}
+          onWorkload={setWorkload}
+          selectedId={standardId}
+          onSelect={setStandardId}
+        />
+      )}
+
+      {/* --------------------------------------------------- compliance */}
+      {tab === "compliance" && (
+        <>
+          {compliance ? (
+            <>
+              <CompliancePanel report={compliance} base={base} />
+              <VersionRecord
+                base={base}
+                policy={policy}
+                roster={roster}
+                standardsVersion={STANDARDS_VERSION}
+                engineVersion={ENGINE_VERSION}
+                approver={roster?.status === "draft" ? undefined : session.name}
+              />
+            </>
+          ) : (
+            <Section title="India Labour Compliance" subtitle="Generate a roster to run the three-layer validation.">
+              <p className="text-sm text-muted-foreground">No roster generated yet for {month}.</p>
+              <div className="mt-3"><Disclaimer /></div>
+            </Section>
+          )}
+        </>
+      )}
+
+      {/* ------------------------------------------------- wellbeing */}
+      {tab === "wellbeing" && (
+        roster ? (
+          <WellbeingPanel fatigue={fatigue} experience={experience} stability={stability} nightRows={nightRows} />
+        ) : (
+          <Section title="Fatigue & wellbeing" subtitle="Generate a roster first.">
+            <p className="text-sm text-muted-foreground">No roster generated yet for {month}.</p>
+          </Section>
+        )
+      )}
+
+      {/* -------------------------------------------------- fairness */}
+      {tab === "fairness" && (
+        roster ? (
+          <FairnessPanel rows={fairData.rows} dimensions={fairData.dimensions} />
+        ) : (
+          <Section title="Fairness dashboard" subtitle="Generate a roster first.">
+            <p className="text-sm text-muted-foreground">No roster generated yet for {month}.</p>
+          </Section>
+        )
+      )}
+
+      {/* ------------------------------------------------ my schedule */}
+      {tab === "myschedule" && (
+        <MySchedulePanel
+          nurses={nurses}
+          roster={roster}
+          policy={policy}
+          requests={requests}
+          fatigue={fatigue}
+          experience={experience}
+          onSubmit={(r) => {
+            setRequests((p) => [r, ...p]);
+            setChanges((c) => ({ ...c, nurse: c.nurse + 1 }));
+            log("Duty request submitted", `${nurses.find((n) => n.id === r.nurseId)?.name} · ${r.kind} · ${r.date ?? "—"} · awaiting manager approval.`);
+          }}
+        />
+      )}
+
       {/* ---------------------------------------------------------- roster */}
       {tab === "roster" && (
         <Section
@@ -976,6 +1054,14 @@ export function SchedulingEngine({ session }: { session: Session }) {
         optimisation and risk detection; the authorised nursing administrator retains final approval. Regulatory values
         are configurable institutional constraints — items marked "Requires institutional/legal verification" must be
         confirmed against the applicable jurisdiction.
+      </footer>
+      <footer className="space-y-2 pb-8">
+        <Disclaimer />
+        <p className="text-center text-[11px] text-muted-foreground">
+          Workflow: Policy → Workforce → Requests → AI generation → Compliance validation → Wellbeing validation →
+          Manager review → Approval → Publish. The Nursing Superintendent / Nurse Manager remains the final
+          decision-maker; AI never makes a roster legally binding on its own.
+        </p>
       </footer>
     </div>
   );
