@@ -322,8 +322,9 @@ export function SchedulingEngine({ session }: { session: Session }) {
           and explains; the authorised nursing administrator reviews, edits, approves and publishes.
         </p>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Workflow: Configure policy → Enter workforce → Collect requests → AI generates → Validate → Review risks →
-          Edit → Approve → Publish → Export/Share → Monitor changes.
+          Objective: meet patient-care requirements without unnecessarily consuming employee recovery, wellbeing or
+          personal time — optimising safety, compliance, coverage, recovery, fairness, predictability, preference
+          satisfaction and operational efficiency together, never staffing efficiency alone.
         </p>
       </header>
 
@@ -666,16 +667,18 @@ export function SchedulingEngine({ session }: { session: Session }) {
             </div>
           </Section>
 
-          <Section title="Scheduling priority hierarchy" subtitle="Applied in strict order when preferences and requirements conflict.">
+          <Section title="Conflict resolution hierarchy" subtitle="Applied in strict order. A legal or safety requirement is never sacrificed to satisfy a preference, and an optimisation preference is never presented as a legal requirement.">
             <ol className="grid gap-2 sm:grid-cols-2">
               {[
                 ["Patient safety", "Adequate staffing and required competencies."],
-                ["Legal / institutional compliance", "Configured hours, rest, leave and overtime rules."],
+                ["Legal / regulatory compliance", "Configured Central and State rules for hours, rest, overtime, breaks and night work."],
+                ["Mandatory institutional requirements", "Hospital policy, SOPs and approved staffing establishment."],
                 ["Clinical skill mix", "Required seniority, competency and specialty coverage."],
-                ["Nurse recovery", "Avoid fatigue-producing and circadian-disruptive patterns."],
-                ["Nurse preferences", "OFF and duty requests wherever operationally possible."],
-                ["Fairness", "Balance of nights, weekends and difficult duties."],
-                ["Optimisation", "Overall schedule quality and workforce utilisation."],
+                ["Minimum safe staffing", "No shift below the configured minimum for the unit."],
+                ["Fatigue / recovery protection", "Avoid fatigue-producing and circadian-disruptive patterns."],
+                ["Fairness", "Workload-weighted balance of nights, weekends, holidays and difficult duties."],
+                ["Employee preferences", "OFF and duty requests wherever operationally possible — considered, never guaranteed."],
+                ["Operational optimisation", "Overall schedule quality and workforce utilisation."],
               ].map(([t, d], i) => (
                 <li key={t} className="rounded-xl border border-border bg-background p-3">
                   <div className="text-xs font-semibold text-foreground">Priority {i + 1} — {t}</div>
