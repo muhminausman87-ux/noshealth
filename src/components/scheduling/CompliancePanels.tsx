@@ -117,8 +117,10 @@ function Check({ label, checked, onChange }: { label: string; checked: boolean; 
 const Th = ({ children }: { children: React.ReactNode }) => (
   <th className="whitespace-nowrap px-2 py-1.5 text-left font-semibold text-muted-foreground">{children}</th>
 );
-const Td = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-  <td className={`whitespace-nowrap px-2 py-1.5 text-foreground ${className}`}>{children}</td>
+const Td = ({ children, className = "", style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) => (
+  <td className={`whitespace-nowrap px-2 py-1.5 text-foreground ${className}`} style={style}>
+    {children}
+  </td>
 );
 
 export function Disclaimer() {
