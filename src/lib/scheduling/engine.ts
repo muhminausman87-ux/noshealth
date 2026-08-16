@@ -90,6 +90,13 @@ function hardCheck(
   if (!n.availableDays.includes(dayOfWeek(date))) return { ok: false, reason: "Outside contracted available days" };
   if (shift.night && n.restrictions.some((r) => /night/i.test(r)))
     return { ok: false, reason: "Individual restriction excludes night duty" };
+  if (shift.night && n.workRestriction?.noNightDuty)
+    return { ok: false, reason: "Work restriction applies" };
+  if (shift.night && n.gender === "female" && n.nightWorkConsent === false)
+    return {
+      ok: false,
+      reason: "Night assignment blocked / requires administrative resolution — night-work consent and safeguards not recorded",
+    };
   if (shift.hours > policy.maxHoursPerDay) return { ok: false, reason: "Exceeds maximum hours per day" };
   const wk = weekIndex(dates, date);
   const cap = policy.maxHoursPerWeek + (policy.overtimeAllowed ? 0 : 0);

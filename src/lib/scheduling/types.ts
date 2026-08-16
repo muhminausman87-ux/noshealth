@@ -100,6 +100,23 @@ export interface NurseProfile {
   preferredOffDays: number[];
   restrictions: string[];
   history: { nightsLast30: number; weekendsLast30: number; hoursLast7: number; lastShiftCode?: string };
+  /** Optional, voluntarily disclosed. Used only for applicable night-work safeguards. */
+  gender?: "female" | "male" | "other" | "undisclosed";
+  /** Recorded consent for night work where the applicable rules require it. */
+  nightWorkConsent?: boolean;
+  transportRequired?: boolean;
+  dependentCare?: boolean;
+  /**
+   * Authorised HR / occupational-health restriction. NEVER contains medical
+   * detail — roster users only ever see "Work restriction applies".
+   */
+  workRestriction?: {
+    noNightDuty?: boolean;
+    noHeavyDuty?: boolean;
+    temporaryAccommodation?: boolean;
+    authorisedBy: string;
+    reviewDate: string;
+  };
 }
 
 export type RequestKind =
