@@ -26,6 +26,7 @@ import { Route as NursingWorkforceIntelligenceRouteImport } from './routes/nursi
 import { Route as NursingWorkforceTwinRouteImport } from './routes/nursing-workforce-twin'
 import { Route as ProcedureDocumentationRouteImport } from './routes/procedure-documentation'
 import { Route as ResearchRouteImport } from './routes/research'
+import { Route as SchedulingRouteImport } from './routes/scheduling'
 import { Route as UnitCapacityRouteImport } from './routes/unit-capacity'
 import { Route as WellbeingRouteImport } from './routes/wellbeing'
 import { Route as WorkflowIntelligenceRouteImport } from './routes/workflow-intelligence'
@@ -123,6 +124,11 @@ const ResearchRoute = ResearchRouteImport.update({
   path: '/research',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SchedulingRoute = SchedulingRouteImport.update({
+  id: '/scheduling',
+  path: '/scheduling',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnitCapacityRoute = UnitCapacityRouteImport.update({
   id: '/unit-capacity',
   path: '/unit-capacity',
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
+  '/scheduling': typeof SchedulingRoute
   '/unit-capacity': typeof UnitCapacityRoute
   '/wellbeing': typeof WellbeingRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
+  '/scheduling': typeof SchedulingRoute
   '/unit-capacity': typeof UnitCapacityRoute
   '/wellbeing': typeof WellbeingRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
@@ -254,6 +262,7 @@ export interface FileRoutesById {
   '/nursing-workforce-twin': typeof NursingWorkforceTwinRoute
   '/procedure-documentation': typeof ProcedureDocumentationRoute
   '/research': typeof ResearchRoute
+  '/scheduling': typeof SchedulingRoute
   '/unit-capacity': typeof UnitCapacityRoute
   '/wellbeing': typeof WellbeingRoute
   '/workflow-intelligence': typeof WorkflowIntelligenceRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
+    | '/scheduling'
     | '/unit-capacity'
     | '/wellbeing'
     | '/workflow-intelligence'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
+    | '/scheduling'
     | '/unit-capacity'
     | '/wellbeing'
     | '/workflow-intelligence'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
     | '/research'
+    | '/scheduling'
     | '/unit-capacity'
     | '/wellbeing'
     | '/workflow-intelligence'
@@ -373,6 +385,7 @@ export interface RootRouteChildren {
   NursingWorkforceTwinRoute: typeof NursingWorkforceTwinRoute
   ProcedureDocumentationRoute: typeof ProcedureDocumentationRoute
   ResearchRoute: typeof ResearchRoute
+  SchedulingRoute: typeof SchedulingRoute
   UnitCapacityRoute: typeof UnitCapacityRoute
   WellbeingRoute: typeof WellbeingRoute
   WorkflowIntelligenceRoute: typeof WorkflowIntelligenceRoute
@@ -506,6 +519,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scheduling': {
+      id: '/scheduling'
+      path: '/scheduling'
+      fullPath: '/scheduling'
+      preLoaderRoute: typeof SchedulingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unit-capacity': {
       id: '/unit-capacity'
       path: '/unit-capacity'
@@ -597,6 +617,7 @@ const rootRouteChildren: RootRouteChildren = {
   NursingWorkforceTwinRoute: NursingWorkforceTwinRoute,
   ProcedureDocumentationRoute: ProcedureDocumentationRoute,
   ResearchRoute: ResearchRoute,
+  SchedulingRoute: SchedulingRoute,
   UnitCapacityRoute: UnitCapacityRoute,
   WellbeingRoute: WellbeingRoute,
   WorkflowIntelligenceRoute: WorkflowIntelligenceRoute,
