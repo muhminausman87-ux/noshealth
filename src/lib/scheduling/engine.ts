@@ -163,7 +163,7 @@ function softScore(
     s -= (st.nights + n.history.nightsLast30 - avgNights) * 6;
     if (st.nights >= policy.maxNightsPerMonth) s -= 40;
   }
-  if (isWeekend(date)) s -= (st.weekends - policy.weekendDutiesPerMonth) * 8;
+  if (isWeekend(date)) s -= (st.weekends - policy.weekendDutiesPerMonth) * 10;
 
   // Utilisation against contracted hours (Priority 7).
   const target = (n.contractedHoursPerWeek / 7) * 30;
@@ -419,14 +419,14 @@ export function generateSchedule(input: GenerateInput): Roster {
 
   const nightSpread = spread(summaries.map((s) => s.nights));
   const weekendSpread = spread(summaries.map((s) => s.weekends));
-  if (nightSpread > 3)
+  if (nightSpread > 5)
     exceptions.push({
       id: "ex-fair-nights",
       severity: "moderate",
       category: "Unequal night distribution",
       message: `Night duties differ by ${nightSpread} across the unit. Review before publishing.`,
     });
-  if (weekendSpread > 2)
+  if (weekendSpread > 4)
     exceptions.push({
       id: "ex-fair-weekend",
       severity: "moderate",
@@ -521,7 +521,15 @@ export function scoreQuality(
     { key: "recovery", label: "Rest and recovery", weight: 0.12, score: Math.max(0, 100 - circ * 8), note: circ ? `${circ} recovery-risk assignment(s).` : "Configured rest intervals respected." },
     { key: "circadian", label: "Circadian stability", weight: 0.1, score: Math.max(0, 100 - circ * 10), note: "Pattern continuity preferred over rotation." },
     { key: "preference", label: "Preference satisfaction", weight: 0.08, score: Math.round((pct(offOk, offTotal) + pct(dutyOk, dutyTotal)) / 2), note: `${offOk}/${offTotal} OFF and ${dutyOk}/${dutyTotal} duty requests fulfilled.` },
-    { key: "fairness", label: "Fairness (nights/weekends)", weight: 0.07, score: Math.max(0, 100 - nightSpread * 7 - weekendSpread * 7), note: `Night spread ${nightSpread}, weekend spread ${weekendSpread}.` },
+    {
+      key: "fairness",
+      label: "Fairness (nights/weekends)",
+      weight: 0.07,
+      // A deliberately stable night team is safer than rotating everyone, so a
+      // tolerance is allowed before fairness is scored down.
+      score: Math.max(0, 100 - Math.max(0, nightSpread - 4) * 8 - Math.max(0, weekendSpread - 3) * 8),
+      note: `Night spread ${nightSpread}, weekend spread ${weekendSpread} (tolerance: 4 nights / 3 weekends to preserve stable patterns).`,
+    },
     { key: "overtime", label: "Overtime risk", weight: 0.05, score: Math.max(0, 100 - otOver * 12), note: otOver ? `${otOver} nurse(s) above the configured overtime limit.` : "Overtime within configured limits." },
   ];
   const score = Math.round(components.reduce((a, c) => a + c.score * c.weight, 0));
