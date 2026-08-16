@@ -92,7 +92,9 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
       // Source of truth for capacity vs demand decisions.
       { label: "Nursing Workforce Intelligence", icon: LineChart, to: "/nursing-workforce-intelligence" },
       // Human-centered rostering; consumes demand/capacity signals, never recomputes them.
+      { label: "AI Duty Scheduling Engine", icon: CalendarClock, to: "/scheduling" },
       { label: "Intelligent Duty Scheduling", icon: CalendarClock, to: "/duty-scheduling" },
+
       // Operational overview dashboard (capacity, risk, nurse voice, staffing analytics live here).
       { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce-intelligence" },
       { label: "Nursing Workforce Digital Twin", icon: Activity, to: "/nursing-workforce-twin" },
@@ -190,6 +192,8 @@ export function getWorkspaceForPath(pathname: string): Workspace | null {
   if (pathname.startsWith("/workflow-intelligence")) return WORKSPACES.workforce;
   if (pathname.startsWith("/nursing-workforce-twin")) return WORKSPACES.workforce;
   if (pathname.startsWith("/duty-scheduling")) return WORKSPACES.workforce;
+  if (pathname.startsWith("/scheduling")) return WORKSPACES.workforce;
+
   if (pathname.startsWith("/unit-capacity")) return WORKSPACES.workforce;
   if (pathname.startsWith("/wellbeing")) return WORKSPACES.wellbeing;
   if (pathname.startsWith("/growth")) return WORKSPACES.growth;
