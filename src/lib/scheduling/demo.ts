@@ -55,6 +55,14 @@ export function demoNurses(dept: Department, count = 20): NurseProfile[] {
       preferredShifts: i % 3 === 0 ? ["M"] : i % 3 === 1 ? ["E"] : ["N"],
       preferredOffDays: [i % 7],
       restrictions: i % 11 === 3 ? ["No night duty — occupational health advice"] : [],
+      gender: i % 3 === 1 ? "male" : "female",
+      nightWorkConsent: i % 13 !== 5,
+      transportRequired: i % 4 === 0,
+      dependentCare: i % 6 === 2,
+      workRestriction:
+        i % 11 === 3
+          ? { noNightDuty: true, authorisedBy: "Occupational Health", reviewDate: "—" }
+          : undefined,
       history: {
         nightsLast30: Math.round(rnd() * 8),
         weekendsLast30: Math.round(rnd() * 4),
