@@ -189,6 +189,8 @@ export function getWorkspaceForPath(pathname: string): Workspace | null {
   if (pathname.startsWith("/workforce")) return WORKSPACES.workforce;
   if (pathname.startsWith("/workflow-intelligence")) return WORKSPACES.workforce;
   if (pathname.startsWith("/nursing-workforce-twin")) return WORKSPACES.workforce;
+  if (pathname.startsWith("/duty-scheduling")) return WORKSPACES.workforce;
+  if (pathname.startsWith("/unit-capacity")) return WORKSPACES.workforce;
   if (pathname.startsWith("/wellbeing")) return WORKSPACES.wellbeing;
   if (pathname.startsWith("/growth")) return WORKSPACES.growth;
   if (pathname.startsWith("/learning")) return WORKSPACES.growth;
