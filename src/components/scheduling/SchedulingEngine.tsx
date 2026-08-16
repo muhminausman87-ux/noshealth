@@ -131,10 +131,10 @@ export function SchedulingEngine({ session }: { session: Session }) {
   const [dept, setDept] = useState<Department>(session.assignedDept ?? "medical");
   const [unit, setUnit] = useState("Unit A");
   const [month, setMonth] = useState(currentMonth());
-  const [headcount, setHeadcount] = useState(18);
+  const [headcount, setHeadcount] = useState(20);
   const [policy, setPolicy] = useState<SchedulingPolicy>(() => defaultPolicy(session.assignedDept ?? "medical", session.institutionName ?? "Demo Institution"));
   const nurses = useMemo(() => demoNurses(dept, headcount), [dept, headcount]);
-  const [requests, setRequests] = useState<DutyRequest[]>(() => demoRequests(demoNurses(session.assignedDept ?? "medical", 18), currentMonth()));
+  const [requests, setRequests] = useState<DutyRequest[]>(() => demoRequests(demoNurses(session.assignedDept ?? "medical", 20), currentMonth()));
   const [roster, setRoster] = useState<Roster | null>(null);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
   const [importReport, setImportReport] = useState<{ diffs: ImportDiff[]; errors: string[]; issues: string[]; cells: Record<string, Record<string, string>> } | null>(null);

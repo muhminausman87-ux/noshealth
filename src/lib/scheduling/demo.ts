@@ -28,10 +28,10 @@ function competenciesFor(dept: Department, rnd: () => number): CompetencyCode[] 
   return base;
 }
 
-export function demoNurses(dept: Department, count = 18): NurseProfile[] {
+export function demoNurses(dept: Department, count = 20): NurseProfile[] {
   const rnd = seeded(dept.length * 7 + count);
   return Array.from({ length: count }, (_, i) => {
-    const senior = i % 4 === 0;
+    const senior = i % 3 === 0;
     const charge = i === 0;
     const comps = competenciesFor(dept, rnd);
     // Roughly a fifth of the unit lacks the specialty competency (training pipeline).
