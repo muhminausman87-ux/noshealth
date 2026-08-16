@@ -152,7 +152,7 @@ export function OverviewPanel({
       </div>
       <p className="mt-3 text-[11px] text-muted-foreground">
         Demand, capacity and forecast signals are consumed from{" "}
-        <SourceLink to="/nursing-workforce-intelligence" label="Nursing Workforce Intelligence" /> — duty scheduling
+        <SourceLink layer="workforce" label="Nursing Workforce Intelligence" /> — duty scheduling
         does not recalculate them.
       </p>
     </Panel>
@@ -392,7 +392,7 @@ export function SkillMixPanel({ coverage }: { coverage: CoverageResult[] }) {
       </ul>
       <p className="mt-3 text-[11px] text-muted-foreground">
         Certification and competency development remain owned by{" "}
-        <SourceLink to="/growth" label="Employee Growth" />; only operationally relevant competency is surfaced here.
+        <SourceLink layer="growth" label="Employee Growth" />; only operationally relevant competency is surfaced here.
       </p>
     </Panel>
   );
@@ -462,7 +462,7 @@ export function RecoveryPanel({ signals, nurses }: { signals: RecoverySignalRow[
       </ul>
       <p className="mt-3 text-[11px] text-muted-foreground">
         Fatigue analytics, support and recognition remain owned by{" "}
-        <SourceLink to="/wellbeing" label="Employee Wellbeing" />. Wellbeing information stays separate from capacity
+        <SourceLink layer="wellbeing" label="Employee Wellbeing" />. Wellbeing information stays separate from capacity
         scoring unless the institution configures otherwise.
       </p>
     </Panel>
