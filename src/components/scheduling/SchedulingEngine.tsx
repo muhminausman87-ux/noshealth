@@ -7,14 +7,19 @@ import {
   Download,
   FileSpreadsheet,
   Gauge,
+  HeartPulse,
   History,
   LayoutDashboard,
   ListChecks,
+  Scale,
   Settings2,
   ShieldAlert,
+  ShieldCheck,
+  Stethoscope,
   Siren,
   Sparkles,
   Upload,
+  UserRound,
   Users,
 } from "lucide-react";
 import { DEPARTMENTS, getDept, type Department } from "@/lib/departments";
@@ -33,15 +38,38 @@ import { currentMonth, demoNurses, demoRequests } from "@/lib/scheduling/demo";
 import { emergencyOptions, generateSchedule, recompute, validateChange } from "@/lib/scheduling/engine";
 import { exportRosterWorkbook, parseRosterWorkbook, type ImportDiff } from "@/lib/scheduling/excel";
 import { RosterGrid, CodeChip } from "./RosterGrid";
+import { defaultRegulatoryBaseline, type RegulatoryBaseline } from "@/lib/scheduling/regulatory";
+import { DEFAULT_STAFFING_STANDARDS, DEFAULT_WORKLOAD, type StaffingStandard, type WorkloadInputs } from "@/lib/scheduling/staffing-standards";
+import { validateCompliance } from "@/lib/scheduling/compliance";
+import { experienceScores, fairness, fatigueRisk, scheduleStability } from "@/lib/scheduling/wellbeing";
+import {
+  CompliancePanel,
+  Disclaimer,
+  FairnessPanel,
+  MySchedulePanel,
+  RegulatoryBaselinePanel,
+  StaffingStandardsPanel,
+  VersionRecord,
+  WellbeingPanel,
+} from "./CompliancePanels";
+
+export const ENGINE_VERSION = "NOS Scheduling Engine v2.0 (India compliance + employee experience)";
+export const STANDARDS_VERSION = "NOS Nursing Staffing Standards Library v1.0";
 
 const TABS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "staff", label: "Staff", icon: Users },
   { id: "requests", label: "Requests", icon: ClipboardList },
   { id: "policies", label: "Policies", icon: Settings2 },
+  { id: "regulatory", label: "India Regulatory Baseline", icon: Scale },
+  { id: "standards", label: "Staffing Standards & Workload", icon: Stethoscope },
   { id: "generate", label: "Generate Schedule", icon: Sparkles },
   { id: "roster", label: "Monthly Roster", icon: CalendarClock },
   { id: "coverage", label: "Coverage", icon: ListChecks },
+  { id: "compliance", label: "India Labour Compliance", icon: ShieldCheck },
+  { id: "wellbeing", label: "Fatigue & Wellbeing", icon: HeartPulse },
+  { id: "fairness", label: "Fairness", icon: Scale },
+  { id: "myschedule", label: "My Schedule", icon: UserRound },
   { id: "exceptions", label: "Exceptions", icon: AlertTriangle },
   { id: "emergency", label: "Emergency Mode", icon: Siren },
   { id: "excel", label: "Excel Export/Import", icon: FileSpreadsheet },
@@ -138,6 +166,12 @@ export function SchedulingEngine({ session }: { session: Session }) {
   const [roster, setRoster] = useState<Roster | null>(null);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
   const [importReport, setImportReport] = useState<{ diffs: ImportDiff[]; errors: string[]; issues: string[]; cells: Record<string, Record<string, string>> } | null>(null);
+  const [base, setBase] = useState<RegulatoryBaseline>(() => defaultRegulatoryBaseline("Kerala"));
+  const [standards, setStandards] = useState<StaffingStandard[]>(DEFAULT_STAFFING_STANDARDS);
+  const [standardId, setStandardId] = useState("std-ward");
+  const [workload, setWorkload] = useState<WorkloadInputs>(DEFAULT_WORKLOAD);
+  const [publishedAt, setPublishedAt] = useState<string | undefined>(undefined);
+  const [changes, setChanges] = useState({ total: 0, lastMinute: 0, nurse: 0, management: 0, emergency: 0 });
   const [emergency, setEmergency] = useState<{ date: string; shift: string; absent?: string }>({ date: "", shift: "N" });
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -183,6 +217,13 @@ export function SchedulingEngine({ session }: { session: Session }) {
         ...next.exceptions,
       ];
     setRoster(next);
+    setChanges((c) => ({
+      ...c,
+      total: c.total + 1,
+      lastMinute: c.lastMinute + (publishedAt ? 1 : 0),
+      management: c.management + 1,
+      emergency: c.emergency + (override ? 1 : 0),
+    }));
     log(override ? "Manual change (override)" : "Manual change", `${nurses.find((n) => n.id === nurseId)?.name} ${date} → ${code}${override ? ` · Reason: ${override}` : ""}`);
   };
 
@@ -213,6 +254,56 @@ export function SchedulingEngine({ session }: { session: Session }) {
   };
 
   /* ---------------------------------------------------------------- views */
+
+  const fatigue = useMemo(() => (roster ? fatigueRisk(roster, policy, nurses) : []), [roster, policy, nurses]);
+  const fairData = useMemo(
+    () => (roster ? fairness(roster, policy, nurses) : { rows: [], dimensions: [] }),
+    [roster, policy, nurses],
+  );
+  const stability = useMemo(
+    () =>
+      scheduleStability({
+        publishedAt,
+        firstShiftDate: roster?.dates[0],
+        totalChanges: changes.total,
+        lastMinuteChanges: changes.lastMinute,
+        nurseRequestedChanges: changes.nurse,
+        managementChanges: changes.management,
+        emergencyChanges: changes.emergency,
+      }),
+    [publishedAt, roster, changes],
+  );
+  const experience = useMemo(
+    () => (roster ? experienceScores(roster, policy, nurses, stability) : []),
+    [roster, policy, nurses, stability],
+  );
+  const compliance = useMemo(
+    () =>
+      roster
+        ? validateCompliance(roster, policy, base, nurses, {
+            fatigueHigh: fatigue.filter((f) => f.concern === "high").length,
+            fairnessConcerns: fairData.dimensions.filter((d) => d.verdict !== "Fair").length,
+            predictability: stability.score,
+          })
+        : null,
+    [roster, policy, base, nurses, fatigue, fairData, stability],
+  );
+  const nightRows = useMemo(
+    () =>
+      fatigue.map((f) => ({
+        name: f.name,
+        nights: f.nights,
+        maxConsecutiveNights: f.maxConsecutiveNights,
+        transitions: f.rapidTransitions,
+        recovery:
+          f.shortRecoveries > 1 || f.maxConsecutiveNights > policy.maxConsecutiveNights
+            ? "Circadian/Recovery Risk — Administrative Review Required"
+            : f.rapidTransitions
+              ? "Transition present; recovery interval within the configured rest rule."
+              : "Stable pattern with adequate recovery.",
+      })),
+    [fatigue, policy.maxConsecutiveNights],
+  );
 
   const q = roster?.quality;
   const critical = roster?.exceptions.filter((e) => e.severity === "critical") ?? [];
@@ -614,6 +705,7 @@ export function SchedulingEngine({ session }: { session: Session }) {
                     onClick={() => {
                       const next = roster.status === "draft" ? "approved" : "published";
                       setRoster({ ...roster, status: next });
+                      if (next === "published") setPublishedAt(new Date().toISOString().slice(0, 10));
                       log(next === "approved" ? "Schedule approved" : "Schedule published", `${roster.unit} ${roster.month} · ${critical.length} critical exception(s) at the time of ${next}.`);
                     }}
                     className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
