@@ -90,13 +90,15 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     modules: [
       // Source of truth for capacity vs demand decisions.
       { label: "Nursing Workforce Intelligence", icon: LineChart, to: "/nursing-workforce-intelligence" },
+      // Human-centered rostering; consumes demand/capacity signals, never recomputes them.
+      { label: "Intelligent Duty Scheduling", icon: CalendarClock, to: "/duty-scheduling" },
       // Operational overview dashboard (capacity, risk, nurse voice, staffing analytics live here).
       { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce-intelligence" },
       { label: "Nursing Workforce Digital Twin", icon: Activity, to: "/nursing-workforce-twin" },
       { label: "Unit Capacity", icon: Shield, to: "/unit-capacity" },
       { label: "Workflow Intelligence", icon: Brain, to: "/workflow-intelligence" },
       { label: "Float Pool", icon: Users },
-      { label: "Shift Management", icon: ClipboardList },
+      { label: "Shift Management", icon: ClipboardList, to: "/duty-scheduling" },
     ],
 
   },
