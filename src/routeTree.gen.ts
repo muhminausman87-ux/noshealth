@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ClinicalRouteImport } from './routes/clinical'
 import { Route as ClinicalExcellenceRouteImport } from './routes/clinical-excellence'
 import { Route as DigitalTwinRouteImport } from './routes/digital-twin'
+import { Route as DutySchedulingRouteImport } from './routes/duty-scheduling'
 import { Route as EbpRouteImport } from './routes/ebp'
 import { Route as ExcellenceRouteImport } from './routes/excellence'
 import { Route as ExecutiveRouteImport } from './routes/executive'
@@ -54,6 +55,11 @@ const ClinicalExcellenceRoute = ClinicalExcellenceRouteImport.update({
 const DigitalTwinRoute = DigitalTwinRouteImport.update({
   id: '/digital-twin',
   path: '/digital-twin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DutySchedulingRoute = DutySchedulingRouteImport.update({
+  id: '/duty-scheduling',
+  path: '/duty-scheduling',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EbpRoute = EbpRouteImport.update({
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/clinical': typeof ClinicalRoute
   '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
+  '/duty-scheduling': typeof DutySchedulingRoute
   '/ebp': typeof EbpRoute
   '/excellence': typeof ExcellenceRoute
   '/executive': typeof ExecutiveRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByTo {
   '/clinical': typeof ClinicalRoute
   '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
+  '/duty-scheduling': typeof DutySchedulingRoute
   '/ebp': typeof EbpRoute
   '/excellence': typeof ExcellenceRoute
   '/executive': typeof ExecutiveRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/clinical': typeof ClinicalRoute
   '/clinical-excellence': typeof ClinicalExcellenceRoute
   '/digital-twin': typeof DigitalTwinRoute
+  '/duty-scheduling': typeof DutySchedulingRoute
   '/ebp': typeof EbpRoute
   '/excellence': typeof ExcellenceRoute
   '/executive': typeof ExecutiveRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
+    | '/duty-scheduling'
     | '/ebp'
     | '/excellence'
     | '/executive'
@@ -291,6 +301,7 @@ export interface FileRouteTypes {
     | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
+    | '/duty-scheduling'
     | '/ebp'
     | '/excellence'
     | '/executive'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
+    | '/duty-scheduling'
     | '/ebp'
     | '/excellence'
     | '/executive'
@@ -348,6 +360,7 @@ export interface RootRouteChildren {
   ClinicalRoute: typeof ClinicalRoute
   ClinicalExcellenceRoute: typeof ClinicalExcellenceRoute
   DigitalTwinRoute: typeof DigitalTwinRoute
+  DutySchedulingRoute: typeof DutySchedulingRoute
   EbpRoute: typeof EbpRoute
   ExcellenceRoute: typeof ExcellenceRoute
   ExecutiveRoute: typeof ExecutiveRoute
@@ -400,6 +413,13 @@ declare module '@tanstack/react-router' {
       path: '/digital-twin'
       fullPath: '/digital-twin'
       preLoaderRoute: typeof DigitalTwinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/duty-scheduling': {
+      id: '/duty-scheduling'
+      path: '/duty-scheduling'
+      fullPath: '/duty-scheduling'
+      preLoaderRoute: typeof DutySchedulingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ebp': {
@@ -564,6 +584,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClinicalRoute: ClinicalRoute,
   ClinicalExcellenceRoute: ClinicalExcellenceRoute,
   DigitalTwinRoute: DigitalTwinRoute,
+  DutySchedulingRoute: DutySchedulingRoute,
   EbpRoute: EbpRoute,
   ExcellenceRoute: ExcellenceRoute,
   ExecutiveRoute: ExecutiveRoute,
