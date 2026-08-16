@@ -29,6 +29,7 @@ import {
   Target,
   DollarSign,
   Briefcase,
+  CalendarClock,
 } from "lucide-react";
 import type { Role } from "./auth";
 
