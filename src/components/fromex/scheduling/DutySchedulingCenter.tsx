@@ -37,6 +37,7 @@ import {
   HistoryPanel,
   LeaveImpactPanel,
   MyDutyPanel,
+  OverviewPanel,
   PolicyPanel,
   RecommendationsPanel,
   RecoveryPanel,
@@ -180,7 +181,9 @@ export function DutySchedulingCenter({ session }: { session: Session }) {
         />
       )}
 
-      {has("overview") && <OverviewBlock />}
+      {has("overview") && (
+        <OverviewPanel dept={dept} coverage={coverage} conflicts={conflicts} stage={stage} policy={policy} />
+      )}
 
       {has("generate") && (
         <GeneratePanel
@@ -250,9 +253,4 @@ export function DutySchedulingCenter({ session }: { session: Session }) {
       </footer>
     </div>
   );
-
-  function OverviewBlock() {
-    const { OverviewPanel } = require("./Panels") as typeof import("./Panels");
-    return <OverviewPanel dept={dept} coverage={coverage} conflicts={conflicts} stage={stage} policy={policy} />;
-  }
 }
