@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { SchedulingEngine } from "@/components/scheduling/SchedulingEngine";
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/scheduling")({
+export const Route = createFileRoute("/_authenticated/scheduling")({
   head: () => ({
     meta: [
       { title: "AI Nursing Duty Scheduling Engine · NOS" },

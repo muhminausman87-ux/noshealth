@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { WorkspaceLanding } from "@/components/WorkspaceLanding";
 import { WORKSPACES } from "@/lib/workspaces";
 
-export const Route = createFileRoute("/executive")({
+export const Route = createFileRoute("/_authenticated/executive")({
   head: () => ({
     meta: [
       { title: "Executive Intelligence · NOS" },

@@ -57,7 +57,7 @@ const LEARNING_ITEMS: RoadmapItem[] = [
   },
 ];
 
-export const Route = createFileRoute("/learning")({
+export const Route = createFileRoute("/_authenticated/learning")({
   head: () => ({
     meta: [
       { title: "Learning & Development · NOS Ecosystem" },

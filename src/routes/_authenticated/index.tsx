@@ -22,7 +22,7 @@ import { getDept, type Department } from "@/lib/departments";
 import { getSession, setSession, signOut, type Session } from "@/lib/auth";
 import { AlertTriangle, Stethoscope, HeartHandshake, CalendarDays } from "lucide-react";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
       { title: "SyncCare EHR — Clinical Workspace" },

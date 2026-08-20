@@ -1,30 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { WorkforceIntelligenceCenter } from "@/components/fromex/workforce/WorkforceIntelligenceCenter";
+import { DutySchedulingCenter } from "@/components/fromex/scheduling/DutySchedulingCenter";
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/nursing-workforce-intelligence")({
+export const Route = createFileRoute("/_authenticated/duty-scheduling")({
   head: () => ({
     meta: [
-      { title: "Nursing Workforce Intelligence · NOS" },
+      { title: "Intelligent Duty Scheduling · NOS" },
       {
         name: "description",
         content:
-          "Patient demand to nursing capacity to operational action: explainable prototype intelligence for nursing workforce leaders.",
+          "Human-centered nursing rostering: patient demand, skill mix, approved leave, recovery and fairness balanced before any schedule is published.",
       },
-      { property: "og:title", content: "Nursing Workforce Intelligence · NOS" },
+      { property: "og:title", content: "Intelligent Duty Scheduling · NOS" },
       {
         property: "og:description",
-        content: "See patient-generated nursing demand, capacity, imbalance, forecast and governed decisions.",
+        content: "Coverage, skill mix, recovery concerns, leave impact and governed approval for nursing duty rosters.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: NursingWorkforceIntelligencePage,
+  component: DutySchedulingPage,
 });
 
-function NursingWorkforceIntelligencePage() {
+function DutySchedulingPage() {
   const [session, setSession] = useState<Session | null>(null);
   useEffect(() => setSession(getSession()), []);
 
@@ -36,7 +36,7 @@ function NursingWorkforceIntelligencePage() {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6">
-      <WorkforceIntelligenceCenter session={session} />
+      <DutySchedulingCenter session={session} />
     </main>
   );
 }

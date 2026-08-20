@@ -12,7 +12,7 @@ import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport"
 import { PlatformPositioning } from "@/components/PlatformPositioning";
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/workflow-intelligence")({
+export const Route = createFileRoute("/_authenticated/workflow-intelligence")({
   head: () => ({
     meta: [
       { title: "Workflow Intelligence · NOS Nursing Intelligence Layer" },

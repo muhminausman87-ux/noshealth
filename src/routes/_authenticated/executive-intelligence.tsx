@@ -59,7 +59,7 @@ const EXEC_ITEMS: RoadmapItem[] = [
   },
 ];
 
-export const Route = createFileRoute("/executive-intelligence")({
+export const Route = createFileRoute("/_authenticated/executive-intelligence")({
   head: () => ({
     meta: [
       { title: "Executive Intelligence · NOS Ecosystem" },

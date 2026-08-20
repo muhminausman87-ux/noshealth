@@ -11,7 +11,7 @@ import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
 
-export const Route = createFileRoute("/clinical-excellence")({
+export const Route = createFileRoute("/_authenticated/clinical-excellence")({
   head: () => ({
     meta: [
       { title: "Clinical Excellence Hub · NOS Ecosystem" },

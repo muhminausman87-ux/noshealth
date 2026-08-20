@@ -23,13 +23,13 @@ import {
 import { EBPSearch, DoseCalculator, ProcedureGuides, NewDrugBadge, isNewDrug } from "@/components/EBPReferences";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/patient/$patientId")({
+export const Route = createFileRoute("/_authenticated/patient/$patientId")({
   head: () => ({ meta: [{ title: "Patient · SyncCare EHR" }] }),
   component: PatientPage,
 });
 
 function PatientPage() {
-  const { patientId } = useParams({ from: "/patient/$patientId" });
+  const { patientId } = useParams({ from: "/_authenticated/patient/$patientId" });
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
   const [handoverType, setHandoverType] = useState<HandoverType>("shift");

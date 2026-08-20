@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { UnitCapacity } from "@/components/fromex/UnitCapacity";
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/unit-capacity")({
+export const Route = createFileRoute("/_authenticated/unit-capacity")({
   head: () => ({
     meta: [
       { title: "Unit Acuity & Capacity · NOS" },

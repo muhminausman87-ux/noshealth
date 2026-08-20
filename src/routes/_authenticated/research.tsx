@@ -57,7 +57,7 @@ const RESEARCH_ITEMS: RoadmapItem[] = [
   },
 ];
 
-export const Route = createFileRoute("/research")({
+export const Route = createFileRoute("/_authenticated/research")({
   head: () => ({
     meta: [
       { title: "Research & Innovation · NOS Ecosystem" },

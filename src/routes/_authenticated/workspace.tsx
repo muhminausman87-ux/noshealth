@@ -6,7 +6,7 @@ import { getSession, signOut, type Session } from "@/lib/auth";
 import { allowedWorkspaces } from "@/lib/access";
 import logo from "@/assets/nos-logo.png.asset.json";
 
-export const Route = createFileRoute("/workspace")({
+export const Route = createFileRoute("/_authenticated/workspace")({
   head: () => ({
     meta: [
       { title: "Workspace Selector · NOS Ecosystem" },

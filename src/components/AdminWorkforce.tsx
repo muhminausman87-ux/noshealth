@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { STAFF } from "@/lib/auth";
+import { DEMO_STAFF } from "@/lib/demo-staff";
 import { getDept, DEPARTMENTS, type Department } from "@/lib/departments";
 import { patientsByDept } from "@/lib/patients";
 import {
@@ -43,7 +43,7 @@ interface StaffRow {
 }
 
 function buildRoster(): StaffRow[] {
-  return STAFF.filter((u) => u.role === "staff").map((u) => {
+  return DEMO_STAFF.map((u) => {
     const schedule: ShiftCode[] = Array.from({ length: 7 }, (_, i) => {
       const r = seeded(u.username, i);
       if (r < 0.18) return "O";

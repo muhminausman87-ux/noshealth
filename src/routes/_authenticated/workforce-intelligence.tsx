@@ -13,7 +13,7 @@ import { ContextualSignal, SourceLink } from "@/components/SourceLink";
 
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/workforce-intelligence")({
+export const Route = createFileRoute("/_authenticated/workforce-intelligence")({
   head: () => ({
     meta: [
       { title: "Workforce Intelligence · NOS Nursing Intelligence Layer" },

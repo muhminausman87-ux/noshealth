@@ -6,7 +6,7 @@ import { WORKSPACES } from "@/lib/workspaces";
 import { getSession, type Session } from "@/lib/auth";
 import { isBedsideFirst } from "@/lib/access";
 
-export const Route = createFileRoute("/clinical")({
+export const Route = createFileRoute("/_authenticated/clinical")({
   head: () => ({
     meta: [
       { title: "Clinical Workspace · NOS" },

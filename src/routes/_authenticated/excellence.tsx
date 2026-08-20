@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { WorkspaceLanding } from "@/components/WorkspaceLanding";
 import { WORKSPACES } from "@/lib/workspaces";
 
-export const Route = createFileRoute("/excellence")({
+export const Route = createFileRoute("/_authenticated/excellence")({
   head: () => ({
     meta: [
       { title: "Clinical Excellence · NOS" },
