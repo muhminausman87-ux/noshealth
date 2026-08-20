@@ -29,7 +29,7 @@ export const Route = createFileRoute("/_authenticated/patient/$patientId")({
 });
 
 function PatientPage() {
-  const { patientId } = useParams({ from: "/patient/$patientId" });
+  const { patientId } = useParams({ from: "/_authenticated/patient/$patientId" });
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
   const [handoverType, setHandoverType] = useState<HandoverType>("shift");
