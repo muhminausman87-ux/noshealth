@@ -12,6 +12,8 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/AppSidebar";
 import { QuickNav } from "@/components/QuickNav";
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
 
 import appCss from "../styles.css?url";
 import logo from "../assets/nos-logo.png.asset.json";
