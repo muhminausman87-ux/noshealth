@@ -125,8 +125,24 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const isAuthShell = pathname === "/login";
+  const isAuthShell = pathname === "/login" || pathname === "/reset-password";
+
+  // Single global auth subscriber: keep the router in step with the session.
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event === "SIGNED_OUT") {
+        queryClient.clear();
+      } else {
+        queryClient.invalidateQueries();
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, [router, queryClient]);
+
 
   return (
     <QueryClientProvider client={queryClient}>
