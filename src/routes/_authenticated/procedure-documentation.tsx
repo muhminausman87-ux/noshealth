@@ -35,7 +35,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 
-export const Route = createFileRoute("/procedure-documentation")({
+export const Route = createFileRoute("/_authenticated/procedure-documentation")({
   head: () => ({
     meta: [
       { title: "Intelligent Procedure Documentation — NOS Ecosystem" },

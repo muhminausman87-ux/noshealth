@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { WorkspaceLanding } from "@/components/WorkspaceLanding";
 import { WORKSPACES } from "@/lib/workspaces";
 
-export const Route = createFileRoute("/wellbeing")({
+export const Route = createFileRoute("/_authenticated/wellbeing")({
   head: () => ({
     meta: [
       { title: "Employee Wellbeing · NOS" },

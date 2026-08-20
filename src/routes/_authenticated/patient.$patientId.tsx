@@ -23,7 +23,7 @@ import {
 import { EBPSearch, DoseCalculator, ProcedureGuides, NewDrugBadge, isNewDrug } from "@/components/EBPReferences";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/patient/$patientId")({
+export const Route = createFileRoute("/_authenticated/patient/$patientId")({
   head: () => ({ meta: [{ title: "Patient · SyncCare EHR" }] }),
   component: PatientPage,
 });

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { WorkspaceLanding } from "@/components/WorkspaceLanding";
 import { WORKSPACES } from "@/lib/workspaces";
 
-export const Route = createFileRoute("/workforce")({
+export const Route = createFileRoute("/_authenticated/workforce")({
   head: () => ({
     meta: [
       { title: "Workforce Operations · NOS" },

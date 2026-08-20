@@ -11,7 +11,7 @@ import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { StatusPill } from "@/components/Widget";
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/digital-twin")({
+export const Route = createFileRoute("/_authenticated/digital-twin")({
   head: () => ({
     meta: [
       { title: "Hospital Digital Twin · NOS Ecosystem" },

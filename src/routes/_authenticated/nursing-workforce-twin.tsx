@@ -10,7 +10,7 @@ import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { StatusPill } from "@/components/Widget";
 import { getSession, type Session } from "@/lib/auth";
 
-export const Route = createFileRoute("/nursing-workforce-twin")({
+export const Route = createFileRoute("/_authenticated/nursing-workforce-twin")({
   head: () => ({
     meta: [
       { title: "Nursing Workforce Digital Twin · NOS Ecosystem" },

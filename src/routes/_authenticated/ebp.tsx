@@ -57,7 +57,7 @@ const EBP_ITEMS: RoadmapItem[] = [
   },
 ];
 
-export const Route = createFileRoute("/ebp")({
+export const Route = createFileRoute("/_authenticated/ebp")({
   head: () => ({
     meta: [
       { title: "Evidence-Based Practice · NOS Ecosystem" },
