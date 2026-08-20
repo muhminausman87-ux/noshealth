@@ -16,7 +16,7 @@ export function Widget({
 }) {
   return (
     <section
-      className={`rounded-xl border border-border bg-card p-5 shadow-sm ${className}`}
+      className={`card-hover rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)] ${className}`}
     >
       <header className="mb-4 flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5">
