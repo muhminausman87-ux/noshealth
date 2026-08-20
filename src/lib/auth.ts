@@ -9,16 +9,36 @@ type DbRole = Database["public"]["Enums"]["app_role"];
 // DB stores 'nurse'; the UI uses 'staff'. Map between them.
 const dbRoleToSession = (r: DbRole): Role => (r === "nurse" ? "staff" : r);
 
+export interface Session {
+  username: string;
+  name: string;
+  title: string;
+  role: Role;
+  assignedDept?: Department;
+  activeDept: Department;
+  pulled: boolean;
+  /** Tenant boundary — every institution-owned query is scoped to this. */
+  institutionId?: string;
+  institutionName?: string;
+  /** Responsibility-based access (see src/lib/access.ts). */
+  responsibilities?: Responsibility[];
+}
+
 /**
- * Sign in with Supabase using email + password, then hydrate the local Session
- * from profiles + user_roles. Returns the Session or throws an Error on failure.
+ * SECURITY MODEL
+ * --------------
+ * Supabase Auth is the only source of truth for identity. The `Session`
+ * object below is a *presentation cache* of the signed-in user's profile
+ * (name, job role, department) that is re-derived from the database on every
+ * authenticated page load. It contains no tokens, no passwords and no
+ * credentials, and it is never trusted for data access: every read/write is
+ * enforced by Postgres RLS policies scoped to `auth.uid()`.
  */
-export async function signInWithEmail(email: string, password: string): Promise<Session> {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error || !data.user) throw new Error(error?.message ?? "Sign in failed");
+const KEY = "nos.session.cache";
+const EMERG_KEY = "nos.emergency";
 
-  const userId = data.user.id;
-
+/** Load the profile/role/responsibility view of the currently signed-in user. */
+async function loadSessionFor(userId: string, email: string | undefined): Promise<Session> {
   const [{ data: profile, error: pErr }, { data: roles, error: rErr }, { data: resp }] =
     await Promise.all([
       supabase
@@ -40,9 +60,6 @@ export async function signInWithEmail(email: string, password: string): Promise<
 
   const assignedDept = (profile?.assigned_dept ?? undefined) as Department | undefined;
   const activeDept: Department = assignedDept ?? "ed";
-  const name = profile?.full_name || data.user.email || "User";
-  const title = profile?.title || "";
-  const username = profile?.username || data.user.email || "";
 
   // Responsibilities come from the institution's configuration. When an
   // institution has not configured them yet, fall back to the job role so the
@@ -56,10 +73,10 @@ export async function signInWithEmail(email: string, password: string): Promise<
         ? ["bedside_nurse"]
         : [];
 
-  const session: Session = {
-    username,
-    name,
-    title,
+  return {
+    username: profile?.username || email || "",
+    name: profile?.full_name || email || "User",
+    title: profile?.title || "",
     role,
     assignedDept,
     activeDept,
@@ -70,82 +87,66 @@ export async function signInWithEmail(email: string, password: string): Promise<
       undefined,
     responsibilities,
   };
+}
+
+/**
+ * Re-derive the session from Supabase Auth + the database. Returns null when
+ * there is no valid (non-expired) Supabase session. Called by the route guard
+ * on every authenticated navigation, so an expired/revoked session is caught.
+ */
+export async function hydrateSession(): Promise<Session | null> {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) {
+    setSession(null);
+    return null;
+  }
+  const cached = getSession();
+  const session = await loadSessionFor(data.user.id, data.user.email ?? undefined);
+  // Preserve the in-app department the user is currently viewing.
+  if (cached && cached.username === session.username) {
+    session.activeDept = cached.activeDept;
+    session.pulled = cached.pulled;
+  }
+  setSession(session);
+  return session;
+}
+
+/** Sign in with Supabase using email + password. Throws a safe Error on failure. */
+export async function signInWithEmail(email: string, password: string): Promise<Session> {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data.user) {
+    // Never surface raw provider internals to the browser.
+    throw new Error("Incorrect email or password.");
+  }
+
+  const session = await loadSessionFor(data.user.id, data.user.email ?? undefined);
   setSession(session);
   void recordAudit({
     institutionId: session.institutionId,
     action: "auth.login",
     entityType: "user",
-    entityId: userId,
+    entityId: data.user.id,
   });
   return session;
 }
 
+/** Send a password-reset email that lands on the public /reset-password route. */
+export async function sendPasswordReset(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/reset-password`,
+  });
+  if (error) throw new Error("Unable to send the reset email. Please try again.");
+}
 
-/** Sign out of Supabase and clear the local session. */
+/** Sign out of Supabase and clear the local presentation cache. */
 export async function signOut(): Promise<void> {
-  try { await supabase.auth.signOut(); } catch { /* ignore */ }
+  try {
+    await supabase.auth.signOut();
+  } catch {
+    /* ignore */
+  }
   setSession(null);
 }
-
-export interface DemoUser {
-  username: string;
-  password: string;
-  name: string;
-  role: Role;
-  assignedDept?: Department;
-  title: string;
-}
-
-export const STAFF: DemoUser[] = [
-  { username: "admin",   password: "admin123", name: "Dr. R. Menon",  role: "admin", title: "Nursing Director" },
-
-  // Nurses
-  { username: "achen",   password: "nurse123", name: "RN A. Chen",    role: "staff", assignedDept: "ed",        title: "ED Nurse" },
-  { username: "spriya",  password: "nurse123", name: "RN S. Priya",   role: "staff", assignedDept: "icu",       title: "ICU Nurse" },
-  { username: "jthomas", password: "nurse123", name: "RN J. Thomas",  role: "staff", assignedDept: "medsurg",   title: "Med-Surg Nurse" },
-  { username: "mfatima", password: "nurse123", name: "RN M. Fatima",  role: "staff", assignedDept: "maternity", title: "Maternity Nurse" },
-  { username: "kraj",    password: "nurse123", name: "RN K. Raj",     role: "staff", assignedDept: "cardiac",   title: "Cardiac Nurse" },
-  { username: "lpaul",   password: "nurse123", name: "RN L. Paul",    role: "staff", assignedDept: "labour",    title: "Labour Room Nurse" },
-  { username: "nsingh",  password: "nurse123", name: "RN N. Singh",   role: "staff", assignedDept: "pediatric", title: "Pediatric Nurse" },
-  { username: "rjoseph", password: "nurse123", name: "RN R. Joseph",  role: "staff", assignedDept: "medical",   title: "Medical Ward Nurse" },
-  { username: "ddas",    password: "nurse123", name: "RN D. Das",     role: "staff", assignedDept: "surgical",  title: "Surgical Ward Nurse" },
-  { username: "anair",   password: "nurse123", name: "RN A. Nair",    role: "staff", assignedDept: "opd",       title: "OPD Nurse" },
-  { username: "pgeorge", password: "nurse123", name: "RN P. George",  role: "staff", assignedDept: "daycare",   title: "Day Care Nurse" },
-  { username: "tkurian", password: "nurse123", name: "RN T. Kurian",  role: "staff", assignedDept: "ot",        title: "OT Scrub Nurse" },
-
-  // Doctors (login by username only — designation is separate)
-  { username: "dpatel",  password: "doc123",   name: "Dr. P. Patel",  role: "doctor", assignedDept: "medical",  title: "Internal Medicine" },
-  { username: "dkhan",   password: "doc123",   name: "Dr. A. Khan",   role: "doctor", assignedDept: "ed",       title: "ED Physician" },
-  { username: "drao",    password: "doc123",   name: "Dr. V. Rao",    role: "doctor", assignedDept: "icu",      title: "Intensivist" },
-  { username: "dshah",   password: "doc123",   name: "Dr. M. Shah",   role: "doctor", assignedDept: "ot",       title: "Surgeon" },
-  { username: "diyer",   password: "doc123",   name: "Dr. K. Iyer",   role: "doctor", assignedDept: "daycare",  title: "Day-Care Consultant" },
-
-  // Lab technicians
-  { username: "lab1",    password: "lab123",   name: "Tech S. Roy",   role: "lab",    title: "Lab Technician (Biochem)" },
-  { username: "lab2",    password: "lab123",   name: "Tech H. Ali",   role: "lab",    title: "Lab Technician (Haem)" },
-
-  // Radiology
-  { username: "rad1",    password: "rad123",   name: "Rad. T. Bose",  role: "radiology", title: "Radiology Technologist" },
-  { username: "rad2",    password: "rad123",   name: "Dr. N. Verma",  role: "radiology", title: "Radiologist" },
-];
-
-export interface Session {
-  username: string;
-  name: string;
-  title: string;
-  role: Role;
-  assignedDept?: Department;
-  activeDept: Department;
-  pulled: boolean;
-  /** Tenant boundary — every institution-owned query is scoped to this. */
-  institutionId?: string;
-  institutionName?: string;
-  /** Responsibility-based access (see src/lib/access.ts). */
-  responsibilities?: Responsibility[];
-}
-
-const KEY = "synccare.session";
-const EMERG_KEY = "synccare.emergency";
 
 export function getSession(): Session | null {
   if (typeof window === "undefined") return null;
@@ -160,33 +161,13 @@ export function getSession(): Session | null {
 export function setSession(s: Session | null) {
   if (typeof window === "undefined") return;
   if (s) localStorage.setItem(KEY, JSON.stringify(s));
-  else localStorage.removeItem(KEY);
-}
-
-export function findUser(username: string, password: string, role: Role): DemoUser | null {
-  return (
-    STAFF.find(
-      (u) =>
-        u.username.toLowerCase() === username.trim().toLowerCase() &&
-        u.password === password &&
-        u.role === role,
-    ) ?? null
-  );
-}
-
-/** Auto-detect role from username + password (no role tab required at login). */
-export function findUserAny(username: string, password: string): DemoUser | null {
-  return (
-    STAFF.find(
-      (u) =>
-        u.username.toLowerCase() === username.trim().toLowerCase() &&
-        u.password === password,
-    ) ?? null
-  );
+  else {
+    localStorage.removeItem(KEY);
+    localStorage.removeItem("synccare.session");
+  }
 }
 
 // Hospital-wide healthcare emergency mode (Code Yellow / mass casualty / outbreak).
-// When ON: surge protocol banner shown, staff get emergency-pay (+50%) and comp-off note.
 export function getEmergency(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(EMERG_KEY) === "1";
@@ -202,15 +183,3 @@ export const SUPPORT_PHONE = "+852685497";
 export const SUPPORT_PHONE_DISPLAY = "852 685 497";
 
 export const FOUNDER_LINKEDIN = "https://www.linkedin.com/in/muhmina-usman-a9b54557";
-
-// Demo accounts to show on the login screen. Every account uses password `demo1234`.
-// These map to real rows in auth.users so Supabase sign-in succeeds.
-export const DEMO_ACCOUNTS: { role: string; username: string; password: string; name: string }[] = [
-  { role: "Admin / Nursing Director",       username: "admin@demo.nos",     password: "demo1234", name: "Dr. R. Menon" },
-  { role: "Nurse",                          username: "nurse@demo.nos",     password: "demo1234", name: "RN A. Chen" },
-  { role: "Doctor",                         username: "doctor@demo.nos",    password: "demo1234", name: "Dr. P. Patel" },
-  { role: "Lab Technician",                 username: "lab@demo.nos",       password: "demo1234", name: "Tech S. Roy" },
-  { role: "Radiology",                      username: "radiology@demo.nos", password: "demo1234", name: "Rad. T. Bose" },
-  { role: "HR / Workforce Operations",      username: "hr@demo.nos",        password: "demo1234", name: "HR M. Iqbal" },
-  { role: "Executive Intelligence (CNO)",   username: "exec@demo.nos",      password: "demo1234", name: "CNO K. Rao" },
-];
