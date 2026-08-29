@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_LOGO, NOS_LOGO_ALT } from "@/lib/branding";
 
 export const Route = createFileRoute("/reset-password")({
   ssr: false,
@@ -68,7 +68,7 @@ function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-secondary via-background to-accent/40 px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logo.url} alt="NOS Health" className="h-14 w-auto" />
+          <img src={NOS_LOGO} alt={NOS_LOGO_ALT} className="h-16 w-auto max-w-[280px] object-contain" />
           <h1 className="mt-3 text-xl font-semibold tracking-tight text-foreground">NOS HEALTH</h1>
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Clinical &amp; Workforce Intelligence Platform

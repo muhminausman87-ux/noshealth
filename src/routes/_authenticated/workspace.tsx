@@ -4,7 +4,7 @@ import { ArrowRight, LogOut } from "lucide-react";
 import { WORKSPACE_LIST } from "@/lib/workspaces";
 import { getSession, signOut, type Session } from "@/lib/auth";
 import { allowedWorkspaces } from "@/lib/access";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 
 export const Route = createFileRoute("/_authenticated/workspace")({
   head: () => ({
@@ -60,7 +60,7 @@ function WorkspaceSelector() {
     <div className="mx-auto max-w-[1200px] px-6 py-10">
       <header className="mb-8 flex flex-wrap items-start justify-between gap-6 border-b border-border pb-6">
         <div className="flex items-start gap-4">
-          <img src={logo.url} alt="NOS Workspace" className="h-11 w-11 object-contain" />
+          <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-11 w-11 object-contain" />
           <div>
             <div className="nos-eyebrow text-primary">NOS Workspace</div>
             <div className="mt-2 text-sm text-muted-foreground">Welcome, {session.name}</div>

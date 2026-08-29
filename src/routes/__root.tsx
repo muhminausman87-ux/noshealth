@@ -17,7 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 import appCss from "../styles.css?url";
-import logo from "../assets/nos-logo.png.asset.json";
+import { NOS_MARK } from "@/lib/branding";
 
 function NotFoundComponent() {
   return (
@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "icon",
         type: "image/png",
-        href: logo.url,
+        href: "/favicon.png",
       },
     ],
   }),
@@ -160,7 +160,7 @@ function RootComponent() {
         aria-hidden
         className="pointer-events-none fixed inset-0 z-0"
         style={{
-          backgroundImage: `url(${logo.url})`,
+          backgroundImage: `url(${NOS_MARK})`,
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "min(95vw, 95vh) auto",

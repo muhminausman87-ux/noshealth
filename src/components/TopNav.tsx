@@ -5,7 +5,7 @@ import type { Department } from "@/lib/departments";
 import { DEPARTMENTS, getDept } from "@/lib/departments";
 import { PATIENTS } from "@/lib/patients";
 import type { Session } from "@/lib/auth";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 
 interface Props {
   active: Department;
@@ -57,7 +57,7 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
     >
       <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3">
         <div className="flex items-center gap-2">
-          <img src={logo.url} alt="NOS Ecosystem" className="h-9 w-9 rounded-md object-contain" />
+          <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-9 w-9 rounded-md object-contain" />
           <div>
             <div className="text-sm font-semibold leading-tight text-foreground sm:text-base">
               NOS <span className="text-primary">Ecosystem</span>
