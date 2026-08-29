@@ -98,19 +98,22 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     icon: Users,
     landing: "/workforce",
     modules: [
+      { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce" },
       // Source of truth for capacity vs demand decisions.
       {
         label: "Nursing Workforce Intelligence",
         icon: LineChart,
         to: "/nursing-workforce-intelligence",
       },
-      { label: "Intelligent Duty Scheduling", icon: CalendarClock, to: "/scheduling" },
-      { label: "Roster Management", icon: CalendarDays, to: "/duty-scheduling" },
-      { label: "Staffing & Capacity", icon: Gauge, to: "/unit-capacity" },
+      { label: "AI Duty Scheduling Engine", icon: CalendarClock, to: "/scheduling" },
+      { label: "Intelligent Duty Scheduling", icon: CalendarDays, to: "/duty-scheduling" },
+      { label: "Nursing Workforce Digital Twin", icon: Layers, to: "/nursing-workforce-twin" },
+      { label: "Unit Capacity", icon: Gauge, to: "/unit-capacity" },
+      { label: "Workflow Intelligence", icon: Activity, to: "/workflow-intelligence" },
       { label: "Assignment Management", icon: ClipboardList, to: "/workforce-intelligence" },
+      { label: "Float Pool", icon: Users },
+      { label: "Shift Management", icon: CalendarClock },
       { label: "Leave Management", icon: Repeat },
-      { label: "Float / Resource Pool", icon: Layers, to: "/nursing-workforce-twin" },
-      { label: "Workforce Analytics", icon: Activity, to: "/workflow-intelligence" },
       { label: "Escalations", icon: AlertTriangle },
     ],
   },
@@ -191,14 +194,14 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
 
 export const WORKSPACE_LIST = Object.values(WORKSPACES);
 
-/** Global, workspace-independent navigation shown above workspace modules. */
-export const GLOBAL_NAV: { label: string; icon: React.ComponentType<{ className?: string }>; to?: string }[] = [
-  { label: "Workspaces", icon: Layers, to: "/workspace" },
-  { label: "Tasks", icon: ClipboardCheck },
-  { label: "Messages", icon: MessageSquareHeart },
-  { label: "Reports", icon: FileBarChart },
-  { label: "Analytics", icon: Brain },
-  { label: "Support", icon: LifeBuoy },
+/**
+ * Secondary Administration navigation — deliberately kept separate from the
+ * six NOS workspaces. Items without a route are placeholders (coming soon).
+ */
+export const ADMIN_NAV: { label: string; icon: React.ComponentType<{ className?: string }>; to?: string }[] = [
+  { label: "Settings", icon: Settings },
+  { label: "Integrations", icon: Plug },
+  { label: "Audit & Security", icon: ShieldCheck },
 ];
 
 // Map a pathname to its owning workspace (best-effort).
