@@ -53,7 +53,7 @@ export function WorkforceIntelligenceCenter({ session }: { session: Session }) {
       <header className="rounded-2xl border border-border bg-card p-5 shadow-sm">
         <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
           <Users2 className="h-3.5 w-3.5" aria-hidden="true" />
-          FROMEX Nursing Workforce Intelligence
+          Workforce Operations
         </div>
         <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           Nursing Workforce Intelligence
@@ -61,6 +61,7 @@ export function WorkforceIntelligenceCenter({ session }: { session: Session }) {
         <p className="mt-1 text-sm text-muted-foreground">
           Patient demand → nursing capacity → operational action.
         </p>
+
 
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
