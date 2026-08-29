@@ -37,6 +37,7 @@ import {
   type StaffingStandard,
   type WorkloadInputs,
 } from "@/lib/scheduling/staffing-standards";
+import { StaffingStandardsLibrary } from "./StaffingStandardsLibrary";
 
 /* ------------------------------------------------------------- primitives */
 
