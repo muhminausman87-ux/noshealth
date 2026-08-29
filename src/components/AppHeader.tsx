@@ -45,12 +45,12 @@ export function AppHeader() {
     .toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-card/85 px-3 backdrop-blur sm:px-4">
+    <header className="sticky top-0 z-30 flex h-13 items-center gap-3 border-b border-border bg-card px-3 sm:px-4">
       <SidebarTrigger className="shrink-0" />
 
       <Link to="/workspace" className="flex min-w-0 items-center gap-2.5">
         <img src={logo.url} alt="NOS Workspace" className="h-7 w-7 shrink-0 object-contain" />
-        <span className="truncate text-[13px] font-semibold uppercase tracking-[0.16em] text-foreground">
+        <span className="truncate text-[12.5px] font-bold uppercase tracking-[0.18em] text-foreground">
           NOS <span className="text-primary">Workspace</span>
         </span>
       </Link>
@@ -71,14 +71,14 @@ export function AppHeader() {
         <button
           type="button"
           aria-label="Notifications"
-          className="relative flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-accent hover:text-foreground"
+          className="relative flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
         >
           <Bell className="h-4 w-4" />
           <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
         </button>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg px-1.5 py-1 transition hover:bg-accent">
+          <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-1.5 py-1 transition hover:bg-accent">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
               {initials}
             </span>

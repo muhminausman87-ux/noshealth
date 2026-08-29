@@ -5,11 +5,11 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 6px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -38,6 +38,8 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-ai: var(--ai);
+  --color-ai-foreground: var(--ai-foreground);
 
   --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 
@@ -59,7 +61,7 @@
 
 /* FROMEX — Healthcare · AI · Empowerment */
 :root {
-  --radius: 0.9rem;
+  --radius: 0.45rem;
 
   --fromex-navy: #073b8f;
   --fromex-blue: #1268d8;
@@ -68,8 +70,8 @@
   --fromex-light: #f1f8fd;
 
   --gradient-fromex: linear-gradient(120deg, #073b8f 0%, #1268d8 45%, #28a9f5 78%, #7dd8f7 100%);
-  --shadow-card: 0 1px 2px rgb(7 59 143 / 0.06), 0 8px 24px -14px rgb(7 59 143 / 0.25);
-  --shadow-card-hover: 0 2px 6px rgb(7 59 143 / 0.08), 0 18px 40px -18px rgb(7 59 143 / 0.32);
+  --shadow-card: 0 1px 1px rgb(13 43 94 / 0.04), 0 1px 3px rgb(13 43 94 / 0.05);
+  --shadow-card-hover: 0 1px 2px rgb(13 43 94 / 0.06), 0 6px 16px -10px rgb(13 43 94 / 0.22);
 
   --background: #ffffff;
   --foreground: #0d2b5e;
@@ -94,6 +96,8 @@
   --border: #dbe7f3;
   --input: #cfdff0;
   --ring: #1268d8;
+  --ai: #3d5bd9;
+  --ai-foreground: #ffffff;
   --chart-1: #073b8f;
   --chart-2: #1268d8;
   --chart-3: #28a9f5;
@@ -125,6 +129,8 @@
   --border: #dbe7f3;
   --input: #cfdff0;
   --ring: #1268d8;
+  --ai: #3d5bd9;
+  --ai-foreground: #ffffff;
 }
 
 @layer base {
@@ -138,15 +144,16 @@
     -webkit-font-smoothing: antialiased;
   }
   body {
-    background-image:
-      radial-gradient(1100px 620px at 88% -12%, rgb(40 169 245 / 0.10), transparent 62%),
-      radial-gradient(880px 520px at -8% 108%, rgb(18 104 216 / 0.08), transparent 60%);
-    background-attachment: fixed;
+    background-color: #f6f9fc;
+    font-size: 13px;
   }
-  h1, h2, h3 {
+  h1 { letter-spacing: -0.02em; }
+  h1, h2, h3, h4 {
     color: var(--fromex-navy);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.01em;
+    font-weight: 600;
   }
+  table { font-variant-numeric: tabular-nums; }
 }
 
 @utility fromex-gradient {
@@ -154,12 +161,76 @@
 }
 
 @utility card-hover {
-  transition: box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease;
+  transition: box-shadow 150ms ease, border-color 150ms ease, background-color 150ms ease;
   &:hover {
     box-shadow: var(--shadow-card-hover);
-    border-color: color-mix(in srgb, var(--fromex-bright) 45%, transparent);
-    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--fromex-blue) 32%, transparent);
   }
+}
+
+/* ---------------- FROMEX IDS component language ---------------- */
+
+/* Surface used by every NOS panel / card */
+@utility nos-surface {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* Section / eyebrow label above titles */
+@utility nos-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Dense enterprise table (IDS roster benchmark) */
+@utility nos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  & thead th {
+    background: var(--muted);
+    color: var(--muted-foreground);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  & tbody td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  }
+  & tbody tr:hover {
+    background: color-mix(in srgb, var(--primary) 4%, transparent);
+  }
+}
+
+/* AI treatment — restrained, never autonomous-looking */
+@utility nos-ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--ai) 35%, transparent);
+  background: color-mix(in srgb, var(--ai) 8%, transparent);
+  color: var(--ai);
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@utility nos-ai-panel {
+  border: 1px solid color-mix(in srgb, var(--ai) 22%, transparent);
+  border-left: 3px solid var(--ai);
+  background: color-mix(in srgb, var(--ai) 4%, transparent);
+  border-radius: var(--radius-lg);
 }
 
 @media (prefers-reduced-motion: reduce) {

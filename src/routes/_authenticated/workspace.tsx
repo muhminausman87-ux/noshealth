@@ -57,19 +57,17 @@ function WorkspaceSelector() {
   if (!session) return null;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-6 py-12 lg:py-16">
-      <header className="mb-10 flex flex-wrap items-start justify-between gap-6">
+    <div className="mx-auto max-w-[1200px] px-6 py-10">
+      <header className="mb-8 flex flex-wrap items-start justify-between gap-6 border-b border-border pb-6">
         <div className="flex items-start gap-4">
-          <img src={logo.url} alt="NOS Workspace" className="h-12 w-12 object-contain" />
+          <img src={logo.url} alt="NOS Workspace" className="h-11 w-11 object-contain" />
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-              NOS Workspace
-            </div>
+            <div className="nos-eyebrow text-primary">NOS Workspace</div>
             <div className="mt-2 text-sm text-muted-foreground">Welcome, {session.name}</div>
-            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
               Choose a workspace
             </h1>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-2 max-w-xl text-[12.5px] leading-relaxed text-muted-foreground">
               You see only the workspaces authorised for your institution, role and
               responsibility. Open one to load just its modules and navigation.
             </p>
@@ -77,14 +75,14 @@ function WorkspaceSelector() {
         </div>
         <button
           onClick={handleLogout}
-          className="inline-flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground"
+          className="inline-flex items-center gap-2 rounded-md border border-input bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
         >
           <LogOut className="h-3.5 w-3.5" /> Sign out
         </button>
       </header>
 
       {visible.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-card/60 p-10 text-center">
+        <div className="rounded-lg border border-dashed border-border bg-card p-10 text-center">
           <div className="text-sm font-semibold text-foreground">
             You don't currently have access to any workspace
           </div>
@@ -94,21 +92,22 @@ function WorkspaceSelector() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((w) => {
             const Icon = w.icon;
             return (
               <Link
                 key={w.id}
                 to={w.landing}
-                className="group flex min-h-[190px] flex-col rounded-2xl border border-border bg-card p-6 transition duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[var(--shadow-card-hover)]"
+                className="group flex min-h-[176px] flex-col rounded-lg border border-border bg-card p-5 transition duration-150 hover:border-primary/45 hover:shadow-[var(--shadow-card-hover)]"
                 style={{ boxShadow: "var(--shadow-card)" }}
               >
                 <div className="mb-4 flex items-center justify-between">
                   <div
-                    className="flex h-11 w-11 items-center justify-center rounded-xl"
+                    className="flex h-10 w-10 items-center justify-center rounded-md border"
                     style={{
-                      background: `color-mix(in oklab, ${w.color} 12%, transparent)`,
+                      background: `color-mix(in srgb, ${w.color} 8%, transparent)`,
+                      borderColor: `color-mix(in srgb, ${w.color} 26%, transparent)`,
                       color: w.color,
                     }}
                   >
@@ -116,11 +115,11 @@ function WorkspaceSelector() {
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground/60 transition group-hover:translate-x-0.5 group-hover:text-primary" />
                 </div>
-                <div className="text-[15px] font-semibold text-foreground">{w.name}</div>
+                <div className="text-[14px] font-semibold tracking-tight text-foreground">{w.name}</div>
                 <p className="mt-1.5 flex-1 text-xs leading-relaxed text-muted-foreground">
                   {w.purpose}
                 </p>
-                <div className="mt-5 text-[11px] font-medium text-muted-foreground/80">
+                <div className="mt-5 nos-eyebrow">
                   {w.modules.length} modules
                 </div>
               </Link>

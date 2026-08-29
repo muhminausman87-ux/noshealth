@@ -124,7 +124,7 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Employee Wellbeing",
     short: "Wellbeing",
     purpose: "Support and retain nurses through wellbeing intelligence.",
-    color: "#16a37b",
+    color: "#0f8fb5",
     icon: HeartHandshake,
     landing: "/wellbeing",
     modules: [
@@ -143,7 +143,7 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Employee Growth",
     short: "Growth",
     purpose: "Professional development, competencies, and career pathways.",
-    color: "#5b6ee0",
+    color: "#3d5bd9",
     icon: GraduationCap,
     landing: "/growth",
     modules: [
@@ -162,7 +162,7 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Clinical Excellence",
     short: "Excellence",
     purpose: "Quality improvement, audits, and evidence-based practice.",
-    color: "#e0a03a",
+    color: "#0a5bb5",
     icon: Award,
     landing: "/excellence",
     modules: [
@@ -179,7 +179,7 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Executive Intelligence",
     short: "Executive",
     purpose: "Executive decision support and strategic intelligence.",
-    color: "#d4657a",
+    color: "#073b8f",
     icon: LineChart,
     landing: "/executive",
     modules: [
