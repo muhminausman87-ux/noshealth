@@ -90,6 +90,43 @@ export function AppSidebar({
       <SidebarContent className="gap-0">
         <SidebarGroup>
           {!collapsed && (
+            <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              Global
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {GLOBAL_NAV.map((item) => {
+                const GIcon = item.icon;
+                const active = item.to ? pathname === item.to : false;
+                return (
+                  <SidebarMenuItem key={item.label}>
+                    {item.to ? (
+                      <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
+                        <Link to={item.to} className="flex items-center gap-2">
+                          <GIcon className="h-4 w-4 shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton
+                        tooltip={`${item.label} (coming soon)`}
+                        className="opacity-55 cursor-not-allowed"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <GIcon className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-1 border-t border-border/60 pt-2">
+          {!collapsed && (
             <SidebarGroupLabel className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
               <Icon className="h-3 w-3" />
               {workspace.name}
