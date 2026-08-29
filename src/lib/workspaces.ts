@@ -15,7 +15,6 @@ import {
   ClipboardCheck,
   Workflow,
   Activity,
-  Brain,
   Shield,
   Coffee,
   BatteryLow,
