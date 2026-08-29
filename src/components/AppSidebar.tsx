@@ -1,4 +1,4 @@
-import { LogOut, LayoutGrid } from "lucide-react";
+import { LogOut, LayoutGrid, ChevronsUpDown, Check } from "lucide-react";
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
@@ -15,6 +15,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import logo from "@/assets/nos-logo.png.asset.json";
 import {
   WORKSPACE_LIST,
@@ -25,6 +33,18 @@ import {
 import { getSession, signOut, type Session } from "@/lib/auth";
 import { allowedWorkspaces, type AccessContext } from "@/lib/access";
 
+/**
+ * Minimal global sidebar.
+ *
+ * Global navigation answers "Where am I?" — it exposes ONLY the six NOS
+ * workspaces through a single workspace selector. Individual modules are
+ * intentionally NOT shown here; they live on each workspace's landing page
+ * (WorkspaceLanding), keeping the global rail clean:
+ *
+ *   GLOBAL NAVIGATION = workspaces
+ *   WORKSPACE NAVIGATION = modules (on the workspace page)
+ *   PAGE = actual functionality
+ */
 export function AppSidebar({
   collapsible = "icon",
 }: {
@@ -40,7 +60,6 @@ export function AppSidebar({
     setSess(getSession());
   }, [pathname]);
 
-  // "Where am I?" — the active workspace is derived from the current route.
   const activeWorkspace: Workspace | null = getWorkspaceForPath(pathname);
 
   const ctx: AccessContext | null = session
@@ -55,6 +74,11 @@ export function AppSidebar({
   const visibleWorkspaces = WORKSPACE_LIST.filter((w) => allowed.includes(w.id));
   const canSwitchWorkspace = ctx ? allowed.length > 1 : false;
 
+  // Administration is shown only where appropriate (leadership roles).
+  const canSeeAdmin = session ? session.role === "admin" : false;
+
+  const ActiveIcon = activeWorkspace?.icon;
+
   const handleLogout = async () => {
     await signOut();
     navigate({ to: "/login" });
@@ -62,6 +86,7 @@ export function AppSidebar({
 
   return (
     <Sidebar collapsible={collapsible} className="border-r border-border">
+      {/* 1. NOS brand */}
       <SidebarHeader className="border-b border-border/60 py-3">
         <Link to="/workspace" className="flex items-center gap-2 px-2">
           <img
@@ -74,99 +99,132 @@ export function AppSidebar({
               <div className="truncate text-sm font-semibold uppercase leading-tight tracking-[0.14em] text-foreground">
                 NOS <span className="text-primary">Workspace</span>
               </div>
-              <div
-                className="truncate text-[10px] uppercase tracking-wider"
-                style={{ color: activeWorkspace?.color }}
-              >
-                {session?.institutionName
-                  ? `${session.institutionName} · ${activeWorkspace?.short ?? "Home"}`
-                  : (activeWorkspace?.short ?? "Workspace home")}
-              </div>
+              {session?.institutionName && (
+                <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {session.institutionName}
+                </div>
+              )}
             </div>
           )}
         </Link>
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        {/* Primary navigation — the six NOS workspaces. */}
+        {/* 2. Workspace selector — the only global navigation mechanism. */}
         <SidebarGroup>
           {!collapsed && (
             <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Workspaces
+              Workspace
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
             <SidebarMenu>
-              {visibleWorkspaces.map((ws) => {
-                const WIcon = ws.icon;
-                const active = activeWorkspace?.id === ws.id;
-                return (
-                  <SidebarMenuItem key={ws.id}>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
                     <SidebarMenuButton
-                      asChild
-                      isActive={active}
-                      tooltip={ws.name}
-                      className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold"
+                      tooltip={activeWorkspace?.name ?? "Select workspace"}
+                      className="h-9 border border-border/70 bg-muted/40 hover:bg-muted/70"
                     >
-                      <Link to={ws.landing} className="flex items-center gap-2">
-                        <WIcon
+                      {ActiveIcon ? (
+                        <ActiveIcon
                           className="h-4 w-4 shrink-0"
                         />
-                        <span className="truncate">{ws.name}</span>
-                      </Link>
+                      ) : (
+                        <LayoutGrid className="h-4 w-4 shrink-0" />
+                      )}
+                      <span className="truncate font-medium">
+                        {activeWorkspace?.name ?? "Select workspace"}
+                      </span>
+                      {!collapsed && (
+                        <ChevronsUpDown className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      )}
                     </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="right"
+                    align="start"
+                    className="w-64"
+                  >
+                    <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      NOS Workspaces
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {visibleWorkspaces.map((ws) => {
+                      const WIcon = ws.icon;
+                      const active = activeWorkspace?.id === ws.id;
+                      return (
+                        <DropdownMenuItem
+                          key={ws.id}
+                          onSelect={() => navigate({ to: ws.landing })}
+                          className="flex items-start gap-2.5 py-2"
+                        >
+                          <WIcon
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                          />
+                          <span className="flex min-w-0 flex-col">
+                            <span className="truncate text-sm font-medium">
+                              {ws.name}
+                            </span>
+                            <span className="line-clamp-2 text-[11px] text-muted-foreground">
+                              {ws.purpose}
+                            </span>
+                          </span>
+                          {active && (
+                            <Check className="ml-auto mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                          )}
+                        </DropdownMenuItem>
+                      );
+                    })}
+                    {canSwitchWorkspace && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onSelect={() => navigate({ to: "/workspace" })}
+                          className="flex items-center gap-2.5"
+                        >
+                          <LayoutGrid className="h-4 w-4" />
+                          <span className="text-sm">Workspace home</span>
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* "What can I do here?" — modules of the active workspace only. */}
-        {activeWorkspace && (
-          <SidebarGroup className="mt-1 border-t border-border/60 pt-2">
+        {/* 3. Administration — only where appropriate. */}
+        {canSeeAdmin && (
+          <SidebarGroup className="mt-auto border-t border-border/60 pt-2">
             {!collapsed && (
-              <SidebarGroupLabel
-                className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider"
-                style={{ color: activeWorkspace.color }}
-              >
-                <activeWorkspace.icon className="h-3 w-3" />
-                {activeWorkspace.name}
+              <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                Administration
               </SidebarGroupLabel>
             )}
             <SidebarGroupContent>
               <SidebarMenu>
-                {activeWorkspace.modules.map((item) => {
-                  const MIcon = item.icon;
+                {ADMIN_NAV.map((item) => {
+                  const AIcon = item.icon;
                   const active = item.to ? pathname === item.to : false;
-                  const enabled = Boolean(item.to);
                   return (
                     <SidebarMenuItem key={item.label}>
-                      {enabled ? (
-                        <SidebarMenuButton
-                          asChild
-                          isActive={active}
-                          tooltip={item.label}
-                          className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold"
-                        >
-                          <Link to={item.to!} className="flex items-center gap-2">
-                            <MIcon className="h-4 w-4 shrink-0" />
+                      {item.to ? (
+                        <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
+                          <Link to={item.to} className="flex items-center gap-2">
+                            <AIcon className="h-4 w-4 shrink-0" />
                             <span className="truncate">{item.label}</span>
                           </Link>
                         </SidebarMenuButton>
                       ) : (
                         <SidebarMenuButton
                           tooltip={`${item.label} (coming soon)`}
-                          className="opacity-60 cursor-not-allowed"
+                          className="opacity-55 cursor-not-allowed"
                           onClick={(e) => e.preventDefault()}
                         >
-                          <MIcon className="h-4 w-4 shrink-0" />
+                          <AIcon className="h-4 w-4 shrink-0" />
                           <span className="truncate">{item.label}</span>
-                          {!collapsed && (
-                            <span className="ml-auto rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
-                              Soon
-                            </span>
-                          )}
                         </SidebarMenuButton>
                       )}
                     </SidebarMenuItem>
@@ -176,58 +234,11 @@ export function AppSidebar({
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-
-        {/* Administration — secondary, kept separate from workspaces. */}
-        <SidebarGroup className="mt-1 border-t border-border/60 pt-2">
-          {!collapsed && (
-            <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Administration
-            </SidebarGroupLabel>
-          )}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {ADMIN_NAV.map((item) => {
-                const AIcon = item.icon;
-                const active = item.to ? pathname === item.to : false;
-                return (
-                  <SidebarMenuItem key={item.label}>
-                    {item.to ? (
-                      <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
-                        <Link to={item.to} className="flex items-center gap-2">
-                          <AIcon className="h-4 w-4 shrink-0" />
-                          <span className="truncate">{item.label}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    ) : (
-                      <SidebarMenuButton
-                        tooltip={`${item.label} (coming soon)`}
-                        className="opacity-55 cursor-not-allowed"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <AIcon className="h-4 w-4 shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                      </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
 
+      {/* 4. Sign out */}
       <SidebarFooter className="border-t border-border/60">
         <SidebarMenu>
-          {canSwitchWorkspace && (
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Switch workspace">
-                <Link to="/workspace" className="flex items-center gap-2">
-                  <LayoutGrid className="h-4 w-4 shrink-0" />
-                  <span className="truncate">Switch workspace</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          )}
           {session && (
             <SidebarMenuItem>
               <SidebarMenuButton
