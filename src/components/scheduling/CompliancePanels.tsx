@@ -53,10 +53,10 @@ export function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-      <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
+    <section className="nos-surface p-4">
+      <header className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-border pb-3">
         <div>
-          <h2 className="text-sm font-semibold tracking-tight text-foreground">{title}</h2>
+          <h2 className="text-[13px] font-semibold tracking-tight text-foreground">{title}</h2>
           {subtitle && <p className="mt-0.5 max-w-3xl text-[11px] text-muted-foreground">{subtitle}</p>}
         </div>
         {right}
