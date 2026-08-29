@@ -8,7 +8,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppHeader } from "@/components/AppHeader";
 import { AppSidebar } from "@/components/AppSidebar";
 import { QuickNav } from "@/components/QuickNav";
 import { useEffect, useState } from "react";
