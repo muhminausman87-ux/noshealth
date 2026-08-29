@@ -18,6 +18,7 @@ import {
 import logo from "@/assets/nos-logo.png.asset.json";
 import {
   WORKSPACES,
+  GLOBAL_NAV,
   getWorkspaceForPath,
   type Workspace,
 } from "@/lib/workspaces";
@@ -70,8 +71,8 @@ export function AppSidebar({
           />
           {!collapsed && (
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold leading-tight text-foreground">
-                NOS <span className="text-primary">Ecosystem</span>
+              <div className="truncate text-sm font-semibold uppercase leading-tight tracking-[0.14em] text-foreground">
+                NOS <span className="text-primary">Workspace</span>
               </div>
               <div
                 className="truncate text-[10px] uppercase tracking-wider"
@@ -79,7 +80,7 @@ export function AppSidebar({
               >
                 {session?.institutionName
                   ? `${session.institutionName} · ${workspace.short}`
-                  : `${workspace.short} Workspace`}
+                  : workspace.short}
               </div>
             </div>
           )}
@@ -88,6 +89,43 @@ export function AppSidebar({
 
       <SidebarContent className="gap-0">
         <SidebarGroup>
+          {!collapsed && (
+            <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              Global
+            </SidebarGroupLabel>
+          )}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {GLOBAL_NAV.map((item) => {
+                const GIcon = item.icon;
+                const active = item.to ? pathname === item.to : false;
+                return (
+                  <SidebarMenuItem key={item.label}>
+                    {item.to ? (
+                      <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
+                        <Link to={item.to} className="flex items-center gap-2">
+                          <GIcon className="h-4 w-4 shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton
+                        tooltip={`${item.label} (coming soon)`}
+                        className="opacity-55 cursor-not-allowed"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <GIcon className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </SidebarMenuButton>
+                    )}
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-1 border-t border-border/60 pt-2">
           {!collapsed && (
             <SidebarGroupLabel className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
               <Icon className="h-3 w-3" />

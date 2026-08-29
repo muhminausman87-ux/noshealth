@@ -8,7 +8,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppHeader } from "@/components/AppHeader";
 import { AppSidebar } from "@/components/AppSidebar";
 import { QuickNav } from "@/components/QuickNav";
 import { useEffect, useState } from "react";
@@ -207,22 +208,16 @@ function SidebarShell() {
       <div className="relative z-10 flex min-h-screen w-full">
         <AppSidebar collapsible={isPatientWorkspace ? "offcanvas" : "icon"} />
         <SidebarInset className="min-w-0 bg-transparent">
-          <div className="sticky top-0 z-20 flex h-11 items-center gap-2 border-b border-border bg-card/80 px-3 backdrop-blur">
-            <SidebarTrigger />
-            <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              {isPatientWorkspace ? "Patient Clinical Workspace" : "NOS Clinical Workspace"}
-            </div>
-          </div>
+          <AppHeader />
           <Outlet />
-          <footer className="border-t border-border/70 bg-card/60 px-4 py-3 text-[11px] leading-snug text-muted-foreground">
-            <div className="mx-auto max-w-[1400px]">
-              <span className="font-medium text-foreground">NOS · Nursing Intelligence Layer</span>{" "}
-              — works alongside your existing hospital EHR to help teams answer three questions:
-              which patients need the most nursing care right now, do we have the nursing capacity
-              to respond safely, and what operational action should happen next.
-              <span className="mt-1 block text-muted-foreground/80">
-                NOS supports clinical and operational decision-making. It does not replace
-                professional clinical judgment or existing hospital information systems.
+          <footer className="border-t border-border/70 bg-card/60 px-4 py-4 text-[11px] leading-snug text-muted-foreground">
+            <div className="mx-auto flex max-w-[1400px] flex-wrap items-baseline justify-between gap-2">
+              <span className="text-muted-foreground/80">
+                NOS Workspace supports clinical and operational decision-making. It does not
+                replace professional clinical judgment or existing hospital information systems.
+              </span>
+              <span className="text-muted-foreground/70">
+                NOS Workspace · A FROMEX Health Tech product
               </span>
             </div>
           </footer>

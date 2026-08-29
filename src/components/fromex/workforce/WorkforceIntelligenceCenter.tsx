@@ -18,6 +18,7 @@ import {
   TrendsSection,
   WorkloadSection,
 } from "./Sections";
+import { ShiftOverview, Disclosure } from "./ShiftOverview";
 import { EscalationSection, OutcomeSection, RecommendationSection } from "./DecisionPanel";
 
 /**
@@ -53,7 +54,7 @@ export function WorkforceIntelligenceCenter({ session }: { session: Session }) {
       <header className="rounded-2xl border border-border bg-card p-5 shadow-sm">
         <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
           <Users2 className="h-3.5 w-3.5" aria-hidden="true" />
-          FROMEX Nursing Workforce Intelligence
+          Workforce Operations
         </div>
         <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
           Nursing Workforce Intelligence
@@ -61,6 +62,7 @@ export function WorkforceIntelligenceCenter({ session }: { session: Session }) {
         <p className="mt-1 text-sm text-muted-foreground">
           Patient demand → nursing capacity → operational action.
         </p>
+
 
         <div className="mt-4 flex flex-wrap items-end gap-3">
           <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -105,13 +107,8 @@ export function WorkforceIntelligenceCenter({ session }: { session: Session }) {
         <p className="mt-3 text-[11px] text-muted-foreground">{cfg.focus}</p>
       </header>
 
-      {cfg.sections.demand && <PatientDemandSection demand={snap.demand} />}
-      {cfg.sections.capacity && (
-        <CapacitySection capacity={snap.capacity} showCompetency={cfg.sections.competency} />
-      )}
-      {cfg.sections.forecast && <ForecastSection forecast={snap.forecast} />}
-      {cfg.sections.imbalance && <ImbalanceSection risks={snap.risks} />}
-      {cfg.sections.individualWorkload && <WorkloadSection workloads={snap.workloads} />}
+      <ShiftOverview snap={snap} />
+
       {cfg.sections.recommendation && (
         <RecommendationSection
           recommendations={snap.recommendations}
@@ -129,21 +126,55 @@ export function WorkforceIntelligenceCenter({ session }: { session: Session }) {
           onAcknowledge={(id) => setAcknowledged((p) => ({ ...p, [id]: new Date().toISOString() }))}
         />
       )}
-      {cfg.sections.workforceTrends && <TrendsSection />}
+
+      {cfg.sections.demand && (
+        <Disclosure title="Why — patient demand detail" caption="Acuity, workload drivers and contributing patients">
+          <PatientDemandSection demand={snap.demand} />
+        </Disclosure>
+      )}
+      {cfg.sections.capacity && (
+        <Disclosure title="Capacity detail" caption="Staffing mix, available hours and competency coverage">
+          <CapacitySection capacity={snap.capacity} showCompetency={cfg.sections.competency} />
+        </Disclosure>
+      )}
+      {cfg.sections.imbalance && (
+        <Disclosure title="Risk by unit" caption="Where demand and capacity are diverging">
+          <ImbalanceSection risks={snap.risks} />
+        </Disclosure>
+      )}
+      {cfg.sections.forecast && (
+        <Disclosure title="Forecast — next shifts" caption="AI Prototype projection of demand and cover">
+          <ForecastSection forecast={snap.forecast} />
+        </Disclosure>
+      )}
+      {cfg.sections.individualWorkload && (
+        <Disclosure title="Individual nurse workload" caption="Per-nurse load and recovery signals">
+          <WorkloadSection workloads={snap.workloads} />
+        </Disclosure>
+      )}
+      {cfg.sections.workforceTrends && (
+        <Disclosure title="Workforce trends" caption="Longer-term movement across the institution">
+          <TrendsSection />
+        </Disclosure>
+      )}
       {cfg.sections.outcomes && (
-        <OutcomeSection
-          outcomes={snap.outcomes}
-          liveDecisions={Object.values(decisions)}
-          recommendations={snap.recommendations}
-        />
+        <Disclosure title="Outcomes of decisions taken" caption="What changed after action was recorded">
+          <OutcomeSection
+            outcomes={snap.outcomes}
+            liveDecisions={Object.values(decisions)}
+            recommendations={snap.recommendations}
+          />
+        </Disclosure>
       )}
       {cfg.sections.governance && (
-        <GovernanceSection
-          policyCode={snap.policy.code}
-          policyTitle={snap.policy.title}
-          acknowledgementMinutes={snap.policy.acknowledgementMinutes}
-          fatigueAffectsCapacity={snap.policy.fatigueAffectsCapacity}
-        />
+        <Disclosure title="Governance & policy" caption="Institutional rules applied to these recommendations">
+          <GovernanceSection
+            policyCode={snap.policy.code}
+            policyTitle={snap.policy.title}
+            acknowledgementMinutes={snap.policy.acknowledgementMinutes}
+            fatigueAffectsCapacity={snap.policy.fatigueAffectsCapacity}
+          />
+        </Disclosure>
       )}
 
       <footer className="pb-8 text-center text-[11px] text-muted-foreground">
