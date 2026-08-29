@@ -18,6 +18,7 @@ import {
   TrendsSection,
   WorkloadSection,
 } from "./Sections";
+import { ShiftOverview, Disclosure } from "./ShiftOverview";
 import { EscalationSection, OutcomeSection, RecommendationSection } from "./DecisionPanel";
 
 /**
