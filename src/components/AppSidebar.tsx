@@ -71,8 +71,8 @@ export function AppSidebar({
           />
           {!collapsed && (
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold leading-tight text-foreground">
-                NOS <span className="text-primary">Ecosystem</span>
+              <div className="truncate text-sm font-semibold uppercase leading-tight tracking-[0.14em] text-foreground">
+                NOS <span className="text-primary">Workspace</span>
               </div>
               <div
                 className="truncate text-[10px] uppercase tracking-wider"
@@ -80,7 +80,7 @@ export function AppSidebar({
               >
                 {session?.institutionName
                   ? `${session.institutionName} · ${workspace.short}`
-                  : `${workspace.short} Workspace`}
+                  : workspace.short}
               </div>
             </div>
           )}
