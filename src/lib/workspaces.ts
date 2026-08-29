@@ -38,6 +38,9 @@ import {
   LifeBuoy,
   UserCheck,
   Bot,
+  Settings,
+  Plug,
+  ShieldCheck,
 } from "lucide-react";
 import type { Role } from "./auth";
 
