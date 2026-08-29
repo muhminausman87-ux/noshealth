@@ -37,6 +37,7 @@ import {
   type StaffingStandard,
   type WorkloadInputs,
 } from "@/lib/scheduling/staffing-standards";
+import { StaffingStandardsLibrary } from "./StaffingStandardsLibrary";
 
 /* ------------------------------------------------------------- primitives */
 
@@ -334,58 +335,13 @@ export function StaffingStandardsPanel({
 
   return (
     <>
-      <Panel
-        title="Nursing Staffing Standards Library"
-        subtitle="Example values only — configurable by institution, state, unit and accreditation requirement. Nursing standards are not labour statutes."
-      >
-        <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
-            <thead>
-              <tr className="border-b border-border">
-                <Th>Unit</Th>
-                <Th>Nurse : beds</Th>
-                <Th>Min senior / shift</Th>
-                <Th>Authority</Th>
-                <Th>Source</Th>
-                <Th>Status</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {standards.map((s) => (
-                <tr key={s.id} className={`border-b border-border/60 ${s.id === selectedId ? "bg-primary/5" : ""}`}>
-                  <Td>
-                    <button type="button" className="font-semibold text-primary underline" onClick={() => onSelect(s.id)}>
-                      {s.unit}
-                    </button>
-                  </Td>
-                  <Td>
-                    1 :{" "}
-                    <input
-                      type="number"
-                      value={s.nursePerBeds}
-                      onChange={(e) => onStandards(standards.map((x) => (x.id === s.id ? { ...x, nursePerBeds: Number(e.target.value) } : x)))}
-                      className="w-16 rounded-md border border-border bg-card px-1 py-0.5 tabular-nums"
-                    />
-                  </Td>
-                  <Td>
-                    <input
-                      type="number"
-                      value={s.minSeniorPerShift}
-                      onChange={(e) => onStandards(standards.map((x) => (x.id === s.id ? { ...x, minSeniorPerShift: Number(e.target.value) } : x)))}
-                      className="w-16 rounded-md border border-border bg-card px-1 py-0.5 tabular-nums"
-                    />
-                  </Td>
-                  <Td>{s.authority}</Td>
-                  <td className="max-w-[280px] px-2 py-1.5 text-muted-foreground">{s.source}</td>
-                  <Td>
-                    <Tag tone={s.verified ? "#0d9488" : "#d97706"}>{s.verified ? "Verified" : "Pending verification"}</Tag>
-                  </Td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Panel>
+      <StaffingStandardsLibrary
+        standards={standards}
+        onStandards={onStandards}
+        selectedId={selectedId}
+        onSelect={onSelect}
+      />
+
 
       <Panel
         title="Workload-based staffing"

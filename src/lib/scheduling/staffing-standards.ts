@@ -5,6 +5,16 @@
  *   Required Workforce = Staffing Standard + Workload/Acuity Adjustment + Skill Mix Requirement
  */
 
+export type SourceType =
+  | "Institution Policy"
+  | "Regulatory Reference"
+  | "Accreditation Requirement"
+  | "Evidence Reference"
+  | "Local Configuration"
+  | "Pending Verification";
+
+export type StandardStatus = "pending" | "active" | "draft" | "expired" | "review";
+
 export interface StaffingStandard {
   id: string;
   unit: string;
@@ -12,23 +22,51 @@ export interface StaffingStandard {
   minSeniorPerShift: number;
   source: string;
   authority: string;
+  sourceType?: SourceType;
+  status?: StandardStatus;
+  appliesTo?: string[];
+  effectiveFrom?: string;
+  lastReviewed?: string;
+  approvedBy?: string;
   accreditation?: string;
   configurable: true;
   verified: boolean;
 }
 
+const demo = (
+  id: string,
+  unit: string,
+  nursePerBeds: number,
+  minSeniorPerShift: number,
+  source: string,
+  sourceType: SourceType,
+): StaffingStandard => ({
+  id,
+  unit,
+  nursePerBeds,
+  minSeniorPerShift,
+  source,
+  authority: "Institution",
+  sourceType,
+  status: "pending",
+  appliesTo: ["Day shift", "Night shift"],
+  configurable: true,
+  verified: false,
+});
+
 export const DEFAULT_STAFFING_STANDARDS: StaffingStandard[] = [
-  { id: "std-ward", unit: "General ward", nursePerBeds: 6, minSeniorPerShift: 1, source: "Indian Nursing Council staffing norms (example value — configurable)", authority: "Indian Nursing Council", configurable: true, verified: false },
-  { id: "std-icu", unit: "ICU", nursePerBeds: 1, minSeniorPerShift: 2, source: "Indian Nursing Council staffing norms (example value — configurable)", authority: "Indian Nursing Council", configurable: true, verified: false },
-  { id: "std-hdu", unit: "HDU", nursePerBeds: 2, minSeniorPerShift: 1, source: "Indian Nursing Council staffing norms (example value — configurable)", authority: "Indian Nursing Council", configurable: true, verified: false },
-  { id: "std-nicu", unit: "NICU", nursePerBeds: 2, minSeniorPerShift: 1, source: "Institution-approved neonatal staffing policy", authority: "Institution", configurable: true, verified: false },
-  { id: "std-picu", unit: "PICU", nursePerBeds: 1, minSeniorPerShift: 1, source: "Institution-approved paediatric critical-care policy", authority: "Institution", configurable: true, verified: false },
-  { id: "std-sncu", unit: "SNCU", nursePerBeds: 3, minSeniorPerShift: 1, source: "Institution-approved SNCU policy", authority: "Institution", configurable: true, verified: false },
-  { id: "std-ed", unit: "Emergency", nursePerBeds: 3, minSeniorPerShift: 1, source: "Institution-approved emergency staffing establishment", authority: "Institution", configurable: true, verified: false },
-  { id: "std-ot", unit: "Operation theatre", nursePerBeds: 1, minSeniorPerShift: 1, source: "Institution-approved OT staffing establishment", authority: "Institution", configurable: true, verified: false },
-  { id: "std-labour", unit: "Labour room", nursePerBeds: 2, minSeniorPerShift: 1, source: "Institution-approved labour-room policy", authority: "Institution", configurable: true, verified: false },
-  { id: "std-spec", unit: "Speciality unit", nursePerBeds: 4, minSeniorPerShift: 1, source: "Institution-approved speciality staffing policy", authority: "Institution", configurable: true, verified: false },
+  demo("std-ward", "General ward", 6, 1, "Example configuration — institution-approved general ward staffing policy", "Local Configuration"),
+  demo("std-icu", "ICU", 1, 2, "Institution-approved ICU staffing policy", "Institution Policy"),
+  demo("std-hdu", "HDU", 2, 1, "Institution-approved high-dependency staffing policy", "Institution Policy"),
+  demo("std-nicu", "NICU", 2, 1, "Institution-approved neonatal staffing policy", "Institution Policy"),
+  demo("std-picu", "PICU", 1, 1, "Institution-approved paediatric critical-care policy", "Institution Policy"),
+  demo("std-sncu", "SNCU", 3, 1, "Institution-approved SNCU policy", "Institution Policy"),
+  demo("std-ed", "Emergency", 3, 1, "Institution-approved emergency staffing establishment", "Institution Policy"),
+  demo("std-ot", "Operation theatre", 1, 1, "Institution-approved OT staffing establishment", "Institution Policy"),
+  demo("std-labour", "Labour room", 2, 1, "Institution-approved labour-room policy", "Institution Policy"),
+  demo("std-spec", "Speciality unit", 4, 1, "Institution-approved speciality staffing policy", "Institution Policy"),
 ];
+
 
 export interface WorkloadInputs {
   beds: number;
