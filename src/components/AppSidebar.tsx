@@ -75,9 +75,7 @@ export function AppSidebar({
   const canSwitchWorkspace = ctx ? allowed.length > 1 : false;
 
   // Administration is shown only where appropriate (leadership roles).
-  const canSeeAdmin = session
-    ? ["admin", "executive", "hr"].includes(session.role)
-    : false;
+  const canSeeAdmin = session ? session.role === "admin" : false;
 
   const ActiveIcon = activeWorkspace?.icon;
 
