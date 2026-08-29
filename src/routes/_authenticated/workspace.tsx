@@ -57,18 +57,19 @@ function WorkspaceSelector() {
   if (!session) return null;
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-8">
-      <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <img src={logo.url} alt="NOS" className="h-12 w-12 rounded-xl" />
+    <div className="mx-auto max-w-[1200px] px-6 py-12 lg:py-16">
+      <header className="mb-10 flex flex-wrap items-start justify-between gap-6">
+        <div className="flex items-start gap-4">
+          <img src={logo.url} alt="NOS Workspace" className="h-12 w-12 object-contain" />
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Welcome, {session.name}
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+              NOS Workspace
             </div>
-            <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-foreground">
+            <div className="mt-2 text-sm text-muted-foreground">Welcome, {session.name}</div>
+            <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
               Choose a workspace
             </h1>
-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
               You see only the workspaces authorised for your institution, role and
               responsibility. Open one to load just its modules and navigation.
             </p>
@@ -76,42 +77,61 @@ function WorkspaceSelector() {
         </div>
         <button
           onClick={handleLogout}
-          className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground"
+          className="inline-flex items-center gap-2 rounded-lg border border-input bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground"
         >
           <LogOut className="h-3.5 w-3.5" /> Sign out
         </button>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {visible.map((w) => {
-          const Icon = w.icon;
-          return (
-            <Link
-              key={w.id}
-              to={w.landing}
-              className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-            >
-              <div className="mb-3 flex items-center justify-between">
-                <div
-                  className="flex h-12 w-12 items-center justify-center rounded-xl"
-                  style={{
-                    background: `color-mix(in oklab, ${w.color} 15%, transparent)`,
-                    color: w.color,
-                  }}
-                >
-                  <Icon className="h-6 w-6" />
+      {visible.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border bg-card/60 p-10 text-center">
+          <div className="text-sm font-semibold text-foreground">
+            You don't currently have access to any workspace
+          </div>
+          <p className="mx-auto mt-2 max-w-md text-xs text-muted-foreground">
+            Workspace access is granted by your institution based on your role and
+            responsibility. Contact your nursing administration to request access.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {visible.map((w) => {
+            const Icon = w.icon;
+            return (
+              <Link
+                key={w.id}
+                to={w.landing}
+                className="group flex min-h-[190px] flex-col rounded-2xl border border-border bg-card p-6 transition duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[var(--shadow-card-hover)]"
+                style={{ boxShadow: "var(--shadow-card)" }}
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <div
+                    className="flex h-11 w-11 items-center justify-center rounded-xl"
+                    style={{
+                      background: `color-mix(in oklab, ${w.color} 12%, transparent)`,
+                      color: w.color,
+                    }}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground/60 transition group-hover:translate-x-0.5 group-hover:text-primary" />
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
-              </div>
-              <div className="text-base font-semibold text-foreground">{w.name}</div>
-              <p className="mt-1 flex-1 text-xs text-muted-foreground">{w.purpose}</p>
-              <div className="mt-3 border-t border-border/70 pt-3 text-[11px] text-muted-foreground">
-                {w.modules.length} modules
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+                <div className="text-[15px] font-semibold text-foreground">{w.name}</div>
+                <p className="mt-1.5 flex-1 text-xs leading-relaxed text-muted-foreground">
+                  {w.purpose}
+                </p>
+                <div className="mt-5 text-[11px] font-medium text-muted-foreground/80">
+                  {w.modules.length} modules
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      <p className="mt-12 text-center text-[11px] text-muted-foreground/70">
+        NOS Workspace · A FROMEX Health Tech product
+      </p>
     </div>
   );
 }
