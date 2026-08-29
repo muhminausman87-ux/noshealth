@@ -11,7 +11,6 @@ import {
   Pill,
   FileText,
   FlaskConical,
-  ScanLine,
   BookOpen,
   ClipboardCheck,
   Workflow,
@@ -21,15 +20,24 @@ import {
   Coffee,
   BatteryLow,
   Sparkles,
-  Trophy,
   BadgeCheck,
   Rocket,
-  Building2,
   Zap,
   Target,
-  DollarSign,
   Briefcase,
   CalendarClock,
+  HeartPulse,
+  Gauge,
+  TrendingUp,
+  AlertTriangle,
+  FileBarChart,
+  Layers,
+  Repeat,
+  CalendarDays,
+  MessageSquareHeart,
+  LifeBuoy,
+  UserCheck,
+  Bot,
 } from "lucide-react";
 import type { Role } from "./auth";
 
@@ -52,7 +60,8 @@ export type Workspace = {
   name: string;
   short: string;
   purpose: string;
-  color: string; // hex or css var
+  /** Subtle tonal accent — always within/near the FROMEX blue family. */
+  color: string;
   icon: React.ComponentType<{ className?: string }>;
   landing: string; // route
   modules: WorkspaceModule[];
@@ -64,20 +73,20 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Clinical Workspace",
     short: "Clinical",
     purpose: "Patient care and clinical workflow for bedside teams.",
-    color: "#2563eb",
+    color: "#1268d8",
     icon: Stethoscope,
     landing: "/clinical",
     modules: [
-      { label: "Patient List", icon: UserRound, to: "/clinical" },
-      { label: "Clinical Dashboard", icon: LayoutDashboard, to: "/" },
-      { label: "Assessments", icon: ClipboardCheck },
-      { label: "Medication Administration", icon: Pill },
-      { label: "Nursing Documentation", icon: FileText },
-      { label: "Laboratory Results", icon: FlaskConical },
-      { label: "Radiology", icon: ScanLine },
-      { label: "Care Plans", icon: BookOpen },
-      { label: "Handover", icon: Workflow },
-      { label: "Procedure Documentation", icon: ClipboardList, to: "/procedure-documentation" },
+      { label: "Patient Census", icon: UserRound, to: "/clinical" },
+      { label: "Patient Overview", icon: LayoutDashboard, to: "/" },
+      { label: "Clinical Documentation", icon: FileText, to: "/procedure-documentation" },
+      { label: "Vitals & Observations", icon: HeartPulse },
+      { label: "Medication Management", icon: Pill },
+      { label: "Nursing Care Plans", icon: BookOpen },
+      { label: "Clinical Tasks", icon: ClipboardCheck, to: "/workflow-intelligence" },
+      { label: "Handover / SBAR", icon: Workflow },
+      { label: "Investigations", icon: FlaskConical },
+      { label: "Clinical AI Assistant", icon: Bot },
     ],
   },
   workforce: {
@@ -85,43 +94,43 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Workforce Operations",
     short: "Workforce",
     purpose: "Workforce planning and hospital operations for nursing leadership.",
-    color: "#0891b2",
+    color: "#28a9f5",
     icon: Users,
     landing: "/workforce",
     modules: [
       // Source of truth for capacity vs demand decisions.
-      { label: "Nursing Workforce Intelligence", icon: LineChart, to: "/nursing-workforce-intelligence" },
-      // Human-centered rostering; consumes demand/capacity signals, never recomputes them.
-      { label: "AI Duty Scheduling Engine", icon: CalendarClock, to: "/scheduling" },
-      { label: "Intelligent Duty Scheduling", icon: CalendarClock, to: "/duty-scheduling" },
-
-      // Operational overview dashboard (capacity, risk, nurse voice, staffing analytics live here).
-      { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce-intelligence" },
-      { label: "Nursing Workforce Digital Twin", icon: Activity, to: "/nursing-workforce-twin" },
-      { label: "Unit Capacity", icon: Shield, to: "/unit-capacity" },
-      { label: "Workflow Intelligence", icon: Brain, to: "/workflow-intelligence" },
-      { label: "Float Pool", icon: Users },
-      { label: "Shift Management", icon: ClipboardList, to: "/duty-scheduling" },
+      {
+        label: "Nursing Workforce Intelligence",
+        icon: LineChart,
+        to: "/nursing-workforce-intelligence",
+      },
+      { label: "Intelligent Duty Scheduling", icon: CalendarClock, to: "/scheduling" },
+      { label: "Roster Management", icon: CalendarDays, to: "/duty-scheduling" },
+      { label: "Staffing & Capacity", icon: Gauge, to: "/unit-capacity" },
+      { label: "Assignment Management", icon: ClipboardList, to: "/workforce-intelligence" },
+      { label: "Leave Management", icon: Repeat },
+      { label: "Float / Resource Pool", icon: Layers, to: "/nursing-workforce-twin" },
+      { label: "Workforce Analytics", icon: Activity, to: "/workflow-intelligence" },
+      { label: "Escalations", icon: AlertTriangle },
     ],
-
   },
   wellbeing: {
     id: "wellbeing",
     name: "Employee Wellbeing",
     short: "Wellbeing",
     purpose: "Support and retain nurses through wellbeing intelligence.",
-    color: "#059669",
+    color: "#16a37b",
     icon: HeartHandshake,
     landing: "/wellbeing",
     modules: [
-      { label: "Wellbeing Dashboard", icon: LayoutDashboard, to: "/wellbeing" },
-      { label: "Burnout Intelligence", icon: BatteryLow },
-      { label: "Fatigue Monitoring", icon: Activity },
+      { label: "Wellbeing Overview", icon: LayoutDashboard, to: "/wellbeing" },
+      { label: "Fatigue & Recovery Signals", icon: BatteryLow },
       { label: "Break Management", icon: Coffee },
-      { label: "Peer Recognition", icon: Trophy },
-      { label: "Mental Wellbeing", icon: Sparkles },
-      { label: "Support Requests", icon: HeartHandshake },
-      { label: "Recovery Analytics", icon: LineChart },
+      { label: "Workload Signals", icon: Activity },
+      { label: "Shift Pattern Insights", icon: CalendarDays },
+      { label: "Wellbeing Check-ins", icon: MessageSquareHeart },
+      { label: "Support Resources", icon: LifeBuoy },
+      { label: "Retention Insights", icon: UserCheck },
     ],
   },
   growth: {
@@ -129,18 +138,18 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Employee Growth",
     short: "Growth",
     purpose: "Professional development, competencies, and career pathways.",
-    color: "#7c3aed",
+    color: "#5b6ee0",
     icon: GraduationCap,
     landing: "/growth",
     modules: [
-      { label: "Learning & Development", icon: GraduationCap, to: "/learning" },
-      { label: "Competencies", icon: BadgeCheck },
+      { label: "Competency Management", icon: BadgeCheck },
+      { label: "Skills Matrix", icon: Layers },
+      { label: "Training", icon: ClipboardCheck, to: "/learning" },
+      { label: "Education", icon: GraduationCap, to: "/learning" },
       { label: "Certifications", icon: Award },
-      { label: "Mandatory Training", icon: ClipboardCheck },
       { label: "Career Pathways", icon: Briefcase },
-      { label: "Nursing Informatics", icon: LayoutDashboard },
-      { label: "Leadership Development", icon: Users },
-      { label: "Innovation Projects", icon: Rocket, to: "/research" },
+      { label: "Professional Development", icon: Rocket, to: "/research" },
+      { label: "Growth Plans", icon: TrendingUp },
     ],
   },
   excellence: {
@@ -148,16 +157,16 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Clinical Excellence",
     short: "Excellence",
     purpose: "Quality improvement, audits, and evidence-based practice.",
-    color: "#d97706",
+    color: "#e0a03a",
     icon: Award,
     landing: "/excellence",
     modules: [
-      { label: "Evidence-Based Practice", icon: BookOpen, to: "/ebp" },
+      { label: "Quality Dashboard", icon: LayoutDashboard, to: "/clinical-excellence" },
       { label: "Clinical Audits", icon: ClipboardCheck },
-      { label: "Infection Prevention", icon: Shield },
-      { label: "Quality Indicators", icon: Target },
-      { label: "Research", icon: FlaskConical, to: "/research" },
-      { label: "Clinical Excellence Dashboard", icon: Award, to: "/clinical-excellence" },
+      { label: "Infection Prevention & Control", icon: Shield },
+      { label: "Nursing Quality Indicators", icon: Target },
+      { label: "Evidence-Based Practice", icon: BookOpen, to: "/ebp" },
+      { label: "Clinical Improvement", icon: Sparkles, to: "/research" },
     ],
   },
   executive: {
@@ -165,22 +174,32 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     name: "Executive Intelligence",
     short: "Executive",
     purpose: "Executive decision support and strategic intelligence.",
-    color: "#be123c",
+    color: "#d4657a",
     icon: LineChart,
     landing: "/executive",
     modules: [
-      { label: "Executive Dashboard", icon: LayoutDashboard, to: "/executive-intelligence" },
-      { label: "Hospital Digital Twin", icon: Activity, to: "/digital-twin" },
-      { label: "Enterprise Intelligence", icon: Brain, to: "/executive-intelligence" },
-      { label: "Strategic KPIs", icon: Target },
-      { label: "Workforce Forecasting", icon: Zap },
-      { label: "Financial Impact", icon: DollarSign },
-      { label: "AI Executive Briefing", icon: Sparkles, to: "/executive-intelligence" },
+      { label: "Executive Overview", icon: LayoutDashboard, to: "/executive-intelligence" },
+      { label: "Hospital Performance", icon: Activity, to: "/digital-twin" },
+      { label: "Workforce Intelligence", icon: Users, to: "/nursing-workforce-intelligence" },
+      { label: "Quality Intelligence", icon: Award, to: "/clinical-excellence" },
+      { label: "Operational Risk", icon: AlertTriangle },
+      { label: "Strategic Trends", icon: Zap },
+      { label: "Executive Reports", icon: FileBarChart },
     ],
   },
 };
 
 export const WORKSPACE_LIST = Object.values(WORKSPACES);
+
+/** Global, workspace-independent navigation shown above workspace modules. */
+export const GLOBAL_NAV: { label: string; icon: React.ComponentType<{ className?: string }>; to?: string }[] = [
+  { label: "Workspaces", icon: Layers, to: "/workspace" },
+  { label: "Tasks", icon: ClipboardCheck },
+  { label: "Messages", icon: MessageSquareHeart },
+  { label: "Reports", icon: FileBarChart },
+  { label: "Analytics", icon: Brain },
+  { label: "Support", icon: LifeBuoy },
+];
 
 // Map a pathname to its owning workspace (best-effort).
 export function getWorkspaceForPath(pathname: string): Workspace | null {
@@ -189,11 +208,10 @@ export function getWorkspaceForPath(pathname: string): Workspace | null {
   if (pathname.startsWith("/patient/")) return WORKSPACES.clinical;
   if (pathname.startsWith("/procedure-documentation")) return WORKSPACES.clinical;
   if (pathname.startsWith("/workforce")) return WORKSPACES.workforce;
+  if (pathname.startsWith("/nursing-workforce")) return WORKSPACES.workforce;
   if (pathname.startsWith("/workflow-intelligence")) return WORKSPACES.workforce;
-  if (pathname.startsWith("/nursing-workforce-twin")) return WORKSPACES.workforce;
   if (pathname.startsWith("/duty-scheduling")) return WORKSPACES.workforce;
   if (pathname.startsWith("/scheduling")) return WORKSPACES.workforce;
-
   if (pathname.startsWith("/unit-capacity")) return WORKSPACES.workforce;
   if (pathname.startsWith("/wellbeing")) return WORKSPACES.wellbeing;
   if (pathname.startsWith("/growth")) return WORKSPACES.growth;
