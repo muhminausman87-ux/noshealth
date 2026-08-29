@@ -17,7 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { getSession, signOut, type Session } from "@/lib/auth";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 
 export type NosModule = {
   key: string;
@@ -118,7 +118,7 @@ export function EcosystemLayout({ children }: { children: ReactNode }) {
       >
         {/* Brand */}
         <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-3">
-          <img src={logo.url} alt="NOS" className="h-8 w-8 shrink-0 rounded-md object-contain" />
+          <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-8 w-8 shrink-0 rounded-md object-contain" />
           {!collapsed && (
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-semibold leading-tight text-foreground">

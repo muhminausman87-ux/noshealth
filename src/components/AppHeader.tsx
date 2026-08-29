@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getSession, signOut, type Session } from "@/lib/auth";
 import { getWorkspaceForPath } from "@/lib/workspaces";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 
 /**
  * Global NOS Workspace application shell header.
@@ -49,7 +49,7 @@ export function AppHeader() {
       <SidebarTrigger className="shrink-0" />
 
       <Link to="/workspace" className="flex min-w-0 items-center gap-2.5">
-        <img src={logo.url} alt="NOS Workspace" className="h-7 w-7 shrink-0 object-contain" />
+        <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-7 w-7 shrink-0 object-contain" />
         <span className="truncate text-[12.5px] font-bold uppercase tracking-[0.18em] text-foreground">
           NOS <span className="text-primary">Workspace</span>
         </span>

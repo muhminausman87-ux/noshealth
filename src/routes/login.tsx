@@ -8,7 +8,7 @@ import {
   SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY,
 } from "@/lib/auth";
 import { landingForRole } from "@/lib/workspaces";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_LOGO, NOS_LOGO_ALT } from "@/lib/branding";
 
 /** Only same-origin, in-app paths may be used as a post-login destination. */
 function safeRedirect(value: unknown): string | null {
@@ -115,7 +115,7 @@ function LoginPage() {
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-secondary via-background to-accent/40 px-4 py-10">
       <div className="relative z-10 w-full max-w-md">
         <div className="mb-6 flex flex-col items-center text-center">
-          <img src={logo.url} alt="NOS Health" className="h-14 w-auto" />
+          <img src={NOS_LOGO} alt={NOS_LOGO_ALT} className="h-16 w-auto max-w-[300px] object-contain" />
           <h1 className="mt-3 text-xl font-semibold tracking-tight text-foreground">NOS HEALTH</h1>
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Clinical &amp; Workforce Intelligence Platform

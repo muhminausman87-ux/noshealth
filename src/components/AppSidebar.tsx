@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import logo from "@/assets/nos-logo.png.asset.json";
+import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 import {
   WORKSPACE_LIST,
   ADMIN_NAV,
@@ -90,8 +90,8 @@ export function AppSidebar({
       <SidebarHeader className="border-b border-border/60 py-3">
         <Link to="/workspace" className="flex items-center gap-2 px-2">
           <img
-            src={logo.url}
-            alt="NOS Workspace"
+            src={NOS_MARK}
+            alt={NOS_LOGO_ALT}
             className="h-8 w-8 rounded-md object-contain"
           />
           {!collapsed && (
