@@ -18,6 +18,7 @@ import {
 import logo from "@/assets/nos-logo.png.asset.json";
 import {
   WORKSPACES,
+  GLOBAL_NAV,
   getWorkspaceForPath,
   type Workspace,
 } from "@/lib/workspaces";
