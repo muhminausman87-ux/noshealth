@@ -5,7 +5,6 @@ import {
   AlertTriangle, CheckCircle2, CalendarClock, TimerReset,
   Activity, ArrowRight, Stethoscope, ClipboardList,
 } from "lucide-react";
-import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
 import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
@@ -112,7 +111,7 @@ function WorkflowIntelligencePage() {
   }
 
   return (
-    <EcosystemLayout>
+    <>
       <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
 
         <PlatformPositioning active="workflow" />
@@ -444,7 +443,7 @@ function WorkflowIntelligencePage() {
         </section>
 
       </main>
-    </EcosystemLayout>
+    </>
   );
 }
 
