@@ -3,24 +3,8 @@ import {
   AlertTriangle, CheckCircle2, ShieldAlert, TrendingUp,
 } from "lucide-react";
 
-// ---------- Demo data (AI Prototype) ----------
-const DEPT_LOAD = [
-  { key: "ICU",       patients: 12, high: 11, nurses: 10, reqHrs: 96, availHrs: 80 },
-  { key: "ED",        patients: 42, high: 9,  nurses: 14, reqHrs: 132, availHrs: 112 },
-  { key: "Med-Surg",  patients: 44, high: 6,  nurses: 16, reqHrs: 140, availHrs: 128 },
-  { key: "Cardiac",   patients: 18, high: 4,  nurses: 9,  reqHrs: 74,  availHrs: 72 },
-  { key: "Maternity", patients: 14, high: 2,  nurses: 8,  reqHrs: 52,  availHrs: 64 },
-  { key: "Pediatric", patients: 15, high: 2,  nurses: 7,  reqHrs: 58,  availHrs: 56 },
-  { key: "OT",        patients: 8,  high: 3,  nurses: 6,  reqHrs: 44,  availHrs: 48 },
-];
-
-type Zone = "safe" | "watch" | "critical";
-
-function zoneFor(pct: number): Zone {
-  if (pct >= 100) return "critical";
-  if (pct >= 90) return "watch";
-  return "safe";
-}
+// Shared seeded demo dataset — single source of truth for Workforce Operations.
+import { UNIT_LOAD as DEPT_LOAD, zoneFor, type Zone } from "@/lib/workforce-ops";
 
 const ZONE_META: Record<Zone, { label: string; color: string; bg: string; ring: string; icon: React.ComponentType<{ className?: string }> }> = {
   safe:     { label: "Safe",     color: "var(--color-tone-mint)",   bg: "color-mix(in oklab, var(--color-tone-mint) 15%, transparent)",   ring: "var(--color-tone-mint)",   icon: CheckCircle2 },
