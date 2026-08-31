@@ -6,7 +6,6 @@ import {
   Users, X, Building2, Gauge, ShieldCheck, TrendingUp,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { StatusPill } from "@/components/Widget";
 import { getSession, type Session } from "@/lib/auth";
 
@@ -305,7 +304,7 @@ function NursingWorkforceTwinPage() {
   const selectedDept = DEPTS.find((d) => d.key === selected) || null;
 
   return (
-    <EcosystemLayout>
+    <>
       <div className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
         {/* Header */}
         <header className="flex flex-wrap items-start justify-between gap-3">
@@ -391,6 +390,6 @@ function NursingWorkforceTwinPage() {
       </div>
 
       {selectedDept && <DetailDrawer d={selectedDept} onClose={() => setSelected(null)} />}
-    </EcosystemLayout>
+    </>
   );
 }

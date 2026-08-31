@@ -100,7 +100,7 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
     icon: Users,
     landing: "/workforce",
     modules: [
-      { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce" },
+      { label: "Workforce Operations Dashboard", icon: LayoutDashboard, to: "/workforce-intelligence" },
       // Source of truth for capacity vs demand decisions.
       {
         label: "Nursing Workforce Intelligence",
@@ -109,12 +109,12 @@ export const WORKSPACES: Record<WorkspaceId, Workspace> = {
       },
       { label: "AI Duty Scheduling Engine", icon: CalendarClock, to: "/scheduling" },
       { label: "Intelligent Duty Scheduling", icon: CalendarDays, to: "/duty-scheduling" },
+      { label: "Shift Management", icon: CalendarClock, to: "/duty-scheduling" },
       { label: "Nursing Workforce Digital Twin", icon: Layers, to: "/nursing-workforce-twin" },
       { label: "Unit Capacity", icon: Gauge, to: "/unit-capacity" },
       { label: "Workflow Intelligence", icon: Activity, to: "/workflow-intelligence" },
-      { label: "Assignment Management", icon: ClipboardList, to: "/workforce-intelligence" },
+      { label: "Assignment Management", icon: ClipboardList },
       { label: "Float Pool", icon: Users },
-      { label: "Shift Management", icon: CalendarClock },
       { label: "Leave Management", icon: Repeat },
       { label: "Escalations", icon: AlertTriangle },
     ],
