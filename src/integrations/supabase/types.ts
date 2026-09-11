@@ -704,6 +704,988 @@ export type Database = {
           },
         ]
       }
+      scheduling_assignments: {
+        Row: {
+          approved_by: string | null
+          assigned_by: string | null
+          assignment_status: string
+          created_at: string
+          id: string
+          institution_id: string
+          run_id: string
+          shift_id: string
+          staff_id: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          assigned_by?: string | null
+          assignment_status?: string
+          created_at?: string
+          id?: string
+          institution_id: string
+          run_id: string
+          shift_id: string
+          staff_id: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          assigned_by?: string | null
+          assignment_status?: string
+          created_at?: string
+          id?: string
+          institution_id?: string
+          run_id?: string
+          shift_id?: string
+          staff_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_assignments_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_assignments_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_assignments_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_assignments_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_shifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_assignments_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_conflicts: {
+        Row: {
+          category: string
+          created_at: string
+          details: Json
+          id: string
+          institution_id: string
+          message: string
+          resolution: string | null
+          resolved: boolean
+          resolved_at: string | null
+          resolved_by: string | null
+          run_id: string
+          severity: string
+          shift_id: string | null
+          staff_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          details?: Json
+          id?: string
+          institution_id: string
+          message: string
+          resolution?: string | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          run_id: string
+          severity?: string
+          shift_id?: string | null
+          staff_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          institution_id?: string
+          message?: string
+          resolution?: string | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          run_id?: string
+          severity?: string
+          shift_id?: string | null
+          staff_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_conflicts_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_conflicts_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_conflicts_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_conflicts_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_shifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_conflicts_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_decisions: {
+        Row: {
+          action: string
+          approval_status: string
+          assignment_id: string | null
+          created_at: string
+          decided_by: string | null
+          id: string
+          institution_id: string
+          previous_assignment: Json | null
+          proposed_assignment: Json | null
+          reason: string
+          run_id: string | null
+        }
+        Insert: {
+          action: string
+          approval_status?: string
+          assignment_id?: string | null
+          created_at?: string
+          decided_by?: string | null
+          id?: string
+          institution_id: string
+          previous_assignment?: Json | null
+          proposed_assignment?: Json | null
+          reason: string
+          run_id?: string | null
+        }
+        Update: {
+          action?: string
+          approval_status?: string
+          assignment_id?: string | null
+          created_at?: string
+          decided_by?: string | null
+          id?: string
+          institution_id?: string
+          previous_assignment?: Json | null
+          proposed_assignment?: Json | null
+          reason?: string
+          run_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_decisions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_decisions_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_decisions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_decisions_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_departments: {
+        Row: {
+          active_status: boolean
+          created_at: string
+          department_code: Database["public"]["Enums"]["dept_code"]
+          department_name: string
+          id: string
+          institution_id: string
+          minimum_staff_required: number
+          operating_hours: Json
+          preferred_staff_required: number
+          updated_at: string
+        }
+        Insert: {
+          active_status?: boolean
+          created_at?: string
+          department_code: Database["public"]["Enums"]["dept_code"]
+          department_name: string
+          id?: string
+          institution_id: string
+          minimum_staff_required?: number
+          operating_hours?: Json
+          preferred_staff_required?: number
+          updated_at?: string
+        }
+        Update: {
+          active_status?: boolean
+          created_at?: string
+          department_code?: Database["public"]["Enums"]["dept_code"]
+          department_name?: string
+          id?: string
+          institution_id?: string
+          minimum_staff_required?: number
+          operating_hours?: Json
+          preferred_staff_required?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_departments_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_leave: {
+        Row: {
+          approved_by: string | null
+          created_at: string
+          end_date: string
+          id: string
+          institution_id: string
+          leave_type: string
+          reason: string | null
+          staff_id: string
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          created_at?: string
+          end_date: string
+          id?: string
+          institution_id: string
+          leave_type: string
+          reason?: string | null
+          staff_id: string
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          created_at?: string
+          end_date?: string
+          id?: string
+          institution_id?: string
+          leave_type?: string
+          reason?: string | null
+          staff_id?: string
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_leave_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_leave_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_leave_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_policies: {
+        Row: {
+          active_status: boolean
+          config: Json
+          created_at: string
+          effective_from: string
+          id: string
+          institution_id: string
+          name: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          active_status?: boolean
+          config?: Json
+          created_at?: string
+          effective_from?: string
+          id?: string
+          institution_id: string
+          name: string
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          active_status?: boolean
+          config?: Json
+          created_at?: string
+          effective_from?: string
+          id?: string
+          institution_id?: string
+          name?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_policies_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          institution_id: string
+          notes: string | null
+          preferred_department: Database["public"]["Enums"]["dept_code"] | null
+          preferred_shift_count: number | null
+          preferred_shift_types: string[]
+          staff_id: string
+          unavailable_dates: string[]
+          updated_at: string
+          weekend_preference: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          institution_id: string
+          notes?: string | null
+          preferred_department?: Database["public"]["Enums"]["dept_code"] | null
+          preferred_shift_count?: number | null
+          preferred_shift_types?: string[]
+          staff_id: string
+          unavailable_dates?: string[]
+          updated_at?: string
+          weekend_preference?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          institution_id?: string
+          notes?: string | null
+          preferred_department?: Database["public"]["Enums"]["dept_code"] | null
+          preferred_shift_count?: number | null
+          preferred_shift_types?: string[]
+          staff_id?: string
+          unavailable_dates?: string[]
+          updated_at?: string
+          weekend_preference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_preferences_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_preferences_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: true
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          end_date: string | null
+          id: string
+          institution_id: string
+          outcome: string | null
+          reason: string | null
+          request_kind: string
+          shift_type: string | null
+          staff_id: string
+          start_date: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          end_date?: string | null
+          id?: string
+          institution_id: string
+          outcome?: string | null
+          reason?: string | null
+          request_kind: string
+          shift_type?: string | null
+          staff_id: string
+          start_date?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          end_date?: string | null
+          id?: string
+          institution_id?: string
+          outcome?: string | null
+          reason?: string | null
+          request_kind?: string
+          shift_type?: string | null
+          staff_id?: string
+          start_date?: string | null
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_requests_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_requests_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_requests_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_runs: {
+        Row: {
+          algorithm_version: string
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          department_id: string
+          generated_at: string
+          generated_by: string | null
+          id: string
+          institution_id: string
+          published_at: string | null
+          roster_period_end: string
+          roster_period_start: string
+          schedule_snapshot: Json
+          status: string
+          summary: Json
+          updated_at: string
+        }
+        Insert: {
+          algorithm_version: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          department_id: string
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          institution_id: string
+          published_at?: string | null
+          roster_period_end: string
+          roster_period_start: string
+          schedule_snapshot?: Json
+          status?: string
+          summary?: Json
+          updated_at?: string
+        }
+        Update: {
+          algorithm_version?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          department_id?: string
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          institution_id?: string
+          published_at?: string | null
+          roster_period_end?: string
+          roster_period_start?: string
+          schedule_snapshot?: Json
+          status?: string
+          summary?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_runs_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_runs_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_runs_generated_by_fkey"
+            columns: ["generated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_runs_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_shift_history: {
+        Row: {
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"]
+          end_time: string
+          hours: number
+          id: string
+          institution_id: string
+          is_night: boolean
+          is_weekend: boolean
+          shift_date: string
+          shift_id: string | null
+          shift_type: string
+          staff_id: string
+          start_time: string
+          workload_score: number | null
+        }
+        Insert: {
+          created_at?: string
+          department: Database["public"]["Enums"]["dept_code"]
+          end_time: string
+          hours?: number
+          id?: string
+          institution_id: string
+          is_night?: boolean
+          is_weekend?: boolean
+          shift_date: string
+          shift_id?: string | null
+          shift_type: string
+          staff_id: string
+          start_time: string
+          workload_score?: number | null
+        }
+        Update: {
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"]
+          end_time?: string
+          hours?: number
+          id?: string
+          institution_id?: string
+          is_night?: boolean
+          is_weekend?: boolean
+          shift_date?: string
+          shift_id?: string | null
+          shift_type?: string
+          staff_id?: string
+          start_time?: string
+          workload_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_shift_history_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_shift_history_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_shifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_shift_history_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_shifts: {
+        Row: {
+          created_at: string
+          department_id: string
+          end_time: string
+          id: string
+          institution_id: string
+          required_nurses: number
+          required_rn: number
+          required_skill_mix: Json
+          shift_date: string
+          shift_type: string
+          start_time: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_id: string
+          end_time: string
+          id?: string
+          institution_id: string
+          required_nurses?: number
+          required_rn?: number
+          required_skill_mix?: Json
+          shift_date: string
+          shift_type: string
+          start_time: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string
+          end_time?: string
+          id?: string
+          institution_id?: string
+          required_nurses?: number
+          required_rn?: number
+          required_skill_mix?: Json
+          shift_date?: string
+          shift_type?: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_shifts_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_shifts_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_skills: {
+        Row: {
+          active_status: boolean
+          created_at: string
+          id: string
+          institution_id: string
+          skill_code: string
+          skill_name: string
+          updated_at: string
+        }
+        Insert: {
+          active_status?: boolean
+          created_at?: string
+          id?: string
+          institution_id: string
+          skill_code: string
+          skill_name: string
+          updated_at?: string
+        }
+        Update: {
+          active_status?: boolean
+          created_at?: string
+          id?: string
+          institution_id?: string
+          skill_code?: string
+          skill_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_skills_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_staff: {
+        Row: {
+          active_status: boolean
+          contracted_hours: number
+          created_at: string
+          department: Database["public"]["Enums"]["dept_code"]
+          employee_code: string
+          employment_type: string
+          grade: string
+          id: string
+          institution_id: string
+          maximum_hours_per_week: number
+          minimum_hours_per_week: number
+          name: string
+          preferred_shift_types: string[]
+          profile_id: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          active_status?: boolean
+          contracted_hours?: number
+          created_at?: string
+          department: Database["public"]["Enums"]["dept_code"]
+          employee_code: string
+          employment_type?: string
+          grade?: string
+          id?: string
+          institution_id: string
+          maximum_hours_per_week?: number
+          minimum_hours_per_week?: number
+          name: string
+          preferred_shift_types?: string[]
+          profile_id?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          active_status?: boolean
+          contracted_hours?: number
+          created_at?: string
+          department?: Database["public"]["Enums"]["dept_code"]
+          employee_code?: string
+          employment_type?: string
+          grade?: string
+          id?: string
+          institution_id?: string
+          maximum_hours_per_week?: number
+          minimum_hours_per_week?: number
+          name?: string
+          preferred_shift_types?: string[]
+          profile_id?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_staff_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_staff_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_staff_availability: {
+        Row: {
+          availability_date: string
+          availability_status: string
+          available_from: string | null
+          available_to: string | null
+          created_at: string
+          id: string
+          institution_id: string
+          reason: string | null
+          staff_id: string
+          updated_at: string
+        }
+        Insert: {
+          availability_date: string
+          availability_status?: string
+          available_from?: string | null
+          available_to?: string | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          reason?: string | null
+          staff_id: string
+          updated_at?: string
+        }
+        Update: {
+          availability_date?: string
+          availability_status?: string
+          available_from?: string | null
+          available_to?: string | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          reason?: string | null
+          staff_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_staff_availability_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_staff_availability_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduling_staff_skills: {
+        Row: {
+          competency_level: string
+          created_at: string
+          department_authorized: Database["public"]["Enums"]["dept_code"] | null
+          expiry_date: string | null
+          id: string
+          institution_id: string
+          skill_id: string
+          staff_id: string
+          updated_at: string
+          verified_status: string
+        }
+        Insert: {
+          competency_level?: string
+          created_at?: string
+          department_authorized?:
+            | Database["public"]["Enums"]["dept_code"]
+            | null
+          expiry_date?: string | null
+          id?: string
+          institution_id: string
+          skill_id: string
+          staff_id: string
+          updated_at?: string
+          verified_status?: string
+        }
+        Update: {
+          competency_level?: string
+          created_at?: string
+          department_authorized?:
+            | Database["public"]["Enums"]["dept_code"]
+            | null
+          expiry_date?: string | null
+          id?: string
+          institution_id?: string
+          skill_id?: string
+          staff_id?: string
+          updated_at?: string
+          verified_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduling_staff_skills_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_staff_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduling_staff_skills_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "scheduling_staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
