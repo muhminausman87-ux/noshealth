@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 
 // Shared seeded demo dataset — single source of truth for Workforce Operations.
-import { UNIT_LOAD as DEPT_LOAD, zoneFor, type Zone } from "@/lib/workforce-ops";
+import { zoneFor, type Zone, type WorkforceSummary } from "@/lib/workforce-ops";
 
 const ZONE_META: Record<Zone, { label: string; color: string; bg: string; ring: string; icon: React.ComponentType<{ className?: string }> }> = {
   safe:     { label: "Safe",     color: "var(--color-tone-mint)",   bg: "color-mix(in oklab, var(--color-tone-mint) 15%, transparent)",   ring: "var(--color-tone-mint)",   icon: CheckCircle2 },
@@ -12,9 +12,10 @@ const ZONE_META: Record<Zone, { label: string; color: string; bg: string; ring: 
   critical: { label: "Critical", color: "var(--color-destructive)", bg: "color-mix(in oklab, var(--color-destructive) 15%, transparent)", ring: "var(--color-destructive)", icon: ShieldAlert },
 };
 
-export function NursingCapacityIntelligence() {
-  const totalPatients = DEPT_LOAD.reduce((a, d) => a + d.patients, 0);
-  const highAcuity    = DEPT_LOAD.reduce((a, d) => a + d.high, 0);
+export function NursingCapacityIntelligence({ summary }: { summary: WorkforceSummary }) {
+  const DEPT_LOAD = summary.units;
+  const totalPatients = summary.totalPatients ?? 0;
+  const highAcuity    = summary.highAcuity ?? 0;
   const nurses        = DEPT_LOAD.reduce((a, d) => a + d.nurses, 0);
   const reqHrs        = DEPT_LOAD.reduce((a, d) => a + d.reqHrs, 0);
   const availHrs      = DEPT_LOAD.reduce((a, d) => a + d.availHrs, 0);
@@ -94,8 +95,8 @@ export function NursingCapacityIntelligence() {
 
       {/* Metrics grid */}
       <div className="grid grid-cols-2 gap-3 p-5 md:grid-cols-4">
-        <Metric icon={Users}      label="Total Patients"          value={totalPatients} tone="var(--color-primary)" />
-        <Metric icon={HeartPulse} label="High-Acuity Patients"    value={highAcuity} tone="var(--color-destructive)" />
+        <Metric icon={Users}      label="Total Patients"          value={totalPatients > 0 ? totalPatients : "—"} tone="var(--color-primary)" />
+        <Metric icon={HeartPulse} label="High-Acuity Patients"    value={highAcuity > 0 ? highAcuity : "—"} tone="var(--color-destructive)" />
         <Metric icon={Users}      label="Available Nurses"        value={nurses} tone="var(--color-tone-sky)" />
         <Metric icon={Clock}      label="Required Nursing Hours"  value={`${reqHrs}h`} tone="var(--color-tone-amber)" />
         <Metric icon={Clock}      label="Available Nursing Hours" value={`${availHrs}h`} tone="var(--color-tone-mint)" />
@@ -145,7 +146,7 @@ export function NursingCapacityIntelligence() {
                   <span className="text-xs font-semibold text-foreground">{d.key}</span>
                   <span className="h-2 w-2 rounded-full" style={{ background: zm.color }} />
                 </div>
-                <div className="mt-0.5 text-[10px] text-muted-foreground">{d.patients} pts · {d.nurses} RN</div>
+                <div className="mt-0.5 text-[10px] text-muted-foreground">{d.patients ?? "—"} pts · {d.nurses} RN</div>
                 <div className="mt-1 flex items-baseline justify-between">
                   <span className="text-sm font-semibold" style={{ color: zm.color }}>{pct}%</span>
                   <span className="text-[10px] text-muted-foreground">{d.reqHrs}/{d.availHrs}h</span>

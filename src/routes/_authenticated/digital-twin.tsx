@@ -7,6 +7,7 @@ import {
   Workflow, Wrench, X, Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ExecutiveNav } from "@/components/ExecutiveNav";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { StatusPill } from "@/components/Widget";
 import { getSession, type Session } from "@/lib/auth";
@@ -291,7 +292,8 @@ function DigitalTwinPage() {
 
   return (
     <EcosystemLayout>
-      <main className="mx-auto max-w-[1500px] space-y-6 px-4 py-6 sm:px-6">
+      <main className="mx-auto max-w-[1500px] space-y-6 px-4 py-4 sm:px-6">
+        <ExecutiveNav activeTab="performance" />
         {/* Header */}
         <header className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex items-center gap-3">

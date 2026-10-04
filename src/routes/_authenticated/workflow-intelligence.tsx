@@ -1,533 +1,1334 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { WorkforceNav } from "@/components/WorkforceNav";
 import {
-  FlaskConical, Scan, Bandage, Syringe, Clock, Sparkles,
-  AlertTriangle, CheckCircle2, CalendarClock, TimerReset,
-  Activity, ArrowRight, Stethoscope, ClipboardList,
+  Activity,
+  LayoutDashboard,
+  FlaskConical,
+  Scan,
+  ClipboardList,
+  Syringe,
+  Clock,
+  BrainCircuit,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
-import { Widget, StatusPill } from "@/components/Widget";
-import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
-import { ExecutiveDecisionSupport } from "@/components/ExecutiveDecisionSupport";
-import { PlatformPositioning } from "@/components/PlatformPositioning";
 import { getSession, type Session } from "@/lib/auth";
 
+/* ── Route definition ─────────────────────────────────────────── */
 export const Route = createFileRoute("/_authenticated/workflow-intelligence")({
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+    tab: typeof search.tab === "string" ? search.tab : undefined,
+  }),
   head: () => ({
     meta: [
-      { title: "Workflow Intelligence · NOS Nursing Intelligence Layer" },
-      { name: "description", content: "AI-coordinated clinical action across lab, radiology, wound care and IV workflows — turning patient acuity and nursing capacity into the next best operational step." },
+      { title: "Workflow Intelligence · NOS Health" },
+      {
+        name: "description",
+        content:
+          "AI-assisted coordination of clinical workflows across laboratory, radiology, wound care, and IV access.",
+      },
     ],
   }),
   component: WorkflowIntelligencePage,
 });
 
-// ---------------- Demo data ----------------
+/* ── Tab IDs and model ────────────────────────────────────────── */
+type TabId =
+  | "overview"
+  | "lab"
+  | "rad"
+  | "wound"
+  | "iv"
+  | "timeline"
+  | "assistant";
 
-const LAB_COLLECTIONS = [
-  { id: "LAB-1042", patient: "R. Kumar",     room: "ICU-04", priority: "Emergency", requester: "Dr. Aisha N.",    due: "08:15", status: "Delayed",   overdueMin: 22 },
-  { id: "LAB-1043", patient: "M. Al-Farsi",  room: "MED-12", priority: "Routine",   requester: "Dr. Patel",       due: "08:30", status: "Pending" },
-  { id: "LAB-1044", patient: "S. Okoye",     room: "ED-07",  priority: "Emergency", requester: "Dr. Chen",        due: "08:45", status: "Pending" },
-  { id: "LAB-1045", patient: "L. Haddad",    room: "SUR-03", priority: "Routine",   requester: "Dr. Rossi",       due: "09:00", status: "Scheduled" },
-  { id: "LAB-1046", patient: "T. Nakamura",  room: "MED-08", priority: "Routine",   requester: "Dr. Patel",       due: "09:30", status: "Scheduled" },
+interface TabDef {
+  id: TabId;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  badge?: number;
+}
+
+const TABS: TabDef[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "lab", label: "Laboratory", icon: FlaskConical, badge: 2 },
+  { id: "rad", label: "Radiology", icon: Scan, badge: 2 },
+  { id: "wound", label: "Wound Care", icon: ClipboardList, badge: 1 },
+  { id: "iv", label: "IV Access", icon: Syringe },
+  { id: "timeline", label: "Shift Timeline", icon: Clock },
+  { id: "assistant", label: "AI Assistant", icon: BrainCircuit },
+];
+
+/* ── Reference Demo Dataset ───────────────────────────────────── */
+const PRIORITY_ITEMS = [
+  {
+    dept: "Wound Care",
+    targetTab: "wound" as TabId,
+    patient: "H. Ibrahim · W-203 · Diabetic foot",
+    statusText: "DELAYED +55M",
+    pillType: "crit",
+    requester: "Physician req.",
+  },
+  {
+    dept: "Radiology",
+    targetTab: "rad" as TabId,
+    patient: "T. Nakamura · RAD-506 · CT Chest",
+    statusText: "DELAYED +35M",
+    pillType: "crit",
+    requester: "Reporting radiologist",
+  },
+  {
+    dept: "Laboratory",
+    targetTab: "lab" as TabId,
+    patient: "R. Kumar · ICU-04 · LAB-1042",
+    statusText: "DELAYED +22M",
+    pillType: "crit",
+    requester: "Dr. Aisha N.",
+  },
+  {
+    dept: "Laboratory",
+    targetTab: "lab" as TabId,
+    patient: "S. Okoye · Troponin 3.2 ng/mL",
+    statusText: "UNACKNOWLEDGED · 27 min",
+    pillType: "crit",
+    requester: "Awaiting clinician sign-off",
+  },
+  {
+    dept: "Laboratory",
+    targetTab: "lab" as TabId,
+    patient: "R. Kumar · Potassium 6.4 mmol/L",
+    statusText: "UNACKNOWLEDGED · 12 min",
+    pillType: "crit",
+    requester: "Awaiting clinician sign-off",
+  },
+  {
+    dept: "IV Access",
+    targetTab: "iv" as TabId,
+    patient: "T. Nakamura · IV-33 · Pediatric cannulation",
+    statusText: "PENDING",
+    pillType: "watch",
+    requester: "Awaiting responder",
+  },
+];
+
+type TimelineStatus = "completed" | "delayed" | "pending" | "rescheduled";
+
+const TIMELINE_DATA: {
+  status: TimelineStatus;
+  time: string;
+  dept: string;
+  badge: string;
+  desc: string;
+}[] = [
+  {
+    status: "completed",
+    time: "08:00",
+    dept: "Laboratory",
+    badge: "COMPLETED",
+    desc: "Morning bloods drawn — 24 of 26",
+  },
+  {
+    status: "delayed",
+    time: "09:00",
+    dept: "Wound Review",
+    badge: "DELAYED",
+    desc: "3 dressings awaiting nurse-led review",
+  },
+  {
+    status: "pending",
+    time: "10:00",
+    dept: "Medication",
+    badge: "PENDING",
+    desc: "AM round in progress",
+  },
+  {
+    status: "rescheduled",
+    time: "11:30",
+    dept: "Radiology",
+    badge: "RESCHEDULED",
+    desc: "CT slot moved from 09:15",
+  },
+  {
+    status: "pending",
+    time: "14:00",
+    dept: "Physician Review",
+    badge: "PENDING",
+    desc: "6 patients on round list",
+  },
+  {
+    status: "pending",
+    time: "16:00",
+    dept: "Follow-up",
+    badge: "PENDING",
+    desc: "Handoff + reassessments",
+  },
+];
+
+const LAB_ROWS = [
+  {
+    time: "08:15",
+    patient: "R. Kumar · ICU-04 · LAB-1042",
+    prio: "Emergency",
+    prioType: "crit",
+    req: "Dr. Aisha N.",
+    status: "DELAYED · +22M",
+    statusType: "crit",
+  },
+  {
+    time: "08:30",
+    patient: "M. Al-Farsi · MED-12 · LAB-1043",
+    prio: "Routine",
+    prioType: "watch",
+    req: "Dr. Patel",
+    status: "PENDING",
+    statusType: "watch",
+  },
+  {
+    time: "08:45",
+    patient: "S. Okoye · ED-07 · LAB-1044",
+    prio: "Emergency",
+    prioType: "crit",
+    req: "Dr. Chen",
+    status: "PENDING",
+    statusType: "watch",
+  },
+  {
+    time: "09:00",
+    patient: "L. Haddad · SUR-03 · LAB-1045",
+    prio: "Routine",
+    prioType: "watch",
+    req: "Dr. Rossi",
+    status: "SCHEDULED",
+    statusType: "safe",
+  },
+  {
+    time: "09:30",
+    patient: "T. Nakamura · MED-08 · LAB-1046",
+    prio: "Routine",
+    prioType: "watch",
+    req: "Dr. Patel",
+    status: "SCHEDULED",
+    statusType: "safe",
+  },
 ];
 
 const CRITICAL_RESULTS = [
-  { id: "CR-88", patient: "R. Kumar",    test: "Potassium 6.4 mmol/L", flagged: "12 min ago", ack: false },
-  { id: "CR-89", patient: "S. Okoye",    test: "Troponin 3.2 ng/mL",   flagged: "27 min ago", ack: false },
-  { id: "CR-90", patient: "H. Ibrahim",  test: "Hb 6.1 g/dL",          flagged: "1h 05m ago", ack: true },
+  {
+    id: "CR-1",
+    patient: "R. Kumar",
+    detail: "Potassium 6.4 mmol/L",
+    time: "Flagged 12 min ago",
+    status: "UNACKNOWLEDGED",
+    type: "crit",
+    ack: false,
+  },
+  {
+    id: "CR-2",
+    patient: "S. Okoye",
+    detail: "Troponin 3.2 ng/mL",
+    time: "Flagged 27 min ago",
+    status: "UNACKNOWLEDGED",
+    type: "crit",
+    ack: false,
+  },
+  {
+    id: "CR-3",
+    patient: "H. Ibrahim",
+    detail: "Hb 6.1 g/dL",
+    time: "Flagged 1h 05m ago",
+    status: "ACK",
+    type: "safe",
+    ack: true,
+  },
 ];
 
-const RADIOLOGY = [
-  { id: "RAD-501", patient: "R. Kumar",    exam: "Chest X-Ray",       stage: "Pending",   eta: "10:00" },
-  { id: "RAD-502", patient: "N. Silva",    exam: "CT Abdomen",        stage: "Scheduled", eta: "11:30" },
-  { id: "RAD-503", patient: "M. Al-Farsi", exam: "MRI Brain",         stage: "Scheduled", eta: "13:00" },
-  { id: "RAD-504", patient: "P. Adebayo",  exam: "US Doppler",        stage: "Completed", eta: "07:45" },
-  { id: "RAD-505", patient: "L. Haddad",   exam: "Portable CXR",      stage: "Reporting", eta: "08:20" },
-  { id: "RAD-506", patient: "T. Nakamura", exam: "CT Chest",          stage: "Delayed",   eta: "09:15", overdueMin: 35 },
+const RADIOLOGY_QUEUE = [
+  { exam: "Chest X-Ray", detail: "R. Kumar · RAD-501 · ETA 10:00", status: "PENDING", type: "watch" },
+  { exam: "CT Abdomen", detail: "N. Silva · RAD-502 · ETA 11:30", status: "SCHEDULED", type: "safe" },
+  { exam: "MRI Brain", detail: "M. Al-Farsi · RAD-503 · ETA 13:00", status: "SCHEDULED", type: "safe" },
+  { exam: "US Doppler", detail: "P. Adebayo · RAD-504 · ETA 07:45", status: "COMPLETED", type: "safe" },
+  { exam: "Portable CXR", detail: "L. Haddad · RAD-505 · ETA 08:20", status: "REPORTING", type: "watch" },
+  { exam: "CT Chest", detail: "T. Nakamura · RAD-506 · ETA 09:15", status: "DELAYED · +35M", type: "crit" },
 ];
 
-const WOUND_CARE = [
-  { id: "W-201", patient: "L. Haddad",   type: "Post-op abdominal",  due: "09:00", status: "Scheduled",  nurseLed: true,  doc: "Pending" },
-  { id: "W-202", patient: "P. Adebayo",  type: "Pressure ulcer II",  due: "09:30", status: "Scheduled",  nurseLed: true,  doc: "Complete" },
-  { id: "W-203", patient: "H. Ibrahim",  type: "Diabetic foot",      due: "08:00", status: "Delayed",    nurseLed: false, doc: "Pending", overdueMin: 55 },
-  { id: "W-204", patient: "N. Silva",    type: "Surgical incision",  due: "10:30", status: "Physician Rescheduled", nurseLed: false, doc: "N/A" },
-  { id: "W-205", patient: "R. Kumar",    type: "Central line site",  due: "11:00", status: "Scheduled",  nurseLed: true,  doc: "Pending" },
+const WOUND_ROWS = [
+  {
+    due: "09:00",
+    patient: "L. Haddad · W-201",
+    type: "Post-op abdominal",
+    nurseLed: "PERMITTED",
+    nurseLedType: "safe",
+    docs: "PENDING",
+    docsType: "watch",
+    status: "SCHEDULED",
+    statusType: "safe",
+  },
+  {
+    due: "09:30",
+    patient: "P. Adebayo · W-202",
+    type: "Pressure ulcer II",
+    nurseLed: "PERMITTED",
+    nurseLedType: "safe",
+    docs: "COMPLETE",
+    docsType: "safe",
+    status: "SCHEDULED",
+    statusType: "safe",
+  },
+  {
+    due: "08:00",
+    patient: "H. Ibrahim · W-203",
+    type: "Diabetic foot",
+    nurseLed: "PHYSICIAN REQ.",
+    nurseLedType: "neutral",
+    docs: "PENDING",
+    docsType: "watch",
+    status: "DELAYED · +55M",
+    statusType: "crit",
+  },
+  {
+    due: "10:30",
+    patient: "N. Silva · W-204",
+    type: "Surgical incision",
+    nurseLed: "PHYSICIAN REQ.",
+    nurseLedType: "neutral",
+    docs: "N/A",
+    docsType: "neutral",
+    status: "PHYSICIAN RESCHEDULED",
+    statusType: "watch",
+  },
+  {
+    due: "11:00",
+    patient: "R. Kumar · W-205",
+    type: "Central line site",
+    nurseLed: "PERMITTED",
+    nurseLedType: "safe",
+    docs: "PENDING",
+    docsType: "watch",
+    status: "SCHEDULED",
+    statusType: "safe",
+  },
 ];
 
-const IV_ACCESS = [
-  { id: "IV-31", patient: "M. Al-Farsi", reason: "3× failed attempts",    escalated: true,  responder: "IV Expert – A. Rahim", response: "8 min",  status: "Completed" },
-  { id: "IV-32", patient: "S. Okoye",    reason: "Difficult veins",       escalated: true,  responder: "IV Expert – J. Silva", response: "12 min", status: "In Progress" },
-  { id: "IV-33", patient: "T. Nakamura", reason: "Pediatric cannulation", escalated: true,  responder: "Awaiting",             response: "—",      status: "Pending" },
-  { id: "IV-34", patient: "L. Haddad",   reason: "Extravasation risk",    escalated: false, responder: "Nurse (bedside)",      response: "5 min",  status: "Completed" },
+const IV_PENDING = [
+  {
+    patient: "T. Nakamura · IV-33",
+    detail: "Pediatric cannulation",
+    meta: "Responder: Awaiting · Response: —",
+    status: "PENDING",
+    type: "watch",
+  },
 ];
 
-type TimelineStatus = "Completed" | "Pending" | "Delayed" | "Rescheduled";
-const TIMELINE: { time: string; label: string; status: TimelineStatus; note: string }[] = [
-  { time: "08:00", label: "Laboratory",       status: "Completed",   note: "Morning bloods drawn — 24 of 26" },
-  { time: "09:00", label: "Wound Review",     status: "Delayed",     note: "3 dressings awaiting nurse-led review" },
-  { time: "10:00", label: "Medication",       status: "Pending",     note: "AM round in progress" },
-  { time: "11:30", label: "Radiology",        status: "Rescheduled", note: "CT slot moved from 09:15" },
-  { time: "14:00", label: "Physician Review", status: "Pending",     note: "6 patients on round list" },
-  { time: "16:00", label: "Follow-up",        status: "Pending",     note: "Handover + reassessments" },
+const IV_PROGRESS = [
+  {
+    patient: "S. Okoye · IV-32",
+    detail: "Difficult veins",
+    meta: "Responder: IV Expert – J. Silva · Response 12 min",
+    status: "IN PROGRESS",
+    type: "watch",
+  },
+];
+
+const IV_COMPLETED = [
+  {
+    patient: "M. Al-Farsi · IV-31",
+    detail: "3× failed attempts",
+    meta: "Responder: IV Expert – A. Rahim · Response 8 min",
+    status: "COMPLETED",
+    type: "safe",
+  },
+  {
+    patient: "L. Haddad · IV-34",
+    detail: "Extravasation risk",
+    meta: "Responder: Nurse (bedside) · Response 5 min",
+    status: "COMPLETED",
+    type: "safe",
+  },
 ];
 
 const AI_INSIGHTS = [
-  { tone: "danger"  as const, title: "Bottleneck: Laboratory collections in ICU",  body: "3 emergency collections in ICU are >20 min overdue. Consider dispatching phlebotomy runner or reassigning to charge nurse." },
-  { tone: "warning" as const, title: "Radiology reports pending TAT breach",       body: "CT Chest (RAD-506) delayed 35 min — turnaround KPI at risk. Notify reporting radiologist." },
-  { tone: "warning" as const, title: "Wound review backlog on Medical Ward",       body: "Delayed diabetic foot review (W-203) requires physician assessment. Nurse-led not permitted per policy." },
-  { tone: "info"    as const, title: "Optimize morning cluster (08:00–10:00)",     body: "Sequence: labs → wound dressings → medication reduces ward crossings by ~22% and saves ≈18 nurse-minutes/shift." },
+  {
+    kind: "obs" as const,
+    label: "Observed",
+    text: "3 emergency laboratory collections in ICU are overdue by more than 20 minutes.",
+  },
+  {
+    kind: "adv" as const,
+    label: "Advisory",
+    text: "Review whether the phlebotomy runner or charge nurse can assist with ICU collections.",
+  },
+  {
+    kind: "obs" as const,
+    label: "Observed",
+    text: "CT Chest (RAD-506) is delayed 35 minutes against the 45-minute turnaround target.",
+  },
+  {
+    kind: "adv" as const,
+    label: "Advisory",
+    text: "Notify the reporting radiologist of the turnaround risk.",
+  },
+  {
+    kind: "obs" as const,
+    label: "Observed",
+    text: "Diabetic foot wound review (W-203) is delayed 55 minutes and requires physician assessment; nurse-led review is not permitted for this case per policy.",
+  },
+  {
+    kind: "adv" as const,
+    label: "Advisory",
+    text: "Confirm physician availability for the delayed review — the system does not approve or override this requirement.",
+  },
 ];
 
-// ---------------- Helpers ----------------
-
-function statusTone(s: string): "success" | "warning" | "danger" | "info" | "neutral" {
-  if (s === "Completed" || s === "Complete") return "success";
-  if (s === "Delayed") return "danger";
-  if (s === "Pending" || s === "Scheduled" || s === "Reporting" || s === "In Progress") return "info";
-  if (s.includes("Rescheduled")) return "warning";
-  return "neutral";
-}
-
-function priorityTone(p: string): "danger" | "info" | "neutral" {
-  if (p === "Emergency") return "danger";
-  if (p === "Routine") return "info";
-  return "neutral";
-}
-
-// ---------------- Component ----------------
-
-function WorkflowIntelligencePage() {
+/* ── Main Component ───────────────────────────────────────────── */
+export default function WorkflowIntelligencePage() {
+  const search = Route.useSearch();
   const navigate = useNavigate();
+
   const [session, setSess] = useState<Session | null>(null);
 
   useEffect(() => {
     const s = getSession();
-    if (!s) { navigate({ to: "/login" }); return; }
+    if (!s) {
+      navigate({ to: "/login" });
+      return;
+    }
     setSess(s);
   }, [navigate]);
 
+  // Active Tab state driven by query parameter with fallback to 'overview'
+  const activeTab: TabId = (
+    TABS.some((t) => t.id === search.tab) ? search.tab : "overview"
+  ) as TabId;
+
+  const setActiveTab = (tab: TabId) => {
+    navigate({
+      to: "/workflow-intelligence",
+      search: { tab },
+    });
+  };
+
+  // State for timeline filter
+  const [timelineFilter, setTimelineFilter] = useState<string>("all");
+
+  const filteredTimeline = useMemo(() => {
+    if (timelineFilter === "all") return TIMELINE_DATA;
+    return TIMELINE_DATA.filter((item) => item.status === timelineFilter);
+  }, [timelineFilter]);
+
   if (!session) {
-    return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">Loading…</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#EEF2F7] text-sm text-[#5B6472]">
+        Loading Workflow Intelligence…
+      </div>
+    );
   }
 
   return (
-    <>
-      <main className="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6">
+    <div
+      className="flex flex-col flex-1 min-h-0 font-sans text-[#101828]"
+      style={{
+        backgroundColor: "#EEF2F7",
+        minHeight: "100%",
+      }}
+    >
+      {/* ── Workforce Operations Subnav ────────────────────────── */}
+      <div className="px-5 pt-3 pb-1 bg-white border-b border-[#E1E6ED] shrink-0">
+        <WorkforceNav activeTab="workflow" />
+      </div>
 
-        <PlatformPositioning active="workflow" />
+      {/* ── Header & Navigation ───────────────────────────────── */}
+      <header className="px-5 pt-3.5 shrink-0 bg-transparent">
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+          <div>
+            <h1 className="text-[17px] font-bold flex items-center gap-2 text-[#101828]">
+              <Activity className="h-4 w-4 text-[#2458E6]" />
+              Workflow Intelligence
+            </h1>
+            <p className="text-xs text-[#5B6472] mt-0.5">
+              AI-assisted coordination of clinical workflows across departments.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full border border-[#2458E6] bg-[#E8EEFD] text-[#2458E6]">
+              AI Prototype
+            </span>
+            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full border border-[#E1E6ED] bg-white text-[#5B6472]">
+              Demo Data
+            </span>
+            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full border border-[#E1E6ED] bg-white text-[#5B6472]">
+              {session.institutionName ?? "Demo General Hospital"}
+            </span>
+          </div>
+        </div>
 
-        {/* Header */}
-        <header className="rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-card p-5 shadow-sm sm:p-6">
+        <p className="text-[11.5px] text-[#5B6472] mb-3">
+          Coordinate clinical tasks, identify operational bottlenecks, and support
+          timely clinical communication across departments.
+        </p>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="flex items-start gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                <Activity className="h-6 w-6" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-                    Nursing Workflow Intelligence
-                  </h1>
-                  <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                    Prototype
+        {/* ── 7 Horizontal Tabs ────────────────────────────────── */}
+        <nav
+          className="flex gap-1 overflow-x-auto pb-2 border-b border-[#E1E6ED] scrollbar-none"
+          aria-label="Workflow Intelligence Tabs"
+        >
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                type="button"
+                className={`flex items-center gap-1.5 px-3 py-2 text-[12.3px] rounded-t-lg border-b-2 cursor-pointer transition-colors whitespace-nowrap shrink-0 ${
+                  isActive
+                    ? "font-semibold text-[#2458E6] border-[#2458E6] bg-transparent"
+                    : "font-medium text-[#5B6472] border-transparent hover:bg-[#E8EEFD]"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{tab.label}</span>
+                {tab.badge && (
+                  <span className="ml-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[#FBEAE7] text-[#C0392B]">
+                    {tab.badge}
                   </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      </header>
+
+      {/* ── Main Viewports: Only Active Panel Rendered ────────── */}
+      <main className="flex-1 min-h-0 p-5 overflow-y-auto">
+        {activeTab === "overview" && (
+          <OverviewPanel onSelectTab={setActiveTab} />
+        )}
+
+        {activeTab === "lab" && (
+          <LaboratoryPanel />
+        )}
+
+        {activeTab === "rad" && (
+          <RadiologyPanel />
+        )}
+
+        {activeTab === "wound" && (
+          <WoundCarePanel />
+        )}
+
+        {activeTab === "iv" && (
+          <IvAccessPanel />
+        )}
+
+        {activeTab === "timeline" && (
+          <ShiftTimelinePanel
+            filter={timelineFilter}
+            onFilterChange={setTimelineFilter}
+            items={filteredTimeline}
+          />
+        )}
+
+        {activeTab === "assistant" && (
+          <AiAssistantPanel />
+        )}
+      </main>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 1: OVERVIEW
+   ═══════════════════════════════════════════════════════════════ */
+function OverviewPanel({
+  onSelectTab,
+}: {
+  onSelectTab: (tab: TabId) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2.5">
+      {/* 4 Stat Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <StatBox label="Open tasks" value="42" />
+        <StatBox label="Delayed" value="7" valueColor="#C0392B" />
+        <StatBox
+          label="Nurse-mins saved (prototype metric)"
+          value="86"
+          valueColor="#2E7D5B"
+        />
+        <StatBox
+          label="Critical / overdue items"
+          value="3"
+          valueColor="#A8760F"
+        />
+      </div>
+
+      {/* Department Workflow Summary */}
+      <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+        <h2 className="text-[12.8px] font-semibold text-[#101828] mb-2">
+          Department workflow summary
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          <ModuleCard
+            icon={FlaskConical}
+            title="Laboratory"
+            chips={["9 pending", "3 emergency", "2 delayed"]}
+            onClick={() => onSelectTab("lab")}
+          />
+          <ModuleCard
+            icon={Scan}
+            title="Radiology"
+            chips={["5 pending", "11 completed today", "2 delayed reports"]}
+            onClick={() => onSelectTab("rad")}
+          />
+          <ModuleCard
+            icon={ClipboardList}
+            title="Wound Care"
+            chips={["12 reviews today", "1 delayed", "1 physician rescheduled"]}
+            onClick={() => onSelectTab("wound")}
+          />
+          <ModuleCard
+            icon={Syringe}
+            title="IV Access"
+            chips={["4 difficult", "3 escalated", "9 min avg response"]}
+            onClick={() => onSelectTab("iv")}
+          />
+        </div>
+      </div>
+
+      {/* Two Column Layout: Priority Attention & Shift Timeline Preview */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-2.5">
+        {/* Left Column: Priority Attention */}
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+          <h2 className="text-[12.8px] font-semibold text-[#101828]">
+            Priority attention
+          </h2>
+          <p className="text-[10.8px] text-[#5B6472] mb-2.5">
+            Sorted by elapsed / overdue time
+          </p>
+
+          <div className="space-y-1.5">
+            {PRIORITY_ITEMS.map((item, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2.5 rounded-[9px] border border-[#E1E6ED] border-l-[3px] border-l-[#C0392B] bg-white px-3 py-2 text-[11.4px]"
+              >
+                <span className="text-[9.5px] uppercase tracking-wider text-[#5B6472] w-20 shrink-0 font-medium">
+                  {item.dept}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-[#101828] truncate">
+                    {item.patient}
+                  </div>
+                  <div className="text-[10.3px] text-[#5B6472] truncate">
+                    {item.requester}
+                  </div>
                 </div>
-                <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                  AI-assisted coordination of clinical workflows across departments — designed to
-                  reduce documentation burden, improve communication, and help nurses complete tasks
-                  efficiently. This is a workflow management system, not an EMR.
-                </p>
+                <StatusBadge type={item.pillType} label={item.statusText} />
+                <button
+                  onClick={() => onSelectTab(item.targetTab)}
+                  type="button"
+                  className="rounded-[7px] border border-[#E1E6ED] px-2 py-1 text-[10.5px] font-medium text-[#2458E6] hover:bg-[#E8EEFD] transition cursor-pointer"
+                >
+                  Open
+                </button>
               </div>
-            </div>
-            <div className="grid grid-cols-3 gap-2 sm:min-w-[320px]">
-              <MiniStat label="Open tasks"  value="42" tone="info" />
-              <MiniStat label="Delayed"     value="7"  tone="danger" />
-              <MiniStat label="Nurse-mins saved" value="86" tone="success" />
-            </div>
+            ))}
           </div>
-        </header>
+        </div>
 
-        {/* 1. Laboratory Workflow */}
-        <section>
-          <SectionTitle icon={FlaskConical} title="Laboratory Workflow" subtitle="Collections, schedules and critical result acknowledgement" />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Kpi icon={FlaskConical} label="Pending Collections" value={9} tone="info" />
-            <Kpi icon={AlertTriangle} label="Emergency" value={3} tone="danger" />
-            <Kpi icon={ClipboardList} label="Routine" value={6} tone="info" />
-            <Kpi icon={TimerReset} label="Delayed" value={2} tone="warning" hint=">15 min overdue" />
-          </div>
+        {/* Right Column: Shift Task Timeline Preview */}
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5 flex flex-col justify-between">
+          <div>
+            <h2 className="text-[12.8px] font-semibold text-[#101828]">
+              Shift task timeline
+            </h2>
+            <p className="text-[10.8px] text-[#5B6472] mb-2.5">
+              Preview — next 3 events
+            </p>
 
-          <div className="mt-3 grid gap-4 lg:grid-cols-3">
-            <Widget title="Collection Schedule" icon={Clock} className="lg:col-span-2">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-                      <th className="pb-2 pr-3 font-medium">Time</th>
-                      <th className="pb-2 pr-3 font-medium">Patient</th>
-                      <th className="pb-2 pr-3 font-medium">Priority</th>
-                      <th className="pb-2 pr-3 font-medium">Requester</th>
-                      <th className="pb-2 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {LAB_COLLECTIONS.map((c) => (
-                      <tr key={c.id} className="border-b border-border/60 last:border-0">
-                        <td className="py-2 pr-3 font-mono text-xs text-muted-foreground">{c.due}</td>
-                        <td className="py-2 pr-3">
-                          <div className="font-medium">{c.patient}</div>
-                          <div className="text-[11px] text-muted-foreground">{c.room} · {c.id}</div>
-                        </td>
-                        <td className="py-2 pr-3"><StatusPill tone={priorityTone(c.priority)}>{c.priority}</StatusPill></td>
-                        <td className="py-2 pr-3 text-xs text-muted-foreground">{c.requester}</td>
-                        <td className="py-2">
-                          <StatusPill tone={statusTone(c.status)}>
-                            {c.status}{c.overdueMin ? ` · +${c.overdueMin}m` : ""}
-                          </StatusPill>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Widget>
-
-            <Widget title="Critical Results — Acknowledgement" icon={AlertTriangle} subtitle="Awaiting clinician sign-off">
-              <div className="space-y-2">
-                {CRITICAL_RESULTS.map((r) => (
-                  <div key={r.id} className={`rounded-lg border p-3 ${r.ack ? "border-border bg-background" : "border-destructive/40 bg-destructive/5"}`}>
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium">{r.patient}</div>
-                        <div className="text-xs text-muted-foreground">{r.test}</div>
-                        <div className="mt-1 text-[11px] text-muted-foreground">Flagged {r.flagged}</div>
-                      </div>
-                      {r.ack ? (
-                        <StatusPill tone="success"><CheckCircle2 className="h-3 w-3" /> Ack</StatusPill>
-                      ) : (
-                        <StatusPill tone="danger">Unacknowledged</StatusPill>
-                      )}
-                    </div>
+            <div className="relative pl-1">
+              {TIMELINE_DATA.slice(0, 3).map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`relative pl-3.5 pb-3 border-l-2 text-[11.4px] ${
+                    idx === 2 ? "border-l-transparent pb-0" : "border-l-[#E1E6ED]"
+                  }`}
+                >
+                  <span
+                    className={`absolute -left-[6px] top-1 h-[11px] w-[11px] rounded-full ${
+                      item.status === "completed"
+                        ? "bg-[#2E7D5B]"
+                        : item.status === "delayed"
+                        ? "bg-[#C0392B]"
+                        : item.status === "rescheduled"
+                        ? "bg-[#A8760F]"
+                        : "bg-[#4C7EFF]"
+                    }`}
+                  />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10.5px] font-mono text-[#5B6472]">
+                      {item.time}
+                    </span>
+                    <strong className="text-[11.8px] text-[#101828]">
+                      {item.dept}
+                    </strong>
+                    <StatusBadge type={item.status} label={item.badge} />
                   </div>
-                ))}
-              </div>
-            </Widget>
-          </div>
-        </section>
-
-        {/* 2. Radiology Workflow */}
-        <section>
-          <SectionTitle icon={Scan} title="Radiology Workflow" subtitle="Imaging requests, reporting and turnaround" />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-            <Kpi icon={Scan} label="Pending Requests" value={5} tone="info" />
-            <Kpi icon={CalendarClock} label="Scheduled" value={8} tone="info" />
-            <Kpi icon={CheckCircle2} label="Completed Today" value={11} tone="success" />
-            <Kpi icon={ClipboardList} label="Reports Pending" value={4} tone="warning" />
-            <Kpi icon={TimerReset} label="Delayed Reports" value={2} tone="danger" />
-          </div>
-
-          <div className="mt-3 grid gap-4 lg:grid-cols-3">
-            <Widget title="Report Turnaround (KPI)" icon={Activity}>
-              <div className="flex flex-col items-center py-2">
-                <div className="text-4xl font-bold text-primary">42<span className="text-xl font-medium text-muted-foreground"> min</span></div>
-                <div className="mt-1 text-xs text-muted-foreground">Avg report TAT · Target ≤ 45 min</div>
-                <div className="mt-4 w-full">
-                  <div className="mb-1 flex justify-between text-[11px] text-muted-foreground">
-                    <span>Within target</span><span>82%</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                    <div className="h-full rounded-full bg-primary" style={{ width: "82%" }} />
-                  </div>
-                </div>
-              </div>
-            </Widget>
-
-            <Widget title="Imaging Queue" icon={Scan} className="lg:col-span-2">
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {RADIOLOGY.map((r) => (
-                  <div key={r.id} className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2">
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">{r.exam}</div>
-                      <div className="truncate text-[11px] text-muted-foreground">{r.patient} · {r.id} · ETA {r.eta}</div>
-                    </div>
-                    <StatusPill tone={statusTone(r.stage)}>
-                      {r.stage}{r.overdueMin ? ` · +${r.overdueMin}m` : ""}
-                    </StatusPill>
-                  </div>
-                ))}
-              </div>
-            </Widget>
-          </div>
-        </section>
-
-        {/* 3. Wound Care Workflow */}
-        <section>
-          <SectionTitle icon={Bandage} title="Wound Care Workflow" subtitle="Dressings, surgical reviews and documentation" />
-          <div className="grid gap-4 lg:grid-cols-3">
-            <Widget title="Scheduled Dressings & Reviews" icon={Bandage} className="lg:col-span-2">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-                      <th className="pb-2 pr-3 font-medium">Due</th>
-                      <th className="pb-2 pr-3 font-medium">Patient</th>
-                      <th className="pb-2 pr-3 font-medium">Type</th>
-                      <th className="pb-2 pr-3 font-medium">Nurse-led</th>
-                      <th className="pb-2 pr-3 font-medium">Docs</th>
-                      <th className="pb-2 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {WOUND_CARE.map((w) => (
-                      <tr key={w.id} className="border-b border-border/60 last:border-0">
-                        <td className="py-2 pr-3 font-mono text-xs text-muted-foreground">{w.due}</td>
-                        <td className="py-2 pr-3">
-                          <div className="font-medium">{w.patient}</div>
-                          <div className="text-[11px] text-muted-foreground">{w.id}</div>
-                        </td>
-                        <td className="py-2 pr-3 text-xs">{w.type}</td>
-                        <td className="py-2 pr-3">
-                          <StatusPill tone={w.nurseLed ? "success" : "neutral"}>
-                            {w.nurseLed ? "Permitted" : "Physician req."}
-                          </StatusPill>
-                        </td>
-                        <td className="py-2 pr-3"><StatusPill tone={statusTone(w.doc)}>{w.doc}</StatusPill></td>
-                        <td className="py-2">
-                          <StatusPill tone={statusTone(w.status)}>
-                            {w.status}{w.overdueMin ? ` · +${w.overdueMin}m` : ""}
-                          </StatusPill>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Widget>
-
-            <div className="space-y-3">
-              <Kpi icon={Bandage} label="Reviews Today" value={12} tone="info" />
-              <Kpi icon={TimerReset} label="Delayed" value={1} tone="danger" />
-              <Kpi icon={CalendarClock} label="Physician Rescheduled" value={1} tone="warning" />
-              <div className="rounded-xl border border-border bg-card p-4 text-xs text-muted-foreground shadow-sm">
-                <div className="mb-1 font-medium text-foreground">Policy note</div>
-                Nurse-led dressing is permitted for stable post-op and pressure injuries per hospital policy. Physician review required for infected or non-healing wounds.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 4. IV Access Workflow */}
-        <section>
-          <SectionTitle icon={Syringe} title="IV Access Workflow" subtitle="Escalation to IV Expert Nurse per hospital policy" />
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className="grid grid-cols-2 gap-3 lg:col-span-1">
-              <Kpi icon={Syringe} label="Difficult Cannulations" value={4} tone="warning" />
-              <Kpi icon={ArrowRight} label="Escalated to IV Expert" value={3} tone="info" />
-              <Kpi icon={Clock} label="Avg Response" value="9 min" tone="success" />
-              <Kpi icon={CheckCircle2} label="Completed" value={2} tone="success" />
-            </div>
-
-            <Widget title="IV Escalation Queue" icon={Syringe} className="lg:col-span-2">
-              <div className="space-y-2">
-                {IV_ACCESS.map((i) => (
-                  <div key={i.id} className="rounded-lg border border-border bg-background p-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium">{i.patient} <span className="text-[11px] font-normal text-muted-foreground">· {i.id}</span></div>
-                        <div className="text-xs text-muted-foreground">{i.reason}</div>
-                      </div>
-                      <StatusPill tone={statusTone(i.status)}>{i.status}</StatusPill>
-                    </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-                      <span>Responder: <span className="text-foreground">{i.responder}</span></span>
-                      <span>Response time: <span className="text-foreground">{i.response}</span></span>
-                      {i.escalated && <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-primary">Policy escalation</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Widget>
-          </div>
-        </section>
-
-        {/* 5. Shift Task Timeline */}
-        <section>
-          <SectionTitle icon={Clock} title="Shift Task Timeline" subtitle="Coordinated cadence across the shift" />
-          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
-              <LegendDot color="hsl(160 60% 45%)" label="Completed" />
-              <LegendDot color="hsl(210 85% 55%)" label="Pending" />
-              <LegendDot color="hsl(0 75% 55%)" label="Delayed" />
-              <LegendDot color="hsl(35 85% 55%)" label="Rescheduled" />
-            </div>
-
-            <ol className="relative space-y-4 border-l-2 border-dashed border-border pl-6">
-              {TIMELINE.map((t) => {
-                const tone = t.status === "Completed" ? "success"
-                  : t.status === "Delayed" ? "danger"
-                  : t.status === "Rescheduled" ? "warning" : "info";
-                const dot = t.status === "Completed" ? "hsl(160 60% 45%)"
-                  : t.status === "Delayed" ? "hsl(0 75% 55%)"
-                  : t.status === "Rescheduled" ? "hsl(35 85% 55%)" : "hsl(210 85% 55%)";
-                return (
-                  <li key={t.time} className="relative">
-                    <span
-                      className="absolute -left-[31px] top-1 flex h-4 w-4 items-center justify-center rounded-full ring-4 ring-card"
-                      style={{ background: dot }}
-                    />
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="w-14 font-mono text-sm text-muted-foreground">{t.time}</div>
-                      <div className="text-sm font-semibold text-foreground">{t.label}</div>
-                      <StatusPill tone={tone}>{t.status}</StatusPill>
-                    </div>
-                    <div className="ml-[68px] text-xs text-muted-foreground">{t.note}</div>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        </section>
-
-        {/* 6. AI Workflow Assistant */}
-        <section>
-          <SectionTitle icon={Sparkles} title="AI Workflow Assistant" pill="AI Prototype" subtitle="Bottleneck analysis and workflow recommendations" />
-          <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm">
-            <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                <Sparkles className="h-4 w-4" />
-              </div>
-              <div>
-                <div className="text-sm font-semibold">Workflow assistant summary</div>
-                <div className="text-[11px] text-muted-foreground">Updated 2 min ago · Demo insights</div>
-              </div>
-              <span className="ml-auto rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                AI Prototype
-              </span>
-            </div>
-
-            <div className="grid gap-3 md:grid-cols-2">
-              {AI_INSIGHTS.map((r) => (
-                <div key={r.title} className="flex gap-3 rounded-xl border border-border bg-background p-4">
-                  <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    r.tone === "danger" ? "bg-destructive/15 text-destructive" :
-                    r.tone === "warning" ? "bg-warning/20 text-warning-foreground" :
-                    "bg-primary/10 text-primary"
-                  }`}>
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="text-sm font-semibold">{r.title}</h4>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{r.body}</p>
+                  <div className="text-[10.5px] text-[#5B6472] mt-0.5">
+                    {item.desc}
                   </div>
                 </div>
               ))}
             </div>
+          </div>
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-3">
-              <AiChip icon={AlertTriangle} label="Bottlenecks" value="Labs · Wound review" />
-              <AiChip icon={TimerReset} label="Departments needing attention" value="ICU · Medical Ward" />
-              <AiChip icon={Stethoscope} label="Recommended focus" value="Sequence AM cluster tasks" />
+          <div className="mt-4 pt-2 border-t border-[#E1E6ED]/60">
+            <button
+              onClick={() => onSelectTab("timeline")}
+              type="button"
+              className="text-[10.6px] font-semibold text-[#2458E6] hover:underline cursor-pointer flex items-center gap-1"
+            >
+              <span>Open full timeline</span>
+              <ArrowRight className="h-3 w-3" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 2: LABORATORY
+   ═══════════════════════════════════════════════════════════════ */
+function LaboratoryPanel() {
+  const [criticalResults, setCriticalResults] = useState(CRITICAL_RESULTS);
+
+  const toggleAck = (id: string) => {
+    setCriticalResults((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              ack: !item.ack,
+              status: !item.ack ? "ACK" : "UNACKNOWLEDGED",
+              type: !item.ack ? "safe" : "crit",
+            }
+          : item
+      )
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <StatBox label="Pending collections" value="9" />
+        <StatBox label="Emergency" value="3" valueColor="#C0392B" />
+        <StatBox label="Routine" value="6" />
+        <StatBox label="Delayed >15 min" value="2" valueColor="#C0392B" />
+      </div>
+
+      {/* Two Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-2.5">
+        {/* Left: Collection Schedule */}
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+          <h2 className="text-[12.8px] font-semibold text-[#101828] mb-2">
+            Collection schedule
+          </h2>
+          <div className="border border-[#E1E6ED] rounded-[10px] overflow-hidden">
+            <table className="w-full text-left text-[11.4px] border-collapse">
+              <thead>
+                <tr className="bg-white border-b border-[#E1E6ED] text-[9.6px] font-semibold text-[#5B6472]">
+                  <th className="py-2 px-2.5">Time</th>
+                  <th className="py-2 px-2.5">Patient</th>
+                  <th className="py-2 px-2.5">Priority</th>
+                  <th className="py-2 px-2.5">Requester</th>
+                  <th className="py-2 px-2.5">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E1E6ED]">
+                {LAB_ROWS.map((row, idx) => (
+                  <tr key={idx} className="hover:bg-black/[0.01]">
+                    <td className="py-2 px-2.5 font-mono text-[10.5px] text-[#5B6472]">
+                      {row.time}
+                    </td>
+                    <td className="py-2 px-2.5 font-medium text-[#101828]">
+                      {row.patient}
+                    </td>
+                    <td className="py-2 px-2.5">
+                      <StatusBadge type={row.prioType} label={row.prio} />
+                    </td>
+                    <td className="py-2 px-2.5 text-[#5B6472]">{row.req}</td>
+                    <td className="py-2 px-2.5">
+                      <StatusBadge type={row.statusType} label={row.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Right: Critical Results */}
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5 flex flex-col justify-between">
+          <div>
+            <h2 className="text-[12.8px] font-semibold text-[#101828]">
+              Critical results
+            </h2>
+            <p className="text-[10.8px] text-[#5B6472] mb-2.5">
+              Awaiting clinician sign-off — distinct from nursing collection tasks
+            </p>
+
+            <div className="space-y-1.5">
+              {criticalResults.map((item) => (
+                <div
+                  key={item.id}
+                  className={`flex items-center justify-between gap-2 rounded-[9px] border p-2.5 text-[11.4px] transition ${
+                    item.ack
+                      ? "border-[#E1E6ED] bg-white"
+                      : "border-[#C0392B] bg-[#FBEAE7]"
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <strong className="block text-[11.8px] text-[#101828]">
+                      {item.patient}
+                    </strong>
+                    <span className="text-[10.5px] text-[#5B6472]">
+                      {item.detail} · {item.time}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => toggleAck(item.id)}
+                    type="button"
+                    title={item.ack ? "Click to toggle" : "Sign-off acknowledgement"}
+                    className="cursor-pointer"
+                  >
+                    <StatusBadge type={item.type} label={item.status} />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
-        </section>
 
-        <ExecutiveDecisionSupport module="workflow" />
-        <AIIntelligenceLayer module="workflow" />
-
-        {/* Footer vision */}
-        <section className="rounded-xl border border-border bg-card p-5 text-center text-sm text-muted-foreground shadow-sm">
-          Our vision is to build an integrated AI-powered healthcare intelligence ecosystem supporting
-          workforce excellence, evidence-based practice, innovation, research, learning, and executive
-          decision-making.
-        </section>
-
-      </main>
-    </>
-  );
-}
-
-// ---------------- UI helpers ----------------
-
-function SectionTitle({
-  icon: Icon, title, subtitle, pill,
-}: { icon: typeof Activity; title: string; subtitle?: string; pill?: string }) {
-  return (
-    <div className="mb-3 flex items-end justify-between gap-3">
-      <div className="flex items-center gap-2.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-          <Icon className="h-4 w-4" />
-        </div>
-        <div>
-          <h2 className="text-base font-semibold tracking-tight text-foreground">{title}</h2>
-          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+          <div className="mt-4 p-2 rounded-lg bg-[#E8EEFD] text-[10.5px] text-[#2458E6]">
+            <strong>Clinical Safety Notice: </strong>Critical result notifications
+            are advisory. Clinician sign-off must proceed in accordance with
+            institutional escalation protocol.
+          </div>
         </div>
       </div>
-      {pill && (
-        <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-          {pill}
-        </span>
-      )}
     </div>
   );
 }
 
-function Kpi({
-  icon: Icon, label, value, tone, hint,
-}: { icon: typeof Activity; label: string; value: string | number; tone: "info" | "success" | "warning" | "danger"; hint?: string }) {
-  const map = {
-    info: "text-primary bg-primary/10",
-    success: "text-success bg-success/15",
-    warning: "text-warning-foreground bg-warning/20",
-    danger: "text-destructive bg-destructive/15",
-  };
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 3: RADIOLOGY
+   ═══════════════════════════════════════════════════════════════ */
+function RadiologyPanel() {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 shadow-sm">
-      <div className="flex items-center gap-2">
-        <div className={`flex h-8 w-8 items-center justify-center rounded-md ${map[tone]}`}>
-          <Icon className="h-4 w-4" />
-        </div>
-        <div className="min-w-0">
-          <div className="truncate text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-          <div className="text-lg font-semibold text-foreground">{value}</div>
+    <div className="flex flex-col gap-2.5">
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <StatBox label="Pending requests" value="5" />
+        <StatBox label="Scheduled" value="8" />
+        <StatBox label="Completed today" value="11" valueColor="#2E7D5B" />
+        <StatBox label="Delayed reports" value="2" valueColor="#C0392B" />
+      </div>
+
+      {/* Report turnaround KPI */}
+      <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+        <h2 className="text-[12.8px] font-semibold text-[#101828]">
+          Report turnaround (KPI)
+        </h2>
+        <p className="text-[10.8px] text-[#5B6472] mb-2">
+          42 min average · target ≤ 45 min ·{" "}
+          <span className="font-mono font-bold text-[#101828]">82%</span> within
+          target
+        </p>
+        <div className="h-2 w-full bg-[#E1E6ED] rounded-full overflow-hidden">
+          <div className="h-full bg-[#2458E6] rounded-full" style={{ width: "82%" }} />
         </div>
       </div>
-      {hint && <div className="mt-1 text-[11px] text-muted-foreground">{hint}</div>}
+
+      {/* Imaging Queue */}
+      <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+        <h2 className="text-[12.8px] font-semibold text-[#101828] mb-2">
+          Imaging queue
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {RADIOLOGY_QUEUE.map((item, idx) => (
+            <div
+              key={idx}
+              className="rounded-[11px] border border-[#E1E6ED] bg-white p-3"
+            >
+              <strong className="text-[12.3px] text-[#101828] block">
+                {item.exam}
+              </strong>
+              <div className="text-[10.5px] text-[#5B6472] mt-1 truncate">
+                {item.detail}
+              </div>
+              <div className="mt-2">
+                <StatusBadge type={item.type} label={item.status} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
-function MiniStat({ label, value, tone }: { label: string; value: string; tone: "info" | "success" | "danger" }) {
-  const map = {
-    info: "border-primary/30 text-primary",
-    success: "border-success/40 text-success",
-    danger: "border-destructive/40 text-destructive",
-  };
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 4: WOUND CARE
+   ═══════════════════════════════════════════════════════════════ */
+function WoundCarePanel() {
   return (
-    <div className={`rounded-lg border bg-background/60 px-3 py-2 text-center ${map[tone]}`}>
-      <div className="text-lg font-bold leading-tight">{value}</div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
+    <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-2.5">
+      {/* Left: Table */}
+      <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+        <h2 className="text-[12.8px] font-semibold text-[#101828] mb-2">
+          Scheduled dressings & reviews
+        </h2>
+        <div className="border border-[#E1E6ED] rounded-[10px] overflow-hidden">
+          <table className="w-full text-left text-[11.4px] border-collapse">
+            <thead>
+              <tr className="bg-white border-b border-[#E1E6ED] text-[9.6px] font-semibold text-[#5B6472]">
+                <th className="py-2 px-2.5">Due</th>
+                <th className="py-2 px-2.5">Patient</th>
+                <th className="py-2 px-2.5">Type</th>
+                <th className="py-2 px-2.5">Nurse-led</th>
+                <th className="py-2 px-2.5">Docs</th>
+                <th className="py-2 px-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E1E6ED]">
+              {WOUND_ROWS.map((row, idx) => (
+                <tr key={idx} className="hover:bg-black/[0.01]">
+                  <td className="py-2 px-2.5 font-mono text-[10.5px] text-[#5B6472]">
+                    {row.due}
+                  </td>
+                  <td className="py-2 px-2.5 font-medium text-[#101828]">
+                    {row.patient}
+                  </td>
+                  <td className="py-2 px-2.5 text-[#5B6472]">{row.type}</td>
+                  <td className="py-2 px-2.5">
+                    <StatusBadge type={row.nurseLedType} label={row.nurseLed} />
+                  </td>
+                  <td className="py-2 px-2.5">
+                    <StatusBadge type={row.docsType} label={row.docs} />
+                  </td>
+                  <td className="py-2 px-2.5">
+                    <StatusBadge type={row.statusType} label={row.status} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Right: Stats & Hospital Policy */}
+      <div className="flex flex-col gap-2.5">
+        <div className="grid grid-cols-2 gap-2">
+          <StatBox label="Reviews today" value="12" />
+          <StatBox label="Delayed" value="1" valueColor="#C0392B" />
+        </div>
+
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5 flex-1">
+          <h2 className="text-[12.8px] font-semibold text-[#101828] mb-1">
+            Hospital policy
+          </h2>
+          <p className="text-[11.4px] text-[#5B6472] leading-relaxed">
+            Nurse-led dressing is permitted for stable post-op and pressure
+            injuries per hospital policy. Physician review is required for
+            infected or non-healing wounds. AI does not approve or override
+            physician-required reviews.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
 
-function LegendDot({ color, label }: { color: string; label: string }) {
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 5: IV ACCESS
+   ═══════════════════════════════════════════════════════════════ */
+function IvAccessPanel() {
   return (
-    <span className="inline-flex items-center gap-1.5">
-      <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+    <div className="flex flex-col gap-2.5">
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <StatBox label="Difficult cannulation" value="4" />
+        <StatBox label="Escalated to IV expert" value="3" />
+        <StatBox label="Avg response" value="9 min" />
+        <StatBox label="Completed" value="2" valueColor="#2E7D5B" />
+      </div>
+
+      {/* IV escalation queue */}
+      <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+        <h2 className="text-[12.8px] font-semibold text-[#101828]">
+          IV escalation queue
+        </h2>
+        <p className="text-[10.8px] text-[#5B6472] mb-3">
+          Pending → In progress → Completed · per hospital escalation policy
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+          {/* Col 1: Pending */}
+          <div>
+            <h4 className="text-[10.5px] font-semibold text-[#5B6472] mb-2">
+              Pending
+            </h4>
+            <div className="space-y-1.5">
+              {IV_PENDING.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-[9px] border border-[#E1E6ED] p-2.5 text-[11.4px]"
+                >
+                  <strong className="block text-[11.8px] text-[#101828]">
+                    {item.patient}
+                  </strong>
+                  <span className="text-[10.5px] text-[#5B6472] block">
+                    {item.detail} · {item.meta}
+                  </span>
+                  <div className="mt-1.5">
+                    <StatusBadge type={item.type} label={item.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Col 2: In progress */}
+          <div>
+            <h4 className="text-[10.5px] font-semibold text-[#5B6472] mb-2">
+              In progress
+            </h4>
+            <div className="space-y-1.5">
+              {IV_PROGRESS.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-[9px] border border-[#E1E6ED] p-2.5 text-[11.4px]"
+                >
+                  <strong className="block text-[11.8px] text-[#101828]">
+                    {item.patient}
+                  </strong>
+                  <span className="text-[10.5px] text-[#5B6472] block">
+                    {item.detail} · {item.meta}
+                  </span>
+                  <div className="mt-1.5">
+                    <StatusBadge type={item.type} label={item.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Col 3: Completed */}
+          <div>
+            <h4 className="text-[10.5px] font-semibold text-[#5B6472] mb-2">
+              Completed
+            </h4>
+            <div className="space-y-1.5">
+              {IV_COMPLETED.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-[9px] border border-[#E1E6ED] p-2.5 text-[11.4px]"
+                >
+                  <strong className="block text-[11.8px] text-[#101828]">
+                    {item.patient}
+                  </strong>
+                  <span className="text-[10.5px] text-[#5B6472] block">
+                    {item.detail} · {item.meta}
+                  </span>
+                  <div className="mt-1.5">
+                    <StatusBadge type={item.type} label={item.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 6: SHIFT TIMELINE
+   ═══════════════════════════════════════════════════════════════ */
+function ShiftTimelinePanel({
+  filter,
+  onFilterChange,
+  items,
+}: {
+  filter: string;
+  onFilterChange: (f: string) => void;
+  items: typeof TIMELINE_DATA;
+}) {
+  const filterOptions = [
+    { id: "all", label: "All statuses" },
+    { id: "completed", label: "Completed" },
+    { id: "pending", label: "Pending" },
+    { id: "delayed", label: "Delayed" },
+    { id: "rescheduled", label: "Rescheduled" },
+  ];
+
+  return (
+    <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+      <h2 className="text-[12.8px] font-semibold text-[#101828]">
+        Shift task timeline
+      </h2>
+      <p className="text-[10.8px] text-[#5B6472] mb-3">
+        Coordinated cadence across the shift
+      </p>
+
+      {/* Filter Row */}
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        {filterOptions.map((opt) => {
+          const isActive = filter === opt.id;
+          return (
+            <button
+              key={opt.id}
+              onClick={() => onFilterChange(opt.id)}
+              type="button"
+              className={`px-3 py-1 text-[10.6px] rounded-full border cursor-pointer transition ${
+                isActive
+                  ? "bg-[#2458E6] text-white border-[#2458E6] font-semibold"
+                  : "bg-white text-[#5B6472] border-[#E1E6ED] hover:bg-[#E8EEFD]"
+              }`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Full Timeline List */}
+      <div className="relative pl-1">
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            className={`relative pl-4 pb-4 border-l-2 text-[11.4px] ${
+              idx === items.length - 1
+                ? "border-l-transparent pb-0"
+                : "border-l-[#E1E6ED]"
+            }`}
+          >
+            <span
+              className={`absolute -left-[6px] top-1 h-[11px] w-[11px] rounded-full ${
+                item.status === "completed"
+                  ? "bg-[#2E7D5B]"
+                  : item.status === "delayed"
+                  ? "bg-[#C0392B]"
+                  : item.status === "rescheduled"
+                  ? "bg-[#A8760F]"
+                  : "bg-[#4C7EFF]"
+              }`}
+            />
+            <div className="flex items-center gap-2">
+              <span className="text-[10.5px] font-mono text-[#5B6472]">
+                {item.time}
+              </span>
+              <strong className="text-[11.8px] text-[#101828]">
+                {item.dept}
+              </strong>
+              <StatusBadge type={item.status} label={item.badge} />
+            </div>
+            <div className="text-[10.5px] text-[#5B6472] mt-0.5">
+              {item.desc}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANEL 7: AI ASSISTANT
+   ═══════════════════════════════════════════════════════════════ */
+function AiAssistantPanel() {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-2.5">
+      {/* Left: Observed Evidence & Advisory */}
+      <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+        <h2 className="text-[12.8px] font-semibold text-[#101828]">
+          Observed evidence & advisory
+        </h2>
+        <p className="text-[10.8px] text-[#5B6472] mb-3">
+          Every insight distinguishes what was observed from what is advisory
+        </p>
+
+        <div className="space-y-2">
+          {AI_INSIGHTS.map((item, idx) => (
+            <div
+              key={idx}
+              className="rounded-[10px] border border-[#E1E6ED] bg-white p-2.5 text-[11.4px]"
+            >
+              <span
+                className={`text-[9px] font-bold tracking-wider uppercase block ${
+                  item.kind === "obs" ? "text-[#2458E6]" : "text-[#2E7D5B]"
+                }`}
+              >
+                {item.label}
+              </span>
+              <p className="text-[11.4px] text-[#101828] leading-relaxed mt-0.5">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Right: Operational Summary & Safety Notice */}
+      <div className="flex flex-col gap-2.5">
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+          <h2 className="text-[12.8px] font-semibold text-[#101828] mb-1">
+            Bottlenecks
+          </h2>
+          <p className="text-[12.6px] font-semibold text-[#101828]">
+            Labs · Wound review
+          </p>
+        </div>
+
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+          <h2 className="text-[12.8px] font-semibold text-[#101828] mb-1">
+            Departments needing attention
+          </h2>
+          <p className="text-[12.6px] font-semibold text-[#101828]">
+            ICU · Medical Ward
+          </p>
+        </div>
+
+        <div className="rounded-[14px] border border-[#E1E6ED] bg-white p-3.5">
+          <h2 className="text-[12.8px] font-semibold text-[#101828] mb-1">
+            Suggested operational action
+          </h2>
+          <p className="text-[11.6px] text-[#101828] leading-relaxed">
+            <strong className="text-[#2E7D5B]">Advisory: </strong>sequence labs →
+            wound dressings → medication in the 08:00–10:00 cluster to reduce ward
+            crossings.
+          </p>
+        </div>
+
+        <p className="text-[10.3px] text-[#5B6472] italic leading-relaxed px-1">
+          Demo insights — clearly labelled prototype content, not live hospital
+          findings. No autonomous changes to schedules, workflows, or staff
+          assignments; all actions require human review and existing approval
+          permissions.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPER UI COMPONENTS
+   ═══════════════════════════════════════════════════════════════ */
+
+function StatBox({
+  label,
+  value,
+  valueColor,
+}: {
+  label: string;
+  value: string | number;
+  valueColor?: string;
+}) {
+  return (
+    <div className="rounded-[11px] border border-[#E1E6ED] bg-white p-2.5">
+      <div
+        className="font-mono text-[18px] font-semibold leading-tight"
+        style={{ color: valueColor ?? "#101828" }}
+      >
+        {value}
+      </div>
+      <div className="text-[10px] text-[#5B6472] mt-0.5 leading-tight truncate">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function ModuleCard({
+  icon: Icon,
+  title,
+  chips,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  chips: string[];
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      type="button"
+      className="text-left rounded-[11px] border border-[#E1E6ED] bg-white p-2.5 hover:border-[#2458E6] transition cursor-pointer flex flex-col justify-between"
+    >
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <Icon className="h-4 w-4 text-[#2458E6]" />
+          <ArrowRight className="h-3 w-3 text-[#5B6472]" />
+        </div>
+        <strong className="text-[12.3px] text-[#101828] block">{title}</strong>
+      </div>
+      <div className="flex flex-wrap gap-1 text-[10.5px] text-[#5B6472] mt-2">
+        {chips.map((c, i) => (
+          <span
+            key={i}
+            className="after:content-['·'] last:after:content-none after:ml-1"
+          >
+            {c}
+          </span>
+        ))}
+      </div>
+    </button>
+  );
+}
+
+function StatusBadge({ type, label }: { type: string; label: string }) {
+  let bg = "#E8EEFD";
+  let color = "#2458E6";
+
+  if (
+    type === "crit" ||
+    type === "emergency" ||
+    type === "delayed" ||
+    type === "unack"
+  ) {
+    bg = "#FBEAE7";
+    color = "#C0392B";
+  } else if (
+    type === "watch" ||
+    type === "pending" ||
+    type === "rescheduled" ||
+    type === "reporting"
+  ) {
+    bg = "#FBF0DD";
+    color = "#A8760F";
+  } else if (
+    type === "safe" ||
+    type === "completed" ||
+    type === "ack" ||
+    type === "scheduled" ||
+    type === "permitted"
+  ) {
+    bg = "#E7F4EC";
+    color = "#2E7D5B";
+  }
+
+  return (
+    <span
+      className="inline-block text-[9.3px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap"
+      style={{ backgroundColor: bg, color: color }}
+    >
       {label}
     </span>
-  );
-}
-
-function AiChip({ icon: Icon, label, value }: { icon: typeof Activity; label: string; value: string }) {
-  return (
-    <div className="flex items-start gap-2 rounded-lg border border-border bg-background p-3">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-      <div className="min-w-0">
-        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
-        <div className="truncate text-sm font-medium text-foreground">{value}</div>
-      </div>
-    </div>
   );
 }

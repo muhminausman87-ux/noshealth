@@ -12,12 +12,19 @@
  * authorized healthcare professionals decide.
  */
 
+import type { Department } from "./departments";
+import { getDept } from "./departments";
+import type { ShiftCode, Nurse, ShiftAssignment, CoverageRequirement, LeaveRecord } from "./fromex-scheduling";
+import { SHIFTS } from "./fromex-scheduling";
+
 export type UnitLoad = {
   /** Unit / department short name. */
   key: string;
-  patients: number;
-  /** High-acuity patients contributing most nursing hours. */
-  high: number;
+  /** CANNOT BE HONESTLY CALCULATED FROM SCHEDULING STATE */
+  patients?: number | null;
+  /** CANNOT BE HONESTLY CALCULATED FROM SCHEDULING STATE */
+  high?: number | null;
+  demandLevel?: string;
   /** Nurses scheduled on the current shift. */
   nurses: number;
   /** Nursing hours required by patient demand this shift. */
@@ -92,8 +99,10 @@ export function unitCoverage(u: UnitLoad): UnitCoverage {
 
 export type WorkforceSummary = {
   units: UnitCoverage[];
-  totalPatients: number;
-  highAcuity: number;
+  /** CANNOT BE HONESTLY CALCULATED FROM SCHEDULING STATE */
+  totalPatients?: number | null;
+  /** CANNOT BE HONESTLY CALCULATED FROM SCHEDULING STATE */
+  highAcuity?: number | null;
   /** Nurses scheduled on the current shift. */
   scheduledStaff: number;
   /** Scheduled + those currently on leave = establishment on the roster. */
@@ -118,6 +127,85 @@ export type WorkforceSummary = {
   isEmpty: boolean;
   generatedAt: string;
 };
+
+export interface WorkforceStateInput {
+  targetDate: string;
+  targetShift: ShiftCode;
+  departments: Department[];
+  nurses: Nurse[];
+  roster: ShiftAssignment[];
+  requirements: CoverageRequirement[];
+  leave: LeaveRecord[];
+}
+
+/**
+ * Derives WorkforceSummary from authoritative scheduling state.
+ */
+export function buildWorkforceStateSnapshot(input: WorkforceStateInput): WorkforceSummary {
+  const { targetDate, targetShift, departments, nurses, roster, requirements, leave } = input;
+  const shiftDef = SHIFTS.find((s) => s.id === targetShift);
+  const shiftHours = shiftDef ? shiftDef.hours : 8;
+
+  const dObj = new Date(`${targetDate}T00:00:00`);
+  
+  const isNurseOnLeave = (nid: string, d: string) => 
+    leave.some((l) => l.nurseId === nid && l.status === "approved" && d >= l.from && d <= l.to);
+
+  const rawUnits: UnitLoad[] = [];
+
+  for (const deptId of departments) {
+    const deptInfo = getDept(deptId);
+    if (!deptInfo) continue;
+    
+    const deptNurses = nurses.filter((n) => n.dept === deptId);
+    
+    const validAssignments = roster.filter((a) => a.dept === deptId && a.date === targetDate && a.shift === targetShift && !isNurseOnLeave(a.nurseId, a.date));
+    const scheduledStaff = validAssignments.length;
+    
+    const availHrs = scheduledStaff * shiftHours;
+    
+    const reqsForDeptShift = requirements.filter((r) => r.dept === deptId && r.shift === targetShift);
+    const req = reqsForDeptShift[0];
+    const requiredNurses = req ? req.requiredNurses : 0;
+    const reqHrs = requiredNurses * shiftHours;
+    const demandLevel = req ? req.demand : "moderate";
+    
+    let deptOpenShifts = 0;
+    for (let offset = 0; offset < 3; offset++) {
+      const d = new Date(dObj);
+      d.setDate(d.getDate() + offset);
+      const dStr = d.toISOString().slice(0, 10);
+      for (const s of SHIFTS) {
+        const sReq = requirements.find((r) => r.dept === deptId && r.shift === s.id);
+        const reqN = sReq ? sReq.requiredNurses : 0;
+        const assgn = roster.filter((a) => a.dept === deptId && a.date === dStr && a.shift === s.id && !isNurseOnLeave(a.nurseId, a.date));
+        deptOpenShifts += Math.max(0, reqN - assgn.length);
+      }
+    }
+    
+    const onLeaveCount = deptNurses.filter((n) => isNurseOnLeave(n.id, targetDate)).length;
+    
+    const seniorNurses = validAssignments.filter((a) => {
+      const n = nurses.find((nx) => nx.id === a.nurseId);
+      return n && (n.grade === "CN" || n.grade === "SN");
+    }).length;
+
+    rawUnits.push({
+      key: deptInfo.short,
+      patients: null,
+      high: null,
+      demandLevel,
+      nurses: scheduledStaff,
+      reqHrs,
+      availHrs,
+      openShifts: deptOpenShifts,
+      onLeave: onLeaveCount,
+      seniorNurses
+    });
+  }
+
+  return workforceSummary(rawUnits);
+}
 
 /**
  * Derive every dashboard figure from one dataset.
@@ -144,10 +232,15 @@ export function workforceSummary(loads: UnitLoad[] = UNIT_LOAD): WorkforceSummar
   const cv = mean > 0 ? Math.sqrt(variance) / mean : 0;
   const balanceScore = Math.max(0, Math.min(100, Math.round((1 - cv) * 100)));
 
+  // If using authoritative scheduling, patients and high will be null, so we cannot safely sum them if they don't exist.
+  const firstPatient = loads[0]?.patients;
+  const totalPatients = firstPatient === null ? null : sum((u) => u.patients || 0);
+  const highAcuity = firstPatient === null ? null : sum((u) => u.high || 0);
+
   return {
     units,
-    totalPatients: sum((u) => u.patients),
-    highAcuity: sum((u) => u.high),
+    totalPatients,
+    highAcuity,
     scheduledStaff,
     totalStaff: scheduledStaff + onLeave,
     onLeave,
@@ -167,7 +260,7 @@ export function workforceSummary(loads: UnitLoad[] = UNIT_LOAD): WorkforceSummar
       .sort((a, b) => b.utilisationPct - a.utilisationPct),
     seniorPct: pct(sum((u) => u.seniorNurses), scheduledStaff),
     isEmpty: units.length === 0 || availableHrs === 0,
-    generatedAt: "Current shift · seeded demo snapshot",
+    generatedAt: "Current shift · derived from authoritative scheduling state",
   };
 }
 
@@ -194,7 +287,7 @@ export function workforceSignals(s: WorkforceSummary): WorkforceSignal[] {
       tone: u.utilisationPct >= 110 ? "danger" : "warning",
       title: "Potential coverage pressure detected",
       observation: `${u.reqHrs}h required vs ${u.availHrs}h scheduled (${u.coveragePct}% coverage, ${Math.abs(u.gapHrs)}h short).`,
-      recommendation: `Review float pool or reassign ${u.high > 4 ? "low-acuity" : "non-urgent"} workload. Requires manager review.`,
+      recommendation: `Review float pool or reassign non-urgent workload. Requires manager review.`,
     });
   }
 

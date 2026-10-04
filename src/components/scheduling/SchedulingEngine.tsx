@@ -56,16 +56,18 @@ import {
 export const ENGINE_VERSION = "NOS Scheduling Engine v2.0 (India compliance + employee experience)";
 export const STANDARDS_VERSION = "NOS Nursing Staffing Standards Library v1.0";
 
-const TABS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "staff", label: "Staff", icon: Users },
-  { id: "requests", label: "Requests", icon: ClipboardList },
-  { id: "policies", label: "Policies", icon: Settings2 },
-  { id: "regulatory", label: "India Regulatory Baseline", icon: Scale },
-  { id: "standards", label: "Staffing Standards & Workload", icon: Stethoscope },
+const PRIMARY_TABS = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "staff_requests", label: "Staff & Requests", icon: Users },
+  { id: "policies", label: "Policies & Standards", icon: Settings2 },
   { id: "generate", label: "Generate Schedule", icon: Sparkles },
   { id: "roster", label: "Monthly Roster", icon: CalendarClock },
-  { id: "coverage", label: "Coverage", icon: ListChecks },
+  { id: "validation", label: "Validation & Approval", icon: ShieldCheck },
+] as const;
+
+const MORE_TOOLS = [
+  { id: "regulatory", label: "India Regulatory Baseline", icon: Scale },
+  { id: "standards", label: "Staffing Standards & Workload", icon: Stethoscope },
   { id: "compliance", label: "India Labour Compliance", icon: ShieldCheck },
   { id: "wellbeing", label: "Fatigue & Wellbeing", icon: HeartPulse },
   { id: "fairness", label: "Fairness", icon: Scale },
@@ -75,7 +77,8 @@ const TABS = [
   { id: "excel", label: "Excel Export/Import", icon: FileSpreadsheet },
   { id: "audit", label: "Audit Log", icon: History },
 ] as const;
-type TabId = (typeof TABS)[number]["id"];
+
+type TabId = (typeof PRIMARY_TABS)[number]["id"] | (typeof MORE_TOOLS)[number]["id"];
 
 const SEV_TONE: Record<ScheduleException["severity"], string> = {
   critical: "#dc2626",
@@ -155,7 +158,7 @@ export function SchedulingEngine({ session }: { session: Session }) {
     session.role === "admin" ||
     (session.responsibilities ?? []).some((r) => ["charge_nurse", "nursing_admin", "hr", "institution_admin"].includes(r));
 
-  const [tab, setTab] = useState<TabId>("dashboard");
+  const [tab, setTab] = useState<TabId>("overview");
   const [dept, setDept] = useState<Department>(session.assignedDept ?? "medical");
   const [unit, setUnit] = useState("Unit A");
   const [month, setMonth] = useState(currentMonth());
@@ -310,42 +313,89 @@ export function SchedulingEngine({ session }: { session: Session }) {
   const high = roster?.exceptions.filter((e) => e.severity === "high") ?? [];
 
   return (
-    <div className="space-y-5">
-      <header className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
-          <CalendarClock className="h-3.5 w-3.5" aria-hidden="true" /> NOS Workforce Operations · Scheduling
+    <div className="space-y-4">
+      {/* COMPACT HEADER */}
+      <header className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
+          <div className="min-w-0">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl truncate">AI Nursing Duty Scheduling Engine</h1>
+            <p className="mt-0.5 text-xs text-muted-foreground truncate">
+              Generate safer, fairer nursing rosters with explainable AI and authorized human approval.
+            </p>
+          </div>
+          
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <select value={dept} onChange={(e) => syncPolicyDept(e.target.value as Department)} className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground h-9">
+              {DEPARTMENTS.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+            <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground h-9 tabular-nums" />
+            <button type="button" onClick={() => window.location.reload()} className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted h-9">
+              Refresh
+            </button>
+          </div>
         </div>
-        <h1 className="mt-1 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">AI Nursing Duty Scheduling Engine</h1>
-        <p className="mt-1 max-w-4xl text-sm text-muted-foreground">
-          The safest and fairest feasible roster for this institution, department, workforce and month — built from the
-          institution's own approved policy, nurse competency, availability, requests and recovery needs. AI generates
-          and explains; the authorised nursing administrator reviews, edits, approves and publishes.
-        </p>
-        <p className="mt-2 text-[11px] text-muted-foreground">
-          Objective: meet patient-care requirements without unnecessarily consuming employee recovery, wellbeing or
-          personal time — optimising safety, compliance, coverage, recovery, fairness, predictability, preference
-          satisfaction and operational efficiency together, never staffing efficiency alone.
-        </p>
       </header>
 
-      <nav className="flex flex-wrap gap-1.5" aria-label="Scheduling">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTab(t.id)}
-            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium ${
-              tab === t.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground hover:bg-muted"
-            }`}
+      {/* COMPACT KPI STRIP */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 min-w-0">
+        <Stat label="Total Nurses" value={nurses.length} />
+        <Stat label="Required Coverage" value={roster ? roster.coverage.reduce((acc, c) => acc + c.required, 0) : "Not generated"} />
+        <Stat label="Scheduled Shifts" value={roster ? roster.coverage.reduce((acc, c) => acc + c.scheduled, 0) : "Not generated"} />
+        <Stat label="Unfilled Shifts" value={roster ? roster.coverage.reduce((acc, c) => acc + Math.max(0, c.required - c.scheduled), 0) : "Not generated"} tone={roster && roster.coverage.reduce((acc, c) => acc + Math.max(0, c.required - c.scheduled), 0) > 0 ? "#dc2626" : undefined} />
+        <Stat label="Validation Issues" value={roster ? roster.exceptions.length : "Not generated"} tone={roster && roster.exceptions.length > 0 ? "#ea580c" : undefined} />
+        <Stat label="Pending Approval" value={roster && roster.status === "draft" ? "Yes" : "No"} tone={roster && roster.status === "draft" ? "#d97706" : undefined} />
+      </div>
+
+      {/* WORKFLOW INDICATOR */}
+      <div className="flex items-center text-[10px] uppercase tracking-wider font-semibold text-muted-foreground bg-card border border-border px-4 py-2 rounded-xl shadow-sm overflow-x-auto min-w-0 whitespace-nowrap">
+        Configure <span className="mx-2 opacity-40">→</span> 
+        Review Workforce <span className="mx-2 opacity-40">→</span> 
+        Generate <span className="mx-2 opacity-40">→</span> 
+        Validate <span className="mx-2 opacity-40">→</span> 
+        Manager Review <span className="mx-2 opacity-40">→</span> 
+        Approve <span className="mx-2 opacity-40">→</span> 
+        Publish
+      </div>
+
+      {/* PRIMARY NAVIGATION & MORE TOOLS */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-2 min-w-0">
+        <nav className="flex flex-1 gap-1.5 min-w-0 overflow-x-auto" aria-label="Scheduling">
+          <div className="flex min-w-max gap-1.5 pb-1">
+            {PRIMARY_TABS.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTab(t.id)}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium shrink-0 ${
+                  tab === t.id ? "border-primary bg-primary/10 text-primary" : "border-transparent bg-transparent text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                <t.icon className="h-3.5 w-3.5" aria-hidden="true" />
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </nav>
+        
+        <div className="relative shrink-0">
+          <select 
+            value={MORE_TOOLS.some(t => t.id === tab) ? tab : ""} 
+            onChange={(e) => { if(e.target.value) setTab(e.target.value as any) }}
+            className="rounded-lg border border-border bg-card pl-3 pr-8 py-1.5 text-xs font-medium text-foreground hover:bg-muted appearance-none h-8 outline-none"
           >
-            <t.icon className="h-3.5 w-3.5" aria-hidden="true" />
-            {t.label}
-          </button>
-        ))}
-      </nav>
+            <option value="" disabled>More Tools...</option>
+            {MORE_TOOLS.map(t => (
+              <option key={t.id} value={t.id}>{t.label}</option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-muted-foreground">
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          </div>
+        </div>
+      </div>
 
       {/* ------------------------------------------------------ dashboard */}
-      {tab === "dashboard" && (
+      {tab === "overview" && (
         <>
           <Section title="Scheduling dashboard" subtitle={`${policy.institution} · ${getDept(dept).name} · ${unit} · ${month}`} right={<AiTag />}>
             {roster ? (
@@ -356,13 +406,14 @@ export function SchedulingEngine({ session }: { session: Session }) {
                 <Stat label="Status" value={roster.status} hint={`Policy ${roster.policyVersion} · generated by ${roster.generatedBy}`} />
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                No roster generated yet for {month}. Configure the policy, review staff and requests, then run{" "}
-                <button type="button" className="font-semibold text-primary underline" onClick={() => setTab("generate")}>
-                  Generate AI Schedule
+              <div className="flex flex-col items-center justify-center p-6 text-center">
+                <p className="text-sm text-muted-foreground mb-4">
+                  No roster generated yet for {month}. Configure the policy, review staff and requests, then run the schedule generation.
+                </p>
+                <button type="button" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" onClick={() => setTab("generate")}>
+                  <Sparkles className="h-4 w-4" aria-hidden="true" /> Generate AI Schedule
                 </button>
-                .
-              </p>
+              </div>
             )}
           </Section>
 
@@ -399,11 +450,31 @@ export function SchedulingEngine({ session }: { session: Session }) {
               </div>
             </Section>
           )}
+
+          {roster && (
+            <Section title="Next Action" subtitle="Workflow status">
+              {roster.status === "draft" && (
+                 <div className="flex items-center gap-3">
+                   <button type="button" onClick={() => setTab("validation")} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Review & Validate</button>
+                   <span className="text-xs text-muted-foreground">Schedule is pending approval.</span>
+                 </div>
+              )}
+              {roster.status === "approved" && (
+                 <div className="flex items-center gap-3">
+                   <button type="button" onClick={() => setTab("roster")} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Proceed to Publish</button>
+                 </div>
+              )}
+              {roster.status === "published" && (
+                <div className="text-xs font-semibold text-primary">This roster has been published and is active.</div>
+              )}
+            </Section>
+          )}
         </>
       )}
 
-      {/* ---------------------------------------------------------- staff */}
-      {tab === "staff" && (
+      {/* ---------------------------------------------------------- staff_requests */}
+      {tab === "staff_requests" && (
+        <div className="space-y-4">
         <Section
           title="Nurse scheduling profiles"
           subtitle="Competency, contract, availability and recent duty history feed the engine. Competency governance remains owned by Employee Growth."
@@ -436,10 +507,6 @@ export function SchedulingEngine({ session }: { session: Session }) {
             </table>
           </div>
         </Section>
-      )}
-
-      {/* -------------------------------------------------------- requests */}
-      {tab === "requests" && (
         <Section
           title="Duty requests"
           subtitle="Requests are preferences, not guarantees. Approved leave and approved unavailability become hard constraints; OFF and duty preferences are optimised where operationally possible."
@@ -491,11 +558,12 @@ export function SchedulingEngine({ session }: { session: Session }) {
             </table>
           </div>
         </Section>
+        </div>
       )}
 
       {/* -------------------------------------------------------- policies */}
       {tab === "policies" && (
-        <>
+        <div className="space-y-4">
           <Section
             title="Scheduling policy & rules"
             subtitle={`${policy.name} ${policy.version} · effective ${policy.effectiveFrom}. NOS does not assume a universal national duty-hour rule: national/state regulation, institutional policy, department requirements and individual preferences are kept distinct, and the institution's approved policy controls scheduling behaviour.`}
@@ -622,7 +690,7 @@ export function SchedulingEngine({ session }: { session: Session }) {
               ))}
             </ul>
           </Section>
-        </>
+        </div>
       )}
 
       {/* -------------------------------------------------------- generate */}
@@ -770,6 +838,7 @@ export function SchedulingEngine({ session }: { session: Session }) {
 
       {/* ---------------------------------------------------------- roster */}
       {tab === "roster" && (
+        <div className="space-y-4">
         <Section
           title="Monthly duty roster"
           subtitle={roster ? `${roster.unit} · ${roster.month} · ${roster.status} · click any cell to edit; every change is validated before it is applied.` : undefined}
@@ -804,10 +873,6 @@ export function SchedulingEngine({ session }: { session: Session }) {
             <p className="text-sm text-muted-foreground">Generate a schedule first.</p>
           )}
         </Section>
-      )}
-
-      {/* -------------------------------------------------------- coverage */}
-      {tab === "coverage" && (
         <Section title="Staffing coverage" subtitle="Required vs scheduled staff, seniority and competency status for every shift.">
           {roster ? (
             <div className="max-h-[36rem] overflow-auto">
@@ -838,9 +903,73 @@ export function SchedulingEngine({ session }: { session: Session }) {
             <p className="text-sm text-muted-foreground">Generate a schedule first.</p>
           )}
         </Section>
+        </div>
       )}
 
-      {/* ------------------------------------------------------ exceptions */}
+      {/* ------------------------------------------------------ exceptions / validation */}
+      {tab === "validation" && (
+        <div className="space-y-4">
+        <Section title="Exception dashboard" subtitle="Critical, high-risk, moderate and informational findings across the roster." right={<ShieldAlert className="h-4 w-4 text-muted-foreground" />}>
+          {roster ? (
+            <div className="space-y-4">
+              {(["critical", "high", "moderate", "info"] as const).map((sev) => {
+                const items = roster.exceptions.filter((e) => e.severity === sev);
+                return (
+                  <div key={sev}>
+                    <div className="mb-1.5 flex items-center gap-2">
+                      <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider" style={{ background: `color-mix(in oklab, ${SEV_TONE[sev]} 15%, transparent)`, color: SEV_TONE[sev] }}>
+                        {SEV_LABEL[sev]}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">{items.length} finding(s)</span>
+                    </div>
+                    {items.length === 0 ? (
+                      <p className="text-[11px] text-muted-foreground">None.</p>
+                    ) : (
+                      <ul className="space-y-1.5">
+                        {items.slice(0, 40).map((e) => (
+                          <li key={e.id} className="rounded-lg border border-border bg-background p-2.5 text-[11px]">
+                            <div className="font-semibold text-foreground">{e.category}</div>
+                            <div className="text-muted-foreground">{e.message}</div>
+                            {e.overridden && (
+                              <div className="mt-1 text-[10px] text-amber-600">
+                                Override by {e.overridden.by} at {e.overridden.at} — {e.overridden.reason}
+                              </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Generate a schedule first.</p>
+          )}
+        </Section>
+
+        {compliance ? (
+          <>
+            <CompliancePanel report={compliance} base={base} />
+            <VersionRecord
+              base={base}
+              policy={policy}
+              roster={roster}
+              standardsVersion={STANDARDS_VERSION}
+              engineVersion={ENGINE_VERSION}
+              approver={roster?.status === "draft" ? undefined : session.name}
+            />
+          </>
+        ) : (
+          <Section title="India Labour Compliance" subtitle="Generate a roster to run the three-layer validation.">
+            <p className="text-sm text-muted-foreground">No roster generated yet for {month}.</p>
+            <div className="mt-3"><Disclaimer /></div>
+          </Section>
+        )}
+        </div>
+      )}
+
+      {/* ------------------------------------------------------ exceptions (More tools direct link fallback) */}
       {tab === "exceptions" && (
         <Section title="Exception dashboard" subtitle="Critical, high-risk, moderate and informational findings across the roster." right={<ShieldAlert className="h-4 w-4 text-muted-foreground" />}>
           {roster ? (

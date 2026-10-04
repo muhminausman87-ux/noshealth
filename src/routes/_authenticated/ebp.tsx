@@ -8,6 +8,7 @@ import {
   Search,
   Target,
 } from "lucide-react";
+import { ClinicalExcellenceNav } from "@/components/ClinicalExcellenceNav";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { RoadmapCard, RoadmapVisionFooter } from "@/components/ModuleRoadmap";
 import type { RoadmapItem } from "@/components/ModuleRoadmap";
@@ -70,7 +71,8 @@ export const Route = createFileRoute("/_authenticated/ebp")({
 function EBPPage() {
   return (
     <EcosystemLayout>
-      <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-10">
+      <main className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 flex flex-col gap-4">
+        <ClinicalExcellenceNav activeTab="ebp" />
         <header className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-14 sm:w-14">
             <BookOpen className="h-6 w-6 sm:h-7 sm:w-7" />

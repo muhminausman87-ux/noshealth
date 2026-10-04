@@ -97,15 +97,18 @@ export function AdminWorkforce() {
   }, [filtered]);
 
   return (
-    <section className="mt-8">
+    <section className="mt-1">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            <Users className="h-3.5 w-3.5 text-primary" /> Workforce ops
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary">
+            <Users className="h-3.5 w-3.5 text-primary" /> Workforce Operations
           </div>
-          <h2 className="text-xl font-semibold tracking-tight text-foreground">
-            Staff scheduling & wellbeing
-          </h2>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Staff Assignments & Roster
+          </h1>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Nurse unit assignments, weekly shift schedules, contract hours, and workload allocation.
+          </p>
         </div>
         <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-2 py-1.5">
           <Filter className="h-3.5 w-3.5 text-muted-foreground" />

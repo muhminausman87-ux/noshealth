@@ -1,23 +1,12 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { type ReactNode } from "react";
 import {
   Brain,
+  Activity,
   BookOpen,
   FlaskConical,
   GraduationCap,
   LineChart,
-  Activity,
-  ChevronLeft,
-  ChevronRight,
-  ArrowLeft,
-  LogOut,
-  ShieldCheck,
-  Stethoscope,
-  Menu,
-  X,
 } from "lucide-react";
-import { getSession, signOut, type Session } from "@/lib/auth";
-import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 
 export type NosModule = {
   key: string;
@@ -79,165 +68,7 @@ export const NOS_MODULES: NosModule[] = [
 
 
 export function EcosystemLayout({ children }: { children: ReactNode }) {
-  const navigate = useNavigate();
-  const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const [session, setSession] = useState<Session | null>(null);
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const s = getSession();
-    if (!s) { navigate({ to: "/login" }); return; }
-    setSession(s);
-  }, [navigate]);
-
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
-
-  if (!session) {
-    return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">Loading…</div>;
-  }
-
-  const isAdmin = session.role === "admin";
-  const logout = async () => { await signOut(); navigate({ to: "/login" }); };
-
-  return (
-    <div className="flex min-h-screen bg-background">
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-border bg-card transition-all duration-200 lg:sticky lg:top-0 lg:h-screen ${
-          collapsed ? "lg:w-16" : "lg:w-72"
-        } ${mobileOpen ? "w-72 translate-x-0" : "w-72 -translate-x-full lg:translate-x-0"}`}
-      >
-        {/* Brand */}
-        <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-3">
-          <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-8 w-8 shrink-0 rounded-md object-contain" />
-          {!collapsed && (
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-semibold leading-tight text-foreground">
-                NOS <span className="text-primary">Ecosystem</span>
-              </div>
-              <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
-                Nursing Intelligence Layer
-              </div>
-            </div>
-          )}
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary lg:hidden"
-            aria-label="Close menu"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        {/* Modules */}
-        <nav className="flex-1 space-y-1 overflow-y-auto px-2 py-3">
-          {NOS_MODULES.map((m) => {
-            const active = pathname === m.to;
-            const Icon = m.icon;
-            return (
-              <Link
-                key={m.key}
-                to={m.to}
-                className={`group flex items-start gap-3 rounded-lg px-2.5 py-2.5 text-left transition-colors ${
-                  active
-                    ? "bg-primary/10 text-primary"
-                    : "text-foreground hover:bg-secondary"
-                }`}
-                title={collapsed ? m.title : undefined}
-              >
-                <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${
-                    active ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground group-hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                </div>
-                {!collapsed && (
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <div className="truncate text-sm font-medium">{m.title}</div>
-                      {m.comingSoon && (
-                        <span className="rounded-full border border-warning/40 bg-warning/15 px-1.5 py-0 text-[9px] font-semibold uppercase tracking-wider text-warning-foreground">
-                          Soon
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-                      {m.subtitle}
-                    </div>
-                  </div>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="shrink-0 border-t border-border p-2">
-          {!collapsed && (
-            <div className="mb-2 flex items-center gap-2 rounded-md px-2 py-2">
-              {isAdmin ? <ShieldCheck className="h-4 w-4 shrink-0 text-primary" /> : <Stethoscope className="h-4 w-4 shrink-0 text-primary" />}
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-xs font-medium text-foreground">{session.name}</div>
-                <div className="truncate text-[10px] text-muted-foreground">{session.title}</div>
-              </div>
-            </div>
-          )}
-          <div className="flex items-center gap-1">
-            <Link
-              to="/"
-              className={`flex flex-1 items-center gap-1.5 rounded-md border border-border px-2 py-1.5 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground ${collapsed ? "justify-center" : ""}`}
-              title="Clinical dashboard"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              {!collapsed && <span>Clinical</span>}
-            </Link>
-            <button
-              onClick={logout}
-              className="rounded-md border border-border p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              title="Sign out"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-            </button>
-          </div>
-          <button
-            onClick={() => setCollapsed((c) => !c)}
-            className="mt-1 hidden w-full items-center justify-center rounded-md border border-border py-1 text-muted-foreground hover:bg-secondary hover:text-foreground lg:flex"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
-          </button>
-        </div>
-      </aside>
-
-      {/* Content */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 flex h-12 items-center gap-2 border-b border-border bg-card/95 px-3 backdrop-blur lg:hidden">
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <div className="text-sm font-semibold">
-            NOS <span className="text-primary">Ecosystem</span>
-          </div>
-        </div>
-        <div className="min-w-0 flex-1">{children}</div>
-      </div>
-    </div>
-  );
+  return <div className="min-w-0 flex-1">{children}</div>;
 }
 
 export function ModulePlaceholder({

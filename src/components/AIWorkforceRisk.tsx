@@ -1,17 +1,24 @@
 import {
   Brain, ShieldCheck, Flame, Users, CalendarClock, Sparkles,
-  TrendingUp, TrendingDown, AlertTriangle, HeartPulse, Activity,
+  AlertTriangle, HeartPulse, Activity,
   CheckCircle2, ArrowRight,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { StatusPill } from "@/components/Widget";
+import { type WorkforceSummary, workforceSignals } from "@/lib/workforce-ops";
 
 /**
  * AI Workforce Risk & Predictive Intelligence
- * Executive AI decision-support panel for nursing leadership.
- * All values are illustrative demo data (AI Prototype).
+ * Converted to deterministic explainable signals from the prototype dataset.
  */
-export function AIWorkforceRisk() {
+export function AIWorkforceRisk({ summary }: { summary: WorkforceSummary }) {
+  const signals = workforceSignals(summary);
+
+  // Derive Scheduling State
+  const schedulingState = summary.openShifts > 0 
+    ? { text: "Unresolved Gaps", tone: "warning" as const, reason: "Roster has unfilled shift slots." }
+    : { text: "Approved", tone: "success" as const, reason: "All shifts are currently covered." };
+
   return (
     <section className="space-y-4">
       {/* Header */}
@@ -22,69 +29,46 @@ export function AIWorkforceRisk() {
           </div>
           <div>
             <h2 className="text-base font-semibold tracking-tight">
-              AI Workforce Risk &amp; Predictive Intelligence
+              Workforce Intelligence Signals
             </h2>
             <p className="text-xs text-muted-foreground">
-              Decision support for nursing leadership · updated hourly
+              Explainable operational signals derived from current shift data
             </p>
           </div>
-          <span className="ml-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-            AI Prototype
-          </span>
         </div>
       </div>
 
-      {/* Row 1 — Four predictive index cards */}
+      {/* Row 1 — Four deterministic index cards */}
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <IndexCard
-          icon={HeartPulse}
-          title="Workforce Health Score"
-          score={72}
-          scale={100}
-          tone="warning"
-          trend="up"
-          trendLabel="+3 vs last week"
-          explanation="Coverage steady but rising overtime and fatigue in ICU and ED are dragging the composite index."
-        />
-        <IndexCard
           icon={ShieldCheck}
-          title="Safe Staffing Index"
-          score={81}
-          scale={100}
-          tone="success"
-          trend="up"
-          trendLabel="+2 vs last week"
-          explanation="Med-Surg and Maternity at target ratios. ICU currently 0.4 nurses below safe threshold on evening shift."
-          footer={[
-            { label: "ICU", value: 68, tone: "warning" },
-            { label: "ED", value: 74, tone: "warning" },
-            { label: "Med-Surg", value: 91, tone: "success" },
-          ]}
+          title="Operational Coverage"
+          value={`${summary.coveragePct}%`}
+          tone={summary.gapHrs < 0 ? "warning" : "success"}
+          explanation={summary.gapHrs < 0 
+            ? `Coverage pressure: Required staffing exceeds scheduled capacity by ${Math.abs(summary.gapHrs)}h.`
+            : "Coverage is adequate for the current demand."}
         />
         <IndexCard
-          icon={Flame}
-          title="Burnout Risk Index"
-          score={58}
-          scale={100}
-          tone="warning"
-          trend="up"
-          trendLabel="+12 vs last week"
-          explanation="Driven by missed breaks and consecutive shifts. Emergency trending toward high risk."
-          footer={[
-            { label: "Emergency", value: 74, tone: "danger" },
-            { label: "ICU", value: 62, tone: "warning" },
-            { label: "Pediatric", value: 34, tone: "success" },
-          ]}
+          icon={Activity}
+          title="Workload Balance"
+          value={`${summary.balanceScore}/100`}
+          tone={summary.balanceScore >= 85 ? "success" : summary.balanceScore >= 70 ? "warning" : "danger"}
+          explanation={`Distribution is ${summary.balanceLabel.toLowerCase()}. ${summary.balanceScore < 85 ? "Consider cross-unit redistribution." : "Demand is evenly distributed."}`}
         />
         <IndexCard
-          icon={Users}
-          title="Workforce Stability Score"
-          score={76}
-          scale={100}
-          tone="success"
-          trend="down"
-          trendLabel="-1 vs last month"
-          explanation="12-month retention 91%. 16 vacancies open; recruitment pipeline covers 62% of projected need."
+          icon={CalendarClock}
+          title="Scheduling State"
+          value={schedulingState.text}
+          tone={schedulingState.tone}
+          explanation={schedulingState.reason}
+        />
+        <IndexCard
+          icon={HeartPulse}
+          title="Recovery / Wellbeing Signals"
+          value="No data"
+          tone="info"
+          explanation="Not enough data to assess. Requires historical scheduling patterns (e.g. consecutive shifts, short recovery)."
         />
       </div>
 
@@ -97,42 +81,41 @@ export function AIWorkforceRisk() {
                 <CalendarClock className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold">Shift Risk Prediction</h3>
-                <p className="text-xs text-muted-foreground">Next shift · 18:00–06:00</p>
+                <h3 className="text-sm font-semibold">Unit Capacity Pressure</h3>
+                <p className="text-xs text-muted-foreground">Derived from required vs available hours</p>
               </div>
             </div>
-            <StatusPill tone="warning">AI Prototype</StatusPill>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <ShiftRiskTile dept="ICU" risk="High" tone="danger" reason="1.2× workload, 2 nurses on OT" />
-            <ShiftRiskTile dept="Emergency" risk="Moderate" tone="warning" reason="Predicted admissions +18%" />
-            <ShiftRiskTile dept="Med-Surg" risk="Low" tone="success" reason="Coverage at 91%" />
+            {summary.units.slice(0, 3).map((u) => (
+              <ShiftRiskTile 
+                key={u.key}
+                dept={u.key} 
+                risk={u.status} 
+                tone={u.zone === "critical" ? "danger" : u.zone === "watch" ? "warning" : "success"} 
+                reason={`${u.reqHrs}h required vs ${u.availHrs}h available (${u.coveragePct}% coverage).`} 
+              />
+            ))}
           </div>
 
           <div className="mt-4 rounded-lg border border-dashed border-border bg-background p-3">
             <div className="mb-1.5 flex items-center gap-2 text-xs font-semibold text-foreground">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              Recommended actions
+              Intelligence signals
             </div>
             <ul className="space-y-1.5 text-xs text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <ArrowRight className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
-                Deploy 1 float nurse to ICU by 17:30.
-              </li>
-              <li className="flex items-start gap-2">
-                <ArrowRight className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
-                Activate on-call list for Emergency evening shift.
-              </li>
-              <li className="flex items-start gap-2">
-                <ArrowRight className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
-                Hold Med-Surg roster steady; use as float source if needed.
-              </li>
+              {signals.slice(0, 3).map((s) => (
+                <li key={s.id} className="flex items-start gap-2">
+                  <ArrowRight className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
+                  {s.recommendation}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <RecommendedActions />
+        <RecommendedActions signals={signals} />
       </div>
 
       {/* Row 3 — Executive Insights */}
@@ -143,46 +126,24 @@ export function AIWorkforceRisk() {
               <Sparkles className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold">AI Executive Insights</h3>
+              <h3 className="text-sm font-semibold">Workforce Intelligence Signals</h3>
               <p className="text-xs text-muted-foreground">
-                Synthesized signals across departments · past 24h
+                Explainable operational insights
               </p>
             </div>
           </div>
-          <StatusPill tone="info">AI Prototype</StatusPill>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          <InsightCard
-            icon={Activity}
-            tone="warning"
-            title="ICU workload rising"
-            body="Acuity index up 14% over 48h; two nurses approaching consecutive-shift threshold."
-          />
-          <InsightCard
-            icon={CheckCircle2}
-            tone="success"
-            title="Medical Ward staffing stable"
-            body="Coverage at 94% with balanced skill mix; no interventions required today."
-          />
-          <InsightCard
-            icon={TrendingUp}
-            tone="danger"
-            title="Overtime up this week"
-            body="Hospital-wide OT +26% MoM. ED and ICU account for 68% of the increase."
-          />
-          <InsightCard
-            icon={Users}
-            tone="warning"
-            title="Two units may need float nurses"
-            body="ICU and Emergency evening shifts projected below safe ratio in the next 12h."
-          />
-          <InsightCard
-            icon={Flame}
-            tone="danger"
-            title="Burnout indicators rising in Emergency"
-            body="Missed breaks +9 this week; fatigue score at 74. Recommend proactive check-in."
-          />
+          {signals.map((s) => (
+            <InsightCard
+              key={s.id}
+              icon={Activity}
+              tone={s.tone as Tone}
+              title={s.title}
+              body={s.observation}
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -193,27 +154,22 @@ export function AIWorkforceRisk() {
 type Tone = "success" | "warning" | "danger" | "info";
 
 function IndexCard({
-  icon: Icon, title, score, scale, tone, trend, trendLabel, explanation, footer,
+  icon: Icon, title, value, tone, explanation, footer,
 }: {
   icon: LucideIcon;
   title: string;
-  score: number;
-  scale: number;
+  value: string;
   tone: Tone;
-  trend: "up" | "down";
-  trendLabel: string;
   explanation: string;
-  footer?: { label: string; value: number; tone: Tone }[];
+  footer?: { label: string; value: string | number; tone: Tone }[];
 }) {
-  const toneMap: Record<Tone, { icon: string; ring: string; text: string; bar: string }> = {
-    success: { icon: "bg-success/15 text-success", ring: "border-success/30", text: "text-success", bar: "bg-success" },
-    warning: { icon: "bg-warning/20 text-warning-foreground", ring: "border-warning/40", text: "text-warning-foreground", bar: "bg-warning" },
-    danger:  { icon: "bg-destructive/15 text-destructive", ring: "border-destructive/30", text: "text-destructive", bar: "bg-destructive" },
-    info:    { icon: "bg-primary/10 text-primary", ring: "border-primary/30", text: "text-primary", bar: "bg-primary" },
+  const toneMap: Record<Tone, { icon: string; ring: string; text: string }> = {
+    success: { icon: "bg-success/15 text-success", ring: "border-success/30", text: "text-success" },
+    warning: { icon: "bg-warning/20 text-warning-foreground", ring: "border-warning/40", text: "text-warning-foreground" },
+    danger:  { icon: "bg-destructive/15 text-destructive", ring: "border-destructive/30", text: "text-destructive" },
+    info:    { icon: "bg-primary/10 text-primary", ring: "border-primary/30", text: "text-primary" },
   };
   const t = toneMap[tone];
-  const pct = Math.min(100, (score / scale) * 100);
-  const TrendIcon = trend === "up" ? TrendingUp : TrendingDown;
 
   return (
     <div className={`flex flex-col rounded-xl border ${t.ring} bg-card p-4 shadow-sm`}>
@@ -221,24 +177,15 @@ function IndexCard({
         <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${t.icon}`}>
           <Icon className="h-4.5 w-4.5" />
         </div>
-        <span className={`inline-flex items-center gap-1 rounded-full bg-background px-2 py-0.5 text-[11px] font-medium ${t.text}`}>
-          <TrendIcon className="h-3 w-3" />
-          {trendLabel}
-        </span>
       </div>
 
       <div className="mt-3 flex items-baseline gap-1">
-        <div className="text-3xl font-semibold tracking-tight text-foreground">{score}</div>
-        <div className="text-xs text-muted-foreground">/ {scale}</div>
+        <div className="text-2xl font-semibold tracking-tight text-foreground">{value}</div>
       </div>
       <div className="mt-0.5 text-xs font-medium text-foreground">{title}</div>
 
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-secondary">
-        <div className={`h-full rounded-full ${t.bar}`} style={{ width: `${pct}%` }} />
-      </div>
-
       <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-        <span className="font-semibold text-foreground">AI: </span>{explanation}
+        <span className="font-semibold text-foreground">Reason: </span>{explanation}
       </p>
 
       {footer && (
@@ -300,14 +247,7 @@ function InsightCard({
 }
 
 // ---------------- Recommended Actions ----------------
-function RecommendedActions() {
-  const actions: { title: string; detail: string; tone: Tone; icon: LucideIcon }[] = [
-    { title: "Allocate one float nurse to ICU", detail: "Cover evening shift gap", tone: "danger", icon: Users },
-    { title: "Review weekend staffing", detail: "Sat–Sun projected +12% demand", tone: "warning", icon: CalendarClock },
-    { title: "Recognize Medical Ward team", detail: "Sustained 94% coverage", tone: "success", icon: CheckCircle2 },
-    { title: "Schedule wellbeing check-in", detail: "Emergency & ICU nurses", tone: "info", icon: HeartPulse },
-    { title: "Monitor overtime", detail: "OT trending +26% MoM", tone: "warning", icon: AlertTriangle },
-  ];
+function RecommendedActions({ signals }: { signals: ReturnType<typeof workforceSignals> }) {
   const toneMap: Record<Tone, string> = {
     success: "bg-success/15 text-success",
     warning: "bg-warning/20 text-warning-foreground",
@@ -324,24 +264,23 @@ function RecommendedActions() {
           </div>
           <div>
             <h3 className="text-sm font-semibold">Recommended Actions</h3>
-            <p className="text-xs text-muted-foreground">Prioritized for today</p>
+            <p className="text-xs text-muted-foreground">Derived from intelligence signals</p>
           </div>
         </div>
-        <StatusPill tone="info">AI Prototype</StatusPill>
       </div>
 
       <ol className="space-y-2">
-        {actions.map((a, i) => (
-          <li key={a.title} className="flex items-start gap-3 rounded-lg border border-border bg-background p-2.5">
-            <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${toneMap[a.tone]}`}>
-              <a.icon className="h-3.5 w-3.5" />
+        {signals.map((s, i) => (
+          <li key={s.id} className="flex items-start gap-3 rounded-lg border border-border bg-background p-2.5">
+            <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${toneMap[s.tone as Tone]}`}>
+              <Users className="h-3.5 w-3.5" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono text-muted-foreground">#{i + 1}</span>
-                <div className="text-sm font-medium text-foreground">{a.title}</div>
+                <div className="text-sm font-medium text-foreground">{s.unit}</div>
               </div>
-              <div className="text-[11px] text-muted-foreground">{a.detail}</div>
+              <div className="text-[11px] text-muted-foreground">{s.recommendation}</div>
             </div>
           </li>
         ))}

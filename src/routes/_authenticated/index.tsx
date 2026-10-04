@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ClinicalNav } from "@/components/ClinicalNav";
 import { TopNav } from "@/components/TopNav";
 import { EDView } from "@/components/views/EDView";
 import { MedSurgView } from "@/components/views/MedSurgView";
@@ -40,7 +41,6 @@ function Index() {
   useEffect(() => {
     const s = getSession();
     if (!s) { navigate({ to: "/login" }); return; }
-    if (s.role === "admin") { navigate({ to: "/workspace" }); return; }
     setSess(s);
     setDept(s.activeDept);
   }, [navigate]);
@@ -67,7 +67,8 @@ function Index() {
     isAdmin ? meta.name : `${meta.short} dashboard`;
 
   return (
-    <div className="min-h-screen">
+    <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 flex flex-col gap-4">
+      <ClinicalNav activeTab="overview" />
       <TopNav active={dept} onChange={handleChangeDept} session={session} onLogout={handleLogout} />
       <EmergencyBanner canToggle={isAdmin} />
 
@@ -83,7 +84,7 @@ function Index() {
         </div>
       )}
 
-      <main className="mx-auto max-w-[1400px] px-6 py-6">
+      <main className="w-full">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">

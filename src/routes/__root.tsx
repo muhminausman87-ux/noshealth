@@ -11,7 +11,6 @@ import {
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppHeader } from "@/components/AppHeader";
 import { AppSidebar } from "@/components/AppSidebar";
-import { QuickNav } from "@/components/QuickNav";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -41,7 +40,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
 
@@ -183,31 +182,18 @@ const SIDEBAR_PREF_KEY = "nos-sidebar-open";
 function SidebarShell() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const isPatientWorkspace = pathname.startsWith("/patient/");
-  const [open, setOpen] = useState(false);
-
-  // Always collapse back to the slim icon rail after navigating to a new page.
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  const handleOpenChange = (v: boolean) => {
-    setOpen(v);
-  };
-
 
   return (
     <SidebarProvider
-      defaultOpen={false}
-      open={open}
-      onOpenChange={handleOpenChange}
+      defaultOpen={true}
       style={{
-        "--sidebar-width": "17rem",
+        "--sidebar-width": "220px",
         "--sidebar-width-icon": "3.25rem",
       } as React.CSSProperties}
     >
-      <div className="relative z-10 flex min-h-screen w-full">
+      <div className="relative z-10 flex min-h-screen w-full min-w-0 max-w-full">
         <AppSidebar collapsible={isPatientWorkspace ? "offcanvas" : "icon"} />
-        <SidebarInset className="min-w-0 bg-transparent">
+        <SidebarInset className="min-w-0 max-w-full bg-transparent">
           <AppHeader />
           <Outlet />
           <footer className="border-t border-border/70 bg-card/60 px-4 py-4 text-[11px] leading-snug text-muted-foreground">
@@ -222,7 +208,6 @@ function SidebarShell() {
             </div>
           </footer>
         </SidebarInset>
-        {!isPatientWorkspace && <QuickNav />}
       </div>
     </SidebarProvider>
   );

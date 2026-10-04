@@ -8,7 +8,7 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { EcosystemLayout } from "@/components/EcosystemLayout";
+import { ExecutiveNav } from "@/components/ExecutiveNav";
 import { ContextualSignal } from "@/components/SourceLink";
 
 import { RoadmapCard, RoadmapVisionFooter } from "@/components/ModuleRoadmap";
@@ -71,76 +71,74 @@ export const Route = createFileRoute("/_authenticated/executive-intelligence")({
 
 function ExecutivePage() {
   return (
-    <EcosystemLayout>
-      <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-10">
-        <header className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-14 sm:w-14">
-            <LineChart className="h-6 w-6 sm:h-7 sm:w-7" />
-          </div>
-          <div className="min-w-0">
-            <h1 className="truncate text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-              Executive Intelligence
-            </h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              Hospital performance, quality, workforce, and strategic insights — a future capability built on Patient, Workforce and Workflow Intelligence.
-            </p>
-          </div>
-          <span className="shrink-0 rounded-full border border-warning/40 bg-warning/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
-            Future Capability
-          </span>
-        </header>
-
-        <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold tracking-tight text-foreground">Institutional signals</h2>
-            <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-              Synthesis
-            </span>
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Summaries only — each signal is owned and actioned in its source module.
+    <main className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 flex flex-col gap-4">
+      <ExecutiveNav activeTab="overview" />
+      <header className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-14 sm:w-14">
+          <LineChart className="h-6 w-6 sm:h-7 sm:w-7" />
+        </div>
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Executive Intelligence
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            Hospital performance, quality, workforce, and strategic insights — a future capability built on Patient, Workforce and Workflow Intelligence.
           </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            <ContextualSignal
-              layer="workforce"
-              tone="danger"
-              title="ICU capacity pressure projected at 14:00"
-              detail="Recommendation and decision record are owned by Workforce Intelligence."
-              meta="AI Prototype · Nurse Manager"
-            />
-            <ContextualSignal
-              layer="excellence"
-              tone="warning"
-              title="IPC compliance: 94%"
-              detail="Audit and quality workflows are owned by Clinical Excellence."
-              meta="Quality lead"
-            />
-            <ContextualSignal
-              layer="workflow"
-              tone="warning"
-              title="Workflow bottleneck on evening handover"
-              detail="Task sequencing is owned by Workflow Intelligence."
-              meta="Charge nurse"
-            />
-            <ContextualSignal
-              layer="wellbeing"
-              tone="info"
-              title="Evening shift recovery signal requires attention"
-              detail="Fatigue and recovery analytics are owned by Employee Wellbeing."
-              meta="Wellbeing lead"
-            />
-          </div>
-        </section>
+        </div>
+        <span className="shrink-0 rounded-full border border-warning/40 bg-warning/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
+          Future Capability
+        </span>
+      </header>
 
-        <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {EXEC_ITEMS.map((item) => (
-            <RoadmapCard key={item.title} item={item} />
-          ))}
-        </section>
+      <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="flex items-center gap-2">
+          <h2 className="text-base font-semibold tracking-tight text-foreground">Institutional signals</h2>
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+            Synthesis
+          </span>
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Summaries only — each signal is owned and actioned in its source module.
+        </p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <ContextualSignal
+            layer="workforce"
+            tone="danger"
+            title="ICU capacity pressure projected at 14:00"
+            detail="Recommendation and decision record are owned by Workforce Intelligence."
+            meta="AI Prototype · Nurse Manager"
+          />
+          <ContextualSignal
+            layer="excellence"
+            tone="warning"
+            title="IPC compliance: 94%"
+            detail="Audit and quality workflows are owned by Clinical Excellence."
+            meta="Quality lead"
+          />
+          <ContextualSignal
+            layer="workflow"
+            tone="warning"
+            title="Workflow bottleneck on evening handover"
+            detail="Task sequencing is owned by Workflow Intelligence."
+            meta="Charge nurse"
+          />
+          <ContextualSignal
+            layer="wellbeing"
+            tone="info"
+            title="Evening shift recovery signal requires attention"
+            detail="Fatigue and recovery analytics are owned by Employee Wellbeing."
+            meta="Wellbeing lead"
+          />
+        </div>
+      </section>
 
+      <section className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {EXEC_ITEMS.map((item) => (
+          <RoadmapCard key={item.title} item={item} />
+        ))}
+      </section>
 
-        <RoadmapVisionFooter />
-      </main>
-    </EcosystemLayout>
+      <RoadmapVisionFooter />
+    </main>
   );
 }

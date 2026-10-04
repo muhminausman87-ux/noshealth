@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { ClinicalNav } from "@/components/ClinicalNav";
 import { EcosystemLayout } from "@/components/EcosystemLayout";
 import { Widget, StatusPill } from "@/components/Widget";
 import { AIIntelligenceLayer } from "@/components/AIIntelligenceLayer";
@@ -307,8 +308,9 @@ function ProcedureDocPage() {
 
   return (
     <EcosystemLayout>
-      <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mb-6">
+      <main className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 flex flex-col gap-4">
+        <ClinicalNav activeTab="documentation" />
+        <div className="mb-2">
           <PlatformPositioning active="patient" />
         </div>
         {/* Header */}

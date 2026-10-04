@@ -1,20 +1,19 @@
-import { Bell, Brain, ChevronDown, LogOut, Search, ShieldCheck, Stethoscope } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type { Department } from "@/lib/departments";
 import { DEPARTMENTS, getDept } from "@/lib/departments";
 import { PATIENTS } from "@/lib/patients";
 import type { Session } from "@/lib/auth";
-import { NOS_MARK, NOS_LOGO_ALT } from "@/lib/branding";
 
 interface Props {
   active: Department;
   onChange: (d: Department) => void;
   session: Session;
-  onLogout: () => void;
+  onLogout?: () => void;
 }
 
-export function TopNav({ active, onChange, session, onLogout }: Props) {
+export function TopNav({ active, onChange, session }: Props) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -25,7 +24,9 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false);
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
     }
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
@@ -39,7 +40,7 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
         p.name.toLowerCase().includes(term) ||
         p.mrn.toLowerCase().includes(term) ||
         p.room.toLowerCase().includes(term) ||
-        p.id.toLowerCase().includes(term),
+        p.id.toLowerCase().includes(term)
     ).slice(0, 8);
   }, [q]);
 
@@ -49,53 +50,51 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
     navigate({ to: "/patient/$patientId", params: { patientId: id } });
   };
 
-
   return (
-    <header
-      className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur"
-      style={{ borderTop: `3px solid ${activeMeta.color}` }}
+    <div
+      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 shadow-xs"
+      style={{ borderLeft: `4px solid ${activeMeta.color}` }}
     >
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3">
-        <div className="flex items-center gap-2">
-          <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-9 w-9 rounded-md object-contain" />
-          <div>
-            <div className="text-sm font-semibold leading-tight text-foreground sm:text-base">
-              NOS <span className="text-primary">Ecosystem</span>
-            </div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Patient · Nurse · Care · Outcome
-            </div>
-          </div>
-        </div>
-
-        {/* Dept switcher: admin = all, staff = own + pulled (locked) */}
+      {/* Department Selector */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium text-muted-foreground">Department:</span>
         <div className="relative">
           {isAdmin ? (
             <>
               <button
+                type="button"
                 onClick={() => setOpen((v) => !v)}
-                className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-2 text-sm font-medium hover:bg-secondary"
+                className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold hover:bg-secondary transition"
               >
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: activeMeta.color }} />
-                {activeMeta.name}
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                <span
+                  className="h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: activeMeta.color }}
+                />
+                <span className="text-foreground">{activeMeta.name}</span>
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
               {open && (
-                <div className="absolute left-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
-                  <div className="max-h-96 overflow-y-auto py-1">
+                <div className="absolute left-0 top-full z-50 mt-1.5 w-64 overflow-hidden rounded-lg border border-border bg-card shadow-xl">
+                  <div className="max-h-72 overflow-y-auto py-1">
                     {DEPARTMENTS.map((d) => (
                       <button
                         key={d.id}
+                        type="button"
                         onClick={() => {
                           onChange(d.id);
                           setOpen(false);
                         }}
-                        className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm hover:bg-secondary ${
-                          d.id === active ? "bg-secondary/60 font-medium text-primary" : "text-foreground"
+                        className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-xs hover:bg-secondary ${
+                          d.id === active
+                            ? "bg-secondary/60 font-semibold text-primary"
+                            : "text-foreground"
                         }`}
                       >
-                        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: d.color }} />
-                        {d.name}
+                        <span
+                          className="h-2.5 w-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: d.color }}
+                        />
+                        <span className="truncate">{d.name}</span>
                       </button>
                     ))}
                   </div>
@@ -103,99 +102,79 @@ export function TopNav({ active, onChange, session, onLogout }: Props) {
               )}
             </>
           ) : (
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-2 text-sm font-medium">
-              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: activeMeta.color }} />
-              {activeMeta.name}
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold">
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: activeMeta.color }}
+              />
+              <span className="text-foreground">{activeMeta.name}</span>
               {session.pulled && (
-                <span className="ml-1 rounded-full bg-warning/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
+                <span className="ml-1 rounded-full bg-warning/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-warning-foreground">
                   Pulled
                 </span>
               )}
             </div>
           )}
         </div>
-
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <div ref={searchRef} className="relative hidden sm:block">
-            <div className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-sm">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <input
-                value={q}
-                onChange={(e) => { setQ(e.target.value); setSearchOpen(true); }}
-                onFocus={() => setSearchOpen(true)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && results[0]) goTo(results[0].id);
-                  if (e.key === "Escape") setSearchOpen(false);
-                }}
-                placeholder="Search patient, MRN, room…"
-                className="w-44 bg-transparent text-sm outline-none placeholder:text-muted-foreground md:w-64"
-              />
-            </div>
-            {searchOpen && q.trim() && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
-                {results.length === 0 ? (
-                  <div className="px-3 py-4 text-center text-sm text-muted-foreground">No matches</div>
-                ) : (
-                  <ul className="max-h-80 overflow-y-auto py-1">
-                    {results.map((p) => {
-                      const m = getDept(p.dept);
-                      return (
-                        <li key={p.id}>
-                          <button
-                            onClick={() => goTo(p.id)}
-                            className="flex w-full items-start gap-2.5 px-3 py-2 text-left hover:bg-secondary"
-                          >
-                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: m.color }} />
-                            <div className="min-w-0 flex-1">
-                              <div className="truncate text-sm font-medium text-foreground">{p.name}</div>
-                              <div className="truncate text-[11px] text-muted-foreground">
-                                MRN {p.mrn} · {p.room} · {m.short}
-                              </div>
-                            </div>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-            )}
-          </div>
-
-          <Link
-            to="/workforce-intelligence"
-            className="hidden items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/15 sm:flex"
-            title="Workforce Intelligence"
-          >
-            <Brain className="h-4 w-4" />
-            <span>Workforce AI</span>
-          </Link>
-
-          <button className="relative rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-foreground">
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />
-          </button>
-          <div className="hidden items-center gap-2 rounded-md border border-border px-3 py-1.5 sm:flex">
-            {isAdmin ? (
-              <ShieldCheck className="h-4 w-4 text-primary" />
-            ) : (
-              <Stethoscope className="h-4 w-4 text-primary" />
-            )}
-            <div className="text-sm">
-              <div className="font-medium leading-tight">{session.name}</div>
-              <div className="text-[10px] text-muted-foreground">{session.title}</div>
-            </div>
-          </div>
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
-            title="Sign out"
-          >
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:inline">Sign out</span>
-          </button>
-        </div>
       </div>
-    </header>
+
+      {/* Patient Search */}
+      <div ref={searchRef} className="relative flex-1 max-w-sm">
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs">
+          <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+          <input
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value);
+              setSearchOpen(true);
+            }}
+            onFocus={() => setSearchOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && results[0]) goTo(results[0].id);
+              if (e.key === "Escape") setSearchOpen(false);
+            }}
+            placeholder="Search patient name, MRN, room…"
+            className="w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground/70"
+          />
+        </div>
+        {searchOpen && q.trim() && (
+          <div className="absolute right-0 top-full z-50 mt-1.5 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
+            {results.length === 0 ? (
+              <div className="px-3 py-3 text-center text-xs text-muted-foreground">
+                No matching patients found
+              </div>
+            ) : (
+              <ul className="max-h-72 overflow-y-auto py-1">
+                {results.map((p) => {
+                  const m = getDept(p.dept);
+                  return (
+                    <li key={p.id}>
+                      <button
+                        type="button"
+                        onClick={() => goTo(p.id)}
+                        className="flex w-full items-start gap-2.5 px-3 py-2 text-left hover:bg-secondary cursor-pointer"
+                      >
+                        <span
+                          className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: m.color }}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-xs font-semibold text-foreground">
+                            {p.name}
+                          </div>
+                          <div className="truncate text-[10.5px] text-muted-foreground">
+                            MRN {p.mrn} · Bed {p.room} · {m.short}
+                          </div>
+                        </div>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

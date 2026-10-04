@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SchedulingEngine } from "@/components/scheduling/SchedulingEngine";
+import { WorkforceNav } from "@/components/WorkforceNav";
 import { getSession, type Session } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated/scheduling")({
@@ -34,7 +35,8 @@ function SchedulingPage() {
   }
 
   return (
-    <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6">
+    <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 flex flex-col gap-4">
+      <WorkforceNav activeTab="scheduling" />
       <SchedulingEngine session={session} />
     </main>
   );

@@ -91,8 +91,7 @@ export function WorkspaceLanding({ workspace }: { workspace: Workspace }) {
           <Sparkles className="mt-0.5 h-4 w-4 text-primary" />
           <p>
             <span className="font-semibold text-foreground">{workspace.name}</span> is one of six
-            independent NOS workspaces. Your navigation on the left shows only the modules for
-            this workspace — switch workspaces from the top of the sidebar (Administrator only).
+            independent NOS workspaces. Use the global sidebar on the left to switch workspaces at any time.
           </p>
         </div>
       </section>

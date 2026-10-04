@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { WorkspaceLanding } from "@/components/WorkspaceLanding";
 import { MyResponsibility } from "@/components/MyResponsibility";
+import { ClinicalNav } from "@/components/ClinicalNav";
 import { WORKSPACES } from "@/lib/workspaces";
 import { getSession, type Session } from "@/lib/auth";
 import { isBedsideFirst } from "@/lib/access";
@@ -32,13 +33,14 @@ function ClinicalWorkspace() {
     });
 
   return (
-    <>
+    <div className="mx-auto max-w-[1400px] px-4 py-4 sm:px-6 flex flex-col gap-4">
+      <ClinicalNav activeTab="census" />
       {session && bedsideFirst && (
-        <div className="mx-auto max-w-[1400px] px-6 pt-8">
+        <div className="pt-2">
           <MyResponsibility session={session} />
         </div>
       )}
       <WorkspaceLanding workspace={WORKSPACES.clinical} />
-    </>
+    </div>
   );
 }

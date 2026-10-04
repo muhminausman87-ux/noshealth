@@ -16,21 +16,30 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedCareerPathwaysRouteImport } from './routes/_authenticated/career-pathways'
+import { Route as AuthenticatedCertificationsRouteImport } from './routes/_authenticated/certifications'
 import { Route as AuthenticatedClinicalRouteImport } from './routes/_authenticated/clinical'
 import { Route as AuthenticatedClinicalExcellenceRouteImport } from './routes/_authenticated/clinical-excellence'
 import { Route as AuthenticatedDigitalTwinRouteImport } from './routes/_authenticated/digital-twin'
 import { Route as AuthenticatedDutySchedulingRouteImport } from './routes/_authenticated/duty-scheduling'
 import { Route as AuthenticatedEbpRouteImport } from './routes/_authenticated/ebp'
+import { Route as AuthenticatedEducationRouteImport } from './routes/_authenticated/education'
+import { Route as AuthenticatedEscalationsRouteImport } from './routes/_authenticated/escalations'
 import { Route as AuthenticatedExcellenceRouteImport } from './routes/_authenticated/excellence'
 import { Route as AuthenticatedExecutiveRouteImport } from './routes/_authenticated/executive'
 import { Route as AuthenticatedExecutiveIntelligenceRouteImport } from './routes/_authenticated/executive-intelligence'
+import { Route as AuthenticatedFloatPoolRouteImport } from './routes/_authenticated/float-pool'
 import { Route as AuthenticatedGrowthRouteImport } from './routes/_authenticated/growth'
+import { Route as AuthenticatedGrowthPlansRouteImport } from './routes/_authenticated/growth-plans'
 import { Route as AuthenticatedLearningRouteImport } from './routes/_authenticated/learning'
+import { Route as AuthenticatedLeaveManagementRouteImport } from './routes/_authenticated/leave-management'
 import { Route as AuthenticatedNursingWorkforceIntelligenceRouteImport } from './routes/_authenticated/nursing-workforce-intelligence'
 import { Route as AuthenticatedNursingWorkforceTwinRouteImport } from './routes/_authenticated/nursing-workforce-twin'
 import { Route as AuthenticatedProcedureDocumentationRouteImport } from './routes/_authenticated/procedure-documentation'
+import { Route as AuthenticatedProfessionalDevelopmentRouteImport } from './routes/_authenticated/professional-development'
 import { Route as AuthenticatedResearchRouteImport } from './routes/_authenticated/research'
 import { Route as AuthenticatedSchedulingRouteImport } from './routes/_authenticated/scheduling'
+import { Route as AuthenticatedSkillsMatrixRouteImport } from './routes/_authenticated/skills-matrix'
 import { Route as AuthenticatedUnitCapacityRouteImport } from './routes/_authenticated/unit-capacity'
 import { Route as AuthenticatedWellbeingRouteImport } from './routes/_authenticated/wellbeing'
 import { Route as AuthenticatedWorkflowIntelligenceRouteImport } from './routes/_authenticated/workflow-intelligence'
@@ -76,6 +85,18 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCareerPathwaysRoute =
+  AuthenticatedCareerPathwaysRouteImport.update({
+    id: '/career-pathways',
+    path: '/career-pathways',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCertificationsRoute =
+  AuthenticatedCertificationsRouteImport.update({
+    id: '/certifications',
+    path: '/certifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedClinicalRoute = AuthenticatedClinicalRouteImport.update({
   id: '/clinical',
   path: '/clinical',
@@ -104,6 +125,17 @@ const AuthenticatedEbpRoute = AuthenticatedEbpRouteImport.update({
   path: '/ebp',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEducationRoute = AuthenticatedEducationRouteImport.update({
+  id: '/education',
+  path: '/education',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEscalationsRoute =
+  AuthenticatedEscalationsRouteImport.update({
+    id: '/escalations',
+    path: '/escalations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedExcellenceRoute = AuthenticatedExcellenceRouteImport.update({
   id: '/excellence',
   path: '/excellence',
@@ -120,16 +152,33 @@ const AuthenticatedExecutiveIntelligenceRoute =
     path: '/executive-intelligence',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedFloatPoolRoute = AuthenticatedFloatPoolRouteImport.update({
+  id: '/float-pool',
+  path: '/float-pool',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedGrowthRoute = AuthenticatedGrowthRouteImport.update({
   id: '/growth',
   path: '/growth',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGrowthPlansRoute =
+  AuthenticatedGrowthPlansRouteImport.update({
+    id: '/growth-plans',
+    path: '/growth-plans',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLearningRoute = AuthenticatedLearningRouteImport.update({
   id: '/learning',
   path: '/learning',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLeaveManagementRoute =
+  AuthenticatedLeaveManagementRouteImport.update({
+    id: '/leave-management',
+    path: '/leave-management',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedNursingWorkforceIntelligenceRoute =
   AuthenticatedNursingWorkforceIntelligenceRouteImport.update({
     id: '/nursing-workforce-intelligence',
@@ -148,6 +197,12 @@ const AuthenticatedProcedureDocumentationRoute =
     path: '/procedure-documentation',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProfessionalDevelopmentRoute =
+  AuthenticatedProfessionalDevelopmentRouteImport.update({
+    id: '/professional-development',
+    path: '/professional-development',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedResearchRoute = AuthenticatedResearchRouteImport.update({
   id: '/research',
   path: '/research',
@@ -158,6 +213,12 @@ const AuthenticatedSchedulingRoute = AuthenticatedSchedulingRouteImport.update({
   path: '/scheduling',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSkillsMatrixRoute =
+  AuthenticatedSkillsMatrixRouteImport.update({
+    id: '/skills-matrix',
+    path: '/skills-matrix',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedUnitCapacityRoute =
   AuthenticatedUnitCapacityRouteImport.update({
     id: '/unit-capacity',
@@ -211,21 +272,30 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/career-pathways': typeof AuthenticatedCareerPathwaysRoute
+  '/certifications': typeof AuthenticatedCertificationsRoute
   '/clinical': typeof AuthenticatedClinicalRoute
   '/clinical-excellence': typeof AuthenticatedClinicalExcellenceRoute
   '/digital-twin': typeof AuthenticatedDigitalTwinRoute
   '/duty-scheduling': typeof AuthenticatedDutySchedulingRoute
   '/ebp': typeof AuthenticatedEbpRoute
+  '/education': typeof AuthenticatedEducationRoute
+  '/escalations': typeof AuthenticatedEscalationsRoute
   '/excellence': typeof AuthenticatedExcellenceRoute
   '/executive': typeof AuthenticatedExecutiveRoute
   '/executive-intelligence': typeof AuthenticatedExecutiveIntelligenceRoute
+  '/float-pool': typeof AuthenticatedFloatPoolRoute
   '/growth': typeof AuthenticatedGrowthRoute
+  '/growth-plans': typeof AuthenticatedGrowthPlansRoute
   '/learning': typeof AuthenticatedLearningRoute
+  '/leave-management': typeof AuthenticatedLeaveManagementRoute
   '/nursing-workforce-intelligence': typeof AuthenticatedNursingWorkforceIntelligenceRoute
   '/nursing-workforce-twin': typeof AuthenticatedNursingWorkforceTwinRoute
   '/procedure-documentation': typeof AuthenticatedProcedureDocumentationRoute
+  '/professional-development': typeof AuthenticatedProfessionalDevelopmentRoute
   '/research': typeof AuthenticatedResearchRoute
   '/scheduling': typeof AuthenticatedSchedulingRoute
+  '/skills-matrix': typeof AuthenticatedSkillsMatrixRoute
   '/unit-capacity': typeof AuthenticatedUnitCapacityRoute
   '/wellbeing': typeof AuthenticatedWellbeingRoute
   '/workflow-intelligence': typeof AuthenticatedWorkflowIntelligenceRoute
@@ -241,21 +311,30 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/career-pathways': typeof AuthenticatedCareerPathwaysRoute
+  '/certifications': typeof AuthenticatedCertificationsRoute
   '/clinical': typeof AuthenticatedClinicalRoute
   '/clinical-excellence': typeof AuthenticatedClinicalExcellenceRoute
   '/digital-twin': typeof AuthenticatedDigitalTwinRoute
   '/duty-scheduling': typeof AuthenticatedDutySchedulingRoute
   '/ebp': typeof AuthenticatedEbpRoute
+  '/education': typeof AuthenticatedEducationRoute
+  '/escalations': typeof AuthenticatedEscalationsRoute
   '/excellence': typeof AuthenticatedExcellenceRoute
   '/executive': typeof AuthenticatedExecutiveRoute
   '/executive-intelligence': typeof AuthenticatedExecutiveIntelligenceRoute
+  '/float-pool': typeof AuthenticatedFloatPoolRoute
   '/growth': typeof AuthenticatedGrowthRoute
+  '/growth-plans': typeof AuthenticatedGrowthPlansRoute
   '/learning': typeof AuthenticatedLearningRoute
+  '/leave-management': typeof AuthenticatedLeaveManagementRoute
   '/nursing-workforce-intelligence': typeof AuthenticatedNursingWorkforceIntelligenceRoute
   '/nursing-workforce-twin': typeof AuthenticatedNursingWorkforceTwinRoute
   '/procedure-documentation': typeof AuthenticatedProcedureDocumentationRoute
+  '/professional-development': typeof AuthenticatedProfessionalDevelopmentRoute
   '/research': typeof AuthenticatedResearchRoute
   '/scheduling': typeof AuthenticatedSchedulingRoute
+  '/skills-matrix': typeof AuthenticatedSkillsMatrixRoute
   '/unit-capacity': typeof AuthenticatedUnitCapacityRoute
   '/wellbeing': typeof AuthenticatedWellbeingRoute
   '/workflow-intelligence': typeof AuthenticatedWorkflowIntelligenceRoute
@@ -274,21 +353,30 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/_authenticated/career-pathways': typeof AuthenticatedCareerPathwaysRoute
+  '/_authenticated/certifications': typeof AuthenticatedCertificationsRoute
   '/_authenticated/clinical': typeof AuthenticatedClinicalRoute
   '/_authenticated/clinical-excellence': typeof AuthenticatedClinicalExcellenceRoute
   '/_authenticated/digital-twin': typeof AuthenticatedDigitalTwinRoute
   '/_authenticated/duty-scheduling': typeof AuthenticatedDutySchedulingRoute
   '/_authenticated/ebp': typeof AuthenticatedEbpRoute
+  '/_authenticated/education': typeof AuthenticatedEducationRoute
+  '/_authenticated/escalations': typeof AuthenticatedEscalationsRoute
   '/_authenticated/excellence': typeof AuthenticatedExcellenceRoute
   '/_authenticated/executive': typeof AuthenticatedExecutiveRoute
   '/_authenticated/executive-intelligence': typeof AuthenticatedExecutiveIntelligenceRoute
+  '/_authenticated/float-pool': typeof AuthenticatedFloatPoolRoute
   '/_authenticated/growth': typeof AuthenticatedGrowthRoute
+  '/_authenticated/growth-plans': typeof AuthenticatedGrowthPlansRoute
   '/_authenticated/learning': typeof AuthenticatedLearningRoute
+  '/_authenticated/leave-management': typeof AuthenticatedLeaveManagementRoute
   '/_authenticated/nursing-workforce-intelligence': typeof AuthenticatedNursingWorkforceIntelligenceRoute
   '/_authenticated/nursing-workforce-twin': typeof AuthenticatedNursingWorkforceTwinRoute
   '/_authenticated/procedure-documentation': typeof AuthenticatedProcedureDocumentationRoute
+  '/_authenticated/professional-development': typeof AuthenticatedProfessionalDevelopmentRoute
   '/_authenticated/research': typeof AuthenticatedResearchRoute
   '/_authenticated/scheduling': typeof AuthenticatedSchedulingRoute
+  '/_authenticated/skills-matrix': typeof AuthenticatedSkillsMatrixRoute
   '/_authenticated/unit-capacity': typeof AuthenticatedUnitCapacityRoute
   '/_authenticated/wellbeing': typeof AuthenticatedWellbeingRoute
   '/_authenticated/workflow-intelligence': typeof AuthenticatedWorkflowIntelligenceRoute
@@ -308,21 +396,30 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/career-pathways'
+    | '/certifications'
     | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
     | '/duty-scheduling'
     | '/ebp'
+    | '/education'
+    | '/escalations'
     | '/excellence'
     | '/executive'
     | '/executive-intelligence'
+    | '/float-pool'
     | '/growth'
+    | '/growth-plans'
     | '/learning'
+    | '/leave-management'
     | '/nursing-workforce-intelligence'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
+    | '/professional-development'
     | '/research'
     | '/scheduling'
+    | '/skills-matrix'
     | '/unit-capacity'
     | '/wellbeing'
     | '/workflow-intelligence'
@@ -338,21 +435,30 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/career-pathways'
+    | '/certifications'
     | '/clinical'
     | '/clinical-excellence'
     | '/digital-twin'
     | '/duty-scheduling'
     | '/ebp'
+    | '/education'
+    | '/escalations'
     | '/excellence'
     | '/executive'
     | '/executive-intelligence'
+    | '/float-pool'
     | '/growth'
+    | '/growth-plans'
     | '/learning'
+    | '/leave-management'
     | '/nursing-workforce-intelligence'
     | '/nursing-workforce-twin'
     | '/procedure-documentation'
+    | '/professional-development'
     | '/research'
     | '/scheduling'
+    | '/skills-matrix'
     | '/unit-capacity'
     | '/wellbeing'
     | '/workflow-intelligence'
@@ -370,21 +476,30 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/_authenticated/career-pathways'
+    | '/_authenticated/certifications'
     | '/_authenticated/clinical'
     | '/_authenticated/clinical-excellence'
     | '/_authenticated/digital-twin'
     | '/_authenticated/duty-scheduling'
     | '/_authenticated/ebp'
+    | '/_authenticated/education'
+    | '/_authenticated/escalations'
     | '/_authenticated/excellence'
     | '/_authenticated/executive'
     | '/_authenticated/executive-intelligence'
+    | '/_authenticated/float-pool'
     | '/_authenticated/growth'
+    | '/_authenticated/growth-plans'
     | '/_authenticated/learning'
+    | '/_authenticated/leave-management'
     | '/_authenticated/nursing-workforce-intelligence'
     | '/_authenticated/nursing-workforce-twin'
     | '/_authenticated/procedure-documentation'
+    | '/_authenticated/professional-development'
     | '/_authenticated/research'
     | '/_authenticated/scheduling'
+    | '/_authenticated/skills-matrix'
     | '/_authenticated/unit-capacity'
     | '/_authenticated/wellbeing'
     | '/_authenticated/workflow-intelligence'
@@ -457,6 +572,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/career-pathways': {
+      id: '/_authenticated/career-pathways'
+      path: '/career-pathways'
+      fullPath: '/career-pathways'
+      preLoaderRoute: typeof AuthenticatedCareerPathwaysRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/certifications': {
+      id: '/_authenticated/certifications'
+      path: '/certifications'
+      fullPath: '/certifications'
+      preLoaderRoute: typeof AuthenticatedCertificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/clinical': {
       id: '/_authenticated/clinical'
       path: '/clinical'
@@ -492,6 +621,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEbpRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/education': {
+      id: '/_authenticated/education'
+      path: '/education'
+      fullPath: '/education'
+      preLoaderRoute: typeof AuthenticatedEducationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/escalations': {
+      id: '/_authenticated/escalations'
+      path: '/escalations'
+      fullPath: '/escalations'
+      preLoaderRoute: typeof AuthenticatedEscalationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/excellence': {
       id: '/_authenticated/excellence'
       path: '/excellence'
@@ -513,6 +656,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExecutiveIntelligenceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/float-pool': {
+      id: '/_authenticated/float-pool'
+      path: '/float-pool'
+      fullPath: '/float-pool'
+      preLoaderRoute: typeof AuthenticatedFloatPoolRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/growth': {
       id: '/_authenticated/growth'
       path: '/growth'
@@ -520,11 +670,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGrowthRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/growth-plans': {
+      id: '/_authenticated/growth-plans'
+      path: '/growth-plans'
+      fullPath: '/growth-plans'
+      preLoaderRoute: typeof AuthenticatedGrowthPlansRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/learning': {
       id: '/_authenticated/learning'
       path: '/learning'
       fullPath: '/learning'
       preLoaderRoute: typeof AuthenticatedLearningRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/leave-management': {
+      id: '/_authenticated/leave-management'
+      path: '/leave-management'
+      fullPath: '/leave-management'
+      preLoaderRoute: typeof AuthenticatedLeaveManagementRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/nursing-workforce-intelligence': {
@@ -548,6 +712,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProcedureDocumentationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/professional-development': {
+      id: '/_authenticated/professional-development'
+      path: '/professional-development'
+      fullPath: '/professional-development'
+      preLoaderRoute: typeof AuthenticatedProfessionalDevelopmentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/research': {
       id: '/_authenticated/research'
       path: '/research'
@@ -560,6 +731,13 @@ declare module '@tanstack/react-router' {
       path: '/scheduling'
       fullPath: '/scheduling'
       preLoaderRoute: typeof AuthenticatedSchedulingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/skills-matrix': {
+      id: '/_authenticated/skills-matrix'
+      path: '/skills-matrix'
+      fullPath: '/skills-matrix'
+      preLoaderRoute: typeof AuthenticatedSkillsMatrixRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/unit-capacity': {
@@ -622,21 +800,30 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCareerPathwaysRoute: typeof AuthenticatedCareerPathwaysRoute
+  AuthenticatedCertificationsRoute: typeof AuthenticatedCertificationsRoute
   AuthenticatedClinicalRoute: typeof AuthenticatedClinicalRoute
   AuthenticatedClinicalExcellenceRoute: typeof AuthenticatedClinicalExcellenceRoute
   AuthenticatedDigitalTwinRoute: typeof AuthenticatedDigitalTwinRoute
   AuthenticatedDutySchedulingRoute: typeof AuthenticatedDutySchedulingRoute
   AuthenticatedEbpRoute: typeof AuthenticatedEbpRoute
+  AuthenticatedEducationRoute: typeof AuthenticatedEducationRoute
+  AuthenticatedEscalationsRoute: typeof AuthenticatedEscalationsRoute
   AuthenticatedExcellenceRoute: typeof AuthenticatedExcellenceRoute
   AuthenticatedExecutiveRoute: typeof AuthenticatedExecutiveRoute
   AuthenticatedExecutiveIntelligenceRoute: typeof AuthenticatedExecutiveIntelligenceRoute
+  AuthenticatedFloatPoolRoute: typeof AuthenticatedFloatPoolRoute
   AuthenticatedGrowthRoute: typeof AuthenticatedGrowthRoute
+  AuthenticatedGrowthPlansRoute: typeof AuthenticatedGrowthPlansRoute
   AuthenticatedLearningRoute: typeof AuthenticatedLearningRoute
+  AuthenticatedLeaveManagementRoute: typeof AuthenticatedLeaveManagementRoute
   AuthenticatedNursingWorkforceIntelligenceRoute: typeof AuthenticatedNursingWorkforceIntelligenceRoute
   AuthenticatedNursingWorkforceTwinRoute: typeof AuthenticatedNursingWorkforceTwinRoute
   AuthenticatedProcedureDocumentationRoute: typeof AuthenticatedProcedureDocumentationRoute
+  AuthenticatedProfessionalDevelopmentRoute: typeof AuthenticatedProfessionalDevelopmentRoute
   AuthenticatedResearchRoute: typeof AuthenticatedResearchRoute
   AuthenticatedSchedulingRoute: typeof AuthenticatedSchedulingRoute
+  AuthenticatedSkillsMatrixRoute: typeof AuthenticatedSkillsMatrixRoute
   AuthenticatedUnitCapacityRoute: typeof AuthenticatedUnitCapacityRoute
   AuthenticatedWellbeingRoute: typeof AuthenticatedWellbeingRoute
   AuthenticatedWorkflowIntelligenceRoute: typeof AuthenticatedWorkflowIntelligenceRoute
@@ -648,25 +835,35 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCareerPathwaysRoute: AuthenticatedCareerPathwaysRoute,
+  AuthenticatedCertificationsRoute: AuthenticatedCertificationsRoute,
   AuthenticatedClinicalRoute: AuthenticatedClinicalRoute,
   AuthenticatedClinicalExcellenceRoute: AuthenticatedClinicalExcellenceRoute,
   AuthenticatedDigitalTwinRoute: AuthenticatedDigitalTwinRoute,
   AuthenticatedDutySchedulingRoute: AuthenticatedDutySchedulingRoute,
   AuthenticatedEbpRoute: AuthenticatedEbpRoute,
+  AuthenticatedEducationRoute: AuthenticatedEducationRoute,
+  AuthenticatedEscalationsRoute: AuthenticatedEscalationsRoute,
   AuthenticatedExcellenceRoute: AuthenticatedExcellenceRoute,
   AuthenticatedExecutiveRoute: AuthenticatedExecutiveRoute,
   AuthenticatedExecutiveIntelligenceRoute:
     AuthenticatedExecutiveIntelligenceRoute,
+  AuthenticatedFloatPoolRoute: AuthenticatedFloatPoolRoute,
   AuthenticatedGrowthRoute: AuthenticatedGrowthRoute,
+  AuthenticatedGrowthPlansRoute: AuthenticatedGrowthPlansRoute,
   AuthenticatedLearningRoute: AuthenticatedLearningRoute,
+  AuthenticatedLeaveManagementRoute: AuthenticatedLeaveManagementRoute,
   AuthenticatedNursingWorkforceIntelligenceRoute:
     AuthenticatedNursingWorkforceIntelligenceRoute,
   AuthenticatedNursingWorkforceTwinRoute:
     AuthenticatedNursingWorkforceTwinRoute,
   AuthenticatedProcedureDocumentationRoute:
     AuthenticatedProcedureDocumentationRoute,
+  AuthenticatedProfessionalDevelopmentRoute:
+    AuthenticatedProfessionalDevelopmentRoute,
   AuthenticatedResearchRoute: AuthenticatedResearchRoute,
   AuthenticatedSchedulingRoute: AuthenticatedSchedulingRoute,
+  AuthenticatedSkillsMatrixRoute: AuthenticatedSkillsMatrixRoute,
   AuthenticatedUnitCapacityRoute: AuthenticatedUnitCapacityRoute,
   AuthenticatedWellbeingRoute: AuthenticatedWellbeingRoute,
   AuthenticatedWorkflowIntelligenceRoute:
