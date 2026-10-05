@@ -16,22 +16,22 @@ export function Widget({
 }) {
   return (
     <section
-      className={`card-hover nos-surface p-4 ${className}`}
+      className={`card-hover nos-surface p-4 min-w-0 max-w-full ${className}`}
     >
-      <header className="mb-4 flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/20 bg-primary/8 text-primary">
+      <header className="mb-4 flex items-start justify-between gap-2 min-w-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-primary/20 bg-primary/8 text-primary">
             <Icon className="h-4 w-4" />
           </div>
-          <div>
-            <h3 className="text-[13px] font-semibold tracking-tight text-foreground">{title}</h3>
+          <div className="min-w-0">
+            <h3 className="text-[13px] font-semibold tracking-tight text-foreground break-words">{title}</h3>
             {subtitle && (
-              <p className="text-[11px] leading-snug text-muted-foreground">{subtitle}</p>
+              <p className="text-[11px] leading-snug text-muted-foreground break-words">{subtitle}</p>
             )}
           </div>
         </div>
       </header>
-      <div>{children}</div>
+      <div className="min-w-0">{children}</div>
     </section>
   );
 }

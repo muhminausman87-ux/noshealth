@@ -11,9 +11,9 @@ import { StatusPill, Widget } from "@/components/Widget";
 
 function Row({ k, v }: { k: string; v: React.ReactNode }) {
   return (
-    <div className="flex justify-between gap-3 border-b border-border py-1.5 last:border-none">
-      <span className="text-xs uppercase tracking-wider text-muted-foreground">{k}</span>
-      <span className="text-right text-sm text-foreground">{v}</span>
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-3 border-b border-border py-1.5 last:border-none min-w-0">
+      <span className="text-xs uppercase tracking-wider text-muted-foreground shrink-0">{k}</span>
+      <span className="text-left sm:text-right text-sm text-foreground break-words min-w-0">{v}</span>
     </div>
   );
 }
@@ -28,10 +28,10 @@ function Tile({ label, value, sub, tone = "neutral" }: {
     : tone === "success" ? "text-success"
     : "text-foreground";
   return (
-    <div className="rounded-md border border-border bg-background p-3">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className={`mt-1 text-xl font-semibold tabular-nums ${color}`}>{value}</div>
-      {sub && <div className="text-[11px] text-muted-foreground">{sub}</div>}
+    <div className="rounded-md border border-border bg-background p-2.5 sm:p-3 min-w-0">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground truncate">{label}</div>
+      <div className={`mt-1 text-lg sm:text-xl font-semibold tabular-nums break-words ${color}`}>{value}</div>
+      {sub && <div className="text-[11px] text-muted-foreground break-words">{sub}</div>}
     </div>
   );
 }
@@ -51,7 +51,7 @@ export function RiskScoresPanel({ className }: { className?: string }) {
   ];
   return (
     <Widget title="Risk Scores & Early Warning" icon={Shield} subtitle="Reassess each shift / change in condition" className={className}>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
         {scores.map(s => (
           <Tile key={s.name} label={s.name} value={`${s.value}/${s.max}`} sub={s.hint} tone={s.tone} />
         ))}
@@ -93,7 +93,7 @@ export function PainAssessment({ className }: { className?: string }) {
   const [score, setScore] = useState(3);
   return (
     <Widget title="Pain Assessment (PQRST · NRS)" icon={Smile} subtitle="Reassess 30 min after intervention" className={className}>
-      <div className="mb-3 grid grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="mb-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
         <Row k="Provokes" v="Movement, deep breath" />
         <Row k="Quality" v="Sharp, intermittent" />
         <Row k="Region" v="RLQ → flank" />

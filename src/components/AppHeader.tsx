@@ -45,12 +45,12 @@ export function AppHeader() {
     .toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex h-13 items-center gap-3 border-b border-border bg-card px-3 sm:px-4">
+    <header className="sticky top-0 z-30 flex h-13 items-center gap-2 sm:gap-3 border-b border-border bg-card px-2.5 sm:px-4 min-w-0 max-w-full">
       <SidebarTrigger className="shrink-0" />
 
-      <Link to="/workspace" className="flex min-w-0 items-center gap-2.5">
-        <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-7 w-7 shrink-0 object-contain" />
-        <span className="truncate text-[12.5px] font-bold uppercase tracking-[0.18em] text-foreground">
+      <Link to="/workspace" className="flex min-w-0 shrink-0 items-center gap-2">
+        <img src={NOS_MARK} alt={NOS_LOGO_ALT} className="h-6 w-6 sm:h-7 sm:w-7 shrink-0 object-contain" />
+        <span className="truncate text-[12px] sm:text-[12.5px] font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] text-foreground">
           NOS <span className="text-primary">Workspace</span>
         </span>
       </Link>
@@ -67,7 +67,7 @@ export function AppHeader() {
         </div>
       )}
 
-      <div className="ml-auto flex items-center gap-1.5">
+      <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5">
         <button
           type="button"
           aria-label="Notifications"

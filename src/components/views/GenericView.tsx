@@ -111,8 +111,8 @@ export function GenericView({ dept }: { dept: Department }) {
         {patients.length === 0 ? (
           <p className="text-sm text-muted-foreground">No patients assigned.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto min-w-0 max-w-full">
+            <table className="w-full min-w-[400px] text-sm">
               <thead>
                 <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                   <th className="pb-2 font-medium">Room</th>
@@ -197,9 +197,9 @@ function Task({ text, done }: { text: string; done?: boolean }) {
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex justify-between border-b border-border pb-1.5 last:border-none">
-      <span className="text-muted-foreground">{k}</span>
-      <span className="font-medium text-foreground">{v}</span>
+    <div className="flex flex-col sm:flex-row justify-between gap-1 border-b border-border pb-1.5 last:border-none min-w-0">
+      <span className="text-muted-foreground break-words">{k}</span>
+      <span className="font-medium text-foreground break-words">{v}</span>
     </div>
   );
 }

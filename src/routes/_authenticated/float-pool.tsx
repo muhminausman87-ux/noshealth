@@ -1206,8 +1206,8 @@ function AvailableNursesPanel({
     <div className="flex flex-col gap-4 max-w-[1400px] mx-auto">
       {/* Search & Filter Bar */}
       <div className="bg-white p-3.5 rounded-xl border border-slate-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
-          <div className="relative flex-1 min-w-[200px]">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-0 w-full">
+          <div className="relative flex-1 min-w-0 w-full sm:min-w-[200px]">
             <Search className="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-2.5" />
             <input
               type="text"

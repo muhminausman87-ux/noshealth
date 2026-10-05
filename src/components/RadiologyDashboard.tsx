@@ -53,24 +53,26 @@ export function RadiologyDashboard({ session }: { session: Session }) {
 
 function Queue({ list }: { list: typeof MOCK }) {
   return (
-    <table className="w-full text-sm">
-      <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-        <tr><th className="py-2">Req</th><th>Patient</th><th>Study</th><th>Requested by</th><th>Priority</th><th></th></tr>
-      </thead>
-      <tbody>
-        {list.map(r => (
-          <tr key={r.id} className="border-t border-border">
-            <td className="py-2 font-mono text-xs">{r.id}</td>
-            <td>{r.patient}<div className="text-[10px] text-muted-foreground">{r.mrn}</div></td>
-            <td>{r.study}</td>
-            <td>{r.doctor}</td>
-            <td><span className={`rounded-full px-2 py-0.5 text-[10px] ${r.priority === "STAT" ? "bg-destructive/15 text-destructive" : "bg-secondary"}`}>{r.priority}</span></td>
-            <td><button className="text-xs text-primary hover:underline">Open</button></td>
-          </tr>
-        ))}
-        {list.length === 0 && <tr><td colSpan={6} className="py-6 text-center text-xs text-muted-foreground">Nothing here.</td></tr>}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto min-w-0 max-w-full">
+      <table className="w-full min-w-[500px] text-sm">
+        <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+          <tr><th className="py-2">Req</th><th>Patient</th><th>Study</th><th>Requested by</th><th>Priority</th><th></th></tr>
+        </thead>
+        <tbody>
+          {list.map(r => (
+            <tr key={r.id} className="border-t border-border">
+              <td className="py-2 font-mono text-xs">{r.id}</td>
+              <td>{r.patient}<div className="text-[10px] text-muted-foreground">{r.mrn}</div></td>
+              <td>{r.study}</td>
+              <td>{r.doctor}</td>
+              <td><span className={`rounded-full px-2 py-0.5 text-[10px] ${r.priority === "STAT" ? "bg-destructive/15 text-destructive" : "bg-secondary"}`}>{r.priority}</span></td>
+              <td><button className="text-xs text-primary hover:underline">Open</button></td>
+            </tr>
+          ))}
+          {list.length === 0 && <tr><td colSpan={6} className="py-6 text-center text-xs text-muted-foreground">Nothing here.</td></tr>}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

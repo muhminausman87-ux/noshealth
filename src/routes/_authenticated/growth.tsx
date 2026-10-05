@@ -777,7 +777,7 @@ function CompetencyProfilePanel({
     <div className="max-w-7xl mx-auto space-y-4">
       {/* Search and Filters */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-2xs">
-        <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+        <div className="flex items-center gap-2 flex-1 min-w-0 w-full sm:min-w-[240px]">
           <Search className="h-4 w-4 text-slate-400 shrink-0" />
           <input
             type="text"

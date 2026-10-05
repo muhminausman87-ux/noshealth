@@ -52,29 +52,29 @@ export function TopNav({ active, onChange, session }: Props) {
 
   return (
     <div
-      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 shadow-xs"
+      className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card/80 p-3 shadow-xs min-w-0 max-w-full"
       style={{ borderLeft: `4px solid ${activeMeta.color}` }}
     >
       {/* Department Selector */}
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-medium text-muted-foreground">Department:</span>
-        <div className="relative">
+      <div className="flex flex-wrap items-center gap-2 min-w-0 max-w-full">
+        <span className="text-xs font-medium text-muted-foreground shrink-0">Department:</span>
+        <div className="relative min-w-0 max-w-full">
           {isAdmin ? (
             <>
               <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
-                className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold hover:bg-secondary transition"
+                className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-2.5 sm:px-3 py-1.5 text-xs font-semibold hover:bg-secondary transition max-w-full min-w-0"
               >
                 <span
-                  className="h-2.5 w-2.5 rounded-full"
+                  className="h-2.5 w-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: activeMeta.color }}
                 />
-                <span className="text-foreground">{activeMeta.name}</span>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-foreground truncate max-w-[150px] sm:max-w-none">{activeMeta.name}</span>
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
               </button>
               {open && (
-                <div className="absolute left-0 top-full z-50 mt-1.5 w-64 overflow-hidden rounded-lg border border-border bg-card shadow-xl">
+                <div className="absolute left-0 top-full z-50 mt-1.5 w-64 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-lg border border-border bg-card shadow-xl">
                   <div className="max-h-72 overflow-y-auto py-1">
                     {DEPARTMENTS.map((d) => (
                       <button
@@ -102,14 +102,14 @@ export function TopNav({ active, onChange, session }: Props) {
               )}
             </>
           ) : (
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-3 py-1.5 text-xs font-semibold">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/60 px-2.5 sm:px-3 py-1.5 text-xs font-semibold max-w-full min-w-0">
               <span
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2.5 w-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: activeMeta.color }}
               />
-              <span className="text-foreground">{activeMeta.name}</span>
+              <span className="text-foreground truncate">{activeMeta.name}</span>
               {session.pulled && (
-                <span className="ml-1 rounded-full bg-warning/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-warning-foreground">
+                <span className="ml-1 rounded-full bg-warning/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-warning-foreground shrink-0">
                   Pulled
                 </span>
               )}
@@ -119,8 +119,8 @@ export function TopNav({ active, onChange, session }: Props) {
       </div>
 
       {/* Patient Search */}
-      <div ref={searchRef} className="relative flex-1 max-w-sm">
-        <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs">
+      <div ref={searchRef} className="relative w-full sm:w-auto sm:flex-1 sm:max-w-sm min-w-0">
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-xs min-w-0">
           <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           <input
             value={q}
@@ -134,11 +134,11 @@ export function TopNav({ active, onChange, session }: Props) {
               if (e.key === "Escape") setSearchOpen(false);
             }}
             placeholder="Search patient name, MRN, room…"
-            className="w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground/70"
+            className="w-full min-w-0 bg-transparent text-xs outline-none placeholder:text-muted-foreground/70"
           />
         </div>
         {searchOpen && q.trim() && (
-          <div className="absolute right-0 top-full z-50 mt-1.5 w-80 overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
+          <div className="absolute right-0 top-full z-50 mt-1.5 w-full sm:w-80 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
             {results.length === 0 ? (
               <div className="px-3 py-3 text-center text-xs text-muted-foreground">
                 No matching patients found

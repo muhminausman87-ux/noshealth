@@ -83,15 +83,17 @@ export function ModulePlaceholder({
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-10">
       {/* Header */}
-      <header className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-14 sm:w-14">
-          <Icon className="h-6 w-6 sm:h-7 sm:w-7" />
-        </div>
-        <div className="min-w-0">
-          <h1 className="truncate text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-            {title}
-          </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">{subtitle}</p>
+      <header className="flex flex-wrap items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+          <div className="flex h-11 w-11 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Icon className="h-5 w-5 sm:h-7 sm:w-7" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-2xl break-words">
+              {title}
+            </h1>
+            <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground">{subtitle}</p>
+          </div>
         </div>
         <span className="shrink-0 rounded-full border border-warning/40 bg-warning/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-foreground">
           Coming Soon

@@ -185,10 +185,10 @@ function PatientPage() {
     <div className="flex h-[calc(100vh-2.75rem)] flex-col overflow-hidden bg-background">
       {/* Sticky patient banner — shown once */}
       <header className="shrink-0 border-b border-border bg-card/95 backdrop-blur">
-        <div className="flex items-center gap-3 px-4 py-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4">
           <Link
             to="/"
-            className="flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 text-xs hover:bg-secondary"
+            className="flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2.5 py-1 text-xs hover:bg-secondary"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Patient list
           </Link>
@@ -332,7 +332,7 @@ function PatientPage() {
           </div>
 
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 pb-20">
+          <div className="min-h-0 flex-1 overflow-y-auto px-2.5 sm:px-4 py-4 pb-20 max-w-full min-w-0">
             {/* SUMMARY */}
             <TabsContent value="summary" className="mt-0 space-y-4">
               <div
@@ -926,7 +926,7 @@ function PatientPage() {
         </div>
 
         {/* RIGHT — clinical action panel (20%) */}
-        <aside className="flex w-[20%] min-w-[240px] shrink-0 flex-col border-l border-border bg-card/60">
+        <aside className="hidden xl:flex w-[20%] min-w-[240px] shrink-0 flex-col border-l border-border bg-card/60">
           <div className="flex items-center justify-between border-b border-border px-4 py-2">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Documentation
@@ -976,7 +976,7 @@ function Box({
 }) {
   return (
     <section
-      className={`relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-sm min-w-0 max-w-full ${className}`}
       style={{ boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${accent} 18%, transparent)` }}
     >
       <div
@@ -985,7 +985,7 @@ function Box({
       />
       <header className="mb-4 flex items-center gap-2.5">
         <div
-          className="flex h-8 w-8 items-center justify-center rounded-lg"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
           style={{ background: `color-mix(in oklab, ${accent} 18%, transparent)`, color: accent }}
         >
           <Icon className="h-4 w-4" />
@@ -999,9 +999,9 @@ function Box({
 
 function KV({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-border/60 pb-1.5 last:border-none last:pb-0">
-      <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{k}</dt>
-      <dd className="max-w-[60%] text-right text-sm text-foreground">{v}</dd>
+    <div className="flex justify-between gap-4 border-b border-border/60 pb-1.5 last:border-none last:pb-0 min-w-0">
+      <dt className="shrink-0 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{k}</dt>
+      <dd className="max-w-[60%] text-right text-sm text-foreground break-words">{v}</dd>
     </div>
   );
 }

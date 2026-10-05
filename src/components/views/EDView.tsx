@@ -16,14 +16,14 @@ const vitals = [
 
 export function EDView() {
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 min-w-0 max-w-full">
       <Widget title="Chief Complaint & Acuity" icon={Siren} subtitle="Arrival 06:42">
-        <div className="space-y-3">
-          <p className="text-base font-medium text-foreground">
+        <div className="space-y-3 min-w-0">
+          <p className="text-sm sm:text-base font-medium text-foreground break-words">
             Chest pain radiating to left arm, onset 90 minutes prior to arrival.
             Associated diaphoresis and shortness of breath.
           </p>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <span className="rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-1 text-xs font-semibold text-destructive">
               ESI Level 2 · Emergent
             </span>
@@ -34,7 +34,7 @@ export function EDView() {
       </Widget>
 
       <Widget title="Critical Alerts" icon={AlertCircle} subtitle="Reviewed at 07:01">
-        <ul className="space-y-2.5">
+        <ul className="space-y-2.5 min-w-0">
           <AlertRow tone="danger" label="Drug Allergy" value="Penicillin — anaphylaxis (1998)" />
           <AlertRow tone="warning" label="Fall Risk" value="Morse score 65 · yellow band" />
           <AlertRow tone="info" label="Isolation" value="Standard precautions" />
@@ -43,8 +43,8 @@ export function EDView() {
       </Widget>
 
       <Widget title="Vital Signs — Last 2 Hours" icon={Activity} subtitle="q30 min" className="lg:col-span-2">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto min-w-0 max-w-full">
+          <table className="w-full text-sm min-w-[500px]">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <th className="pb-2 font-medium">Time</th>
@@ -72,7 +72,7 @@ export function EDView() {
       </Widget>
 
       <Widget title="Stat Labs & Imaging" icon={FlaskConical} subtitle="Ordered 06:48" className="lg:col-span-2">
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-border min-w-0">
           <LabRow name="Troponin I" detail="High-sensitivity assay" status="completed" result="0.84 ng/mL" abnormal />
           <LabRow name="12-lead EKG" detail="ST elevation V2–V4" status="completed" result="Read pending cardiology" />
           <LabRow name="Chest X-Ray, portable" detail="2 views, AP" status="pending" />
@@ -108,10 +108,10 @@ function AlertRow({
   value: string;
 }) {
   return (
-    <li className="flex items-start justify-between gap-3">
-      <div className="flex items-start gap-2.5">
+    <li className="flex items-start justify-between gap-3 min-w-0">
+      <div className="flex items-start gap-2.5 min-w-0 flex-1">
         <span
-          className={`mt-1 h-2 w-2 rounded-full ${
+          className={`mt-1 h-2 w-2 shrink-0 rounded-full ${
             tone === "danger"
               ? "bg-destructive"
               : tone === "warning"
@@ -119,11 +119,11 @@ function AlertRow({
                 : "bg-primary"
           }`}
         />
-        <div>
+        <div className="min-w-0 flex-1">
           <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {label}
           </div>
-          <div className="text-sm text-foreground">{value}</div>
+          <div className="text-sm text-foreground break-words">{value}</div>
         </div>
       </div>
     </li>
@@ -146,12 +146,12 @@ function LabRow({
   const tone =
     status === "completed" ? "success" : status === "pending" ? "warning" : "info";
   return (
-    <div className="flex items-center justify-between gap-4 py-3">
-      <div>
-        <div className="text-sm font-medium text-foreground">{name}</div>
-        <div className="text-xs text-muted-foreground">{detail}</div>
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 py-3 min-w-0">
+      <div className="min-w-0 flex-1">
+        <div className="text-sm font-medium text-foreground break-words">{name}</div>
+        <div className="text-xs text-muted-foreground break-words">{detail}</div>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
         {result && (
           <span
             className={`text-sm ${

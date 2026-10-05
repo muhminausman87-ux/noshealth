@@ -64,24 +64,26 @@ function Tabs<T extends string>({ tab, setTab, tabs }: { tab: T; setTab: (t: T) 
 
 function Queue({ list }: { list: typeof MOCK }) {
   return (
-    <table className="w-full text-sm">
-      <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-        <tr><th className="py-2">Order</th><th>Patient</th><th>Tests</th><th>Ordered by</th><th>Priority</th><th></th></tr>
-      </thead>
-      <tbody>
-        {list.map(r => (
-          <tr key={r.id} className="border-t border-border">
-            <td className="py-2 font-mono text-xs">{r.id}</td>
-            <td>{r.patient}<div className="text-[10px] text-muted-foreground">{r.mrn}</div></td>
-            <td>{r.tests.join(", ")}</td>
-            <td>{r.doctor}</td>
-            <td><span className={`rounded-full px-2 py-0.5 text-[10px] ${r.priority === "STAT" ? "bg-destructive/15 text-destructive" : "bg-secondary text-foreground"}`}>{r.priority}</span></td>
-            <td><button className="text-xs text-primary hover:underline">Accept / Process</button></td>
-          </tr>
-        ))}
-        {list.length === 0 && <tr><td colSpan={6} className="py-6 text-center text-xs text-muted-foreground">Queue empty.</td></tr>}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto min-w-0 max-w-full">
+      <table className="w-full min-w-[500px] text-sm">
+        <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+          <tr><th className="py-2">Order</th><th>Patient</th><th>Tests</th><th>Ordered by</th><th>Priority</th><th></th></tr>
+        </thead>
+        <tbody>
+          {list.map(r => (
+            <tr key={r.id} className="border-t border-border">
+              <td className="py-2 font-mono text-xs">{r.id}</td>
+              <td>{r.patient}<div className="text-[10px] text-muted-foreground">{r.mrn}</div></td>
+              <td>{r.tests.join(", ")}</td>
+              <td>{r.doctor}</td>
+              <td><span className={`rounded-full px-2 py-0.5 text-[10px] ${r.priority === "STAT" ? "bg-destructive/15 text-destructive" : "bg-secondary text-foreground"}`}>{r.priority}</span></td>
+              <td><button className="text-xs text-primary hover:underline">Accept / Process</button></td>
+            </tr>
+          ))}
+          {list.length === 0 && <tr><td colSpan={6} className="py-6 text-center text-xs text-muted-foreground">Queue empty.</td></tr>}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -190,22 +192,24 @@ function ResultEntry({ list }: { list: typeof MOCK }) {
       {panels.map(p => (
         <details key={p.name} open={p.name === "Hematology (CBC + Diff)"} className="rounded-md border border-border bg-background">
           <summary className="cursor-pointer select-none px-3 py-2 text-sm font-medium text-foreground">{p.name}</summary>
-          <table className="w-full text-sm">
-            <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-              <tr><th className="px-3 py-2">Analyte</th><th>Result</th><th>Unit</th><th>Reference</th><th className="pr-3">Flag</th></tr>
-            </thead>
-            <tbody>
-              {p.tests.map(t => (
-                <tr key={t.name} className="border-t border-border">
-                  <td className="px-3 py-2 font-medium">{t.name}</td>
-                  <td><input className="w-24 rounded-md border border-input bg-background px-2 py-1 text-sm" /></td>
-                  <td className="text-xs text-muted-foreground">{t.unit}</td>
-                  <td className="text-xs text-muted-foreground">{t.ref}</td>
-                  <td className="pr-3"><select className="rounded-md border border-input bg-background px-2 py-1 text-xs"><option>—</option><option>↑ High</option><option>↓ Low</option><option>!! Critical</option></select></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto min-w-0 max-w-full">
+            <table className="w-full min-w-[500px] text-sm">
+              <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                <tr><th className="px-3 py-2">Analyte</th><th>Result</th><th>Unit</th><th>Reference</th><th className="pr-3">Flag</th></tr>
+              </thead>
+              <tbody>
+                {p.tests.map(t => (
+                  <tr key={t.name} className="border-t border-border">
+                    <td className="px-3 py-2 font-medium">{t.name}</td>
+                    <td><input className="w-24 rounded-md border border-input bg-background px-2 py-1 text-sm" /></td>
+                    <td className="text-xs text-muted-foreground">{t.unit}</td>
+                    <td className="text-xs text-muted-foreground">{t.ref}</td>
+                    <td className="pr-3"><select className="rounded-md border border-input bg-background px-2 py-1 text-xs"><option>—</option><option>↑ High</option><option>↓ Low</option><option>!! Critical</option></select></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </details>
       ))}
     </div>

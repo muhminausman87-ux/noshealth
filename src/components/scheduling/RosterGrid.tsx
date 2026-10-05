@@ -57,8 +57,8 @@ export function RosterGrid({ roster, policy, nurses, canEdit, onChange }: Props)
   };
 
   return (
-    <div className="space-y-3">
-      <div className="overflow-x-auto rounded-xl border border-border bg-card">
+    <div className="space-y-3 min-w-0 max-w-full">
+      <div className="overflow-x-auto min-w-0 max-w-full rounded-xl border border-border bg-card">
         <table className="min-w-full border-collapse text-[11px]">
           <thead>
             <tr className="bg-muted/60">

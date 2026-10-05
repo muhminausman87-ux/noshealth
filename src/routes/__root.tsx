@@ -191,9 +191,9 @@ function SidebarShell() {
         "--sidebar-width-icon": "3.25rem",
       } as React.CSSProperties}
     >
-      <div className="relative z-10 flex min-h-screen w-full min-w-0 max-w-full">
+      <div className="relative z-10 flex min-h-screen w-full min-w-0 max-w-full overflow-x-hidden">
         <AppSidebar collapsible={isPatientWorkspace ? "offcanvas" : "icon"} />
-        <SidebarInset className="min-w-0 max-w-full bg-transparent">
+        <SidebarInset className="min-w-0 max-w-full bg-transparent overflow-x-hidden">
           <AppHeader />
           <Outlet />
           <footer className="border-t border-border/70 bg-card/60 px-4 py-4 text-[11px] leading-snug text-muted-foreground">

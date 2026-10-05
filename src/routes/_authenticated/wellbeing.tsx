@@ -103,7 +103,7 @@ export default function EmployeeWellbeingPage() {
       } as React.CSSProperties}
     >
       {/* ── header + tabs ───────────────────────────────────── */}
-      <header className="shrink-0" style={{ padding: "14px 20px 0" }}>
+      <header className="shrink-0 px-3 sm:px-5 pt-3.5 max-w-full min-w-0">
         <div>
           <h1
             className="flex items-center gap-2"
@@ -130,7 +130,7 @@ export default function EmployeeWellbeingPage() {
 
         {/* tab bar */}
         <nav
-          className="flex gap-1 overflow-x-auto scrollbar-none"
+          className="flex gap-1 overflow-x-auto scrollbar-none min-w-0 max-w-full"
           style={{
             paddingBottom: 10,
             borderBottom: `1px solid ${V.line}`,
@@ -176,8 +176,7 @@ export default function EmployeeWellbeingPage() {
 
       {/* ── panel area ──────────────────────────────────────── */}
       <main
-        className="flex-1 min-h-0 overflow-y-auto"
-        style={{ padding: "14px 20px 14px" }}
+        className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-5 py-3.5 max-w-full min-w-0"
       >
         {activeTab === "overview" && (
           <OverviewPanel onSelectTab={setActiveTab} />
@@ -203,11 +202,10 @@ function OverviewPanel({
   onSelectTab: (tab: TabId) => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 h-full">
+    <div className="flex flex-col gap-3 h-full min-w-0 max-w-full">
       {/* KPI row */}
       <div
-        className="grid gap-2.5"
-        style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5"
       >
         <KpiCard
           label="Nurses on Duty"
@@ -365,8 +363,7 @@ function RetentionPanel() {
 
         {/* 3 retention cards */}
         <div
-          className="grid gap-3"
-          style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"
         >
           <RetentionCard
             icon={Users}

@@ -94,23 +94,25 @@ function RoundsTab() {
   return (
     <div className="space-y-3">
       <Row title="Today's patient list" action={<Btn icon={Plus}>Admit new</Btn>} />
-      <table className="w-full text-sm">
-        <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
-          <tr><th className="py-2">MRN</th><th>Patient</th><th>Diagnosis</th><th>Bed</th><th>Acuity</th><th></th></tr>
-        </thead>
-        <tbody>
-          {pts.map(p => (
-            <tr key={p.id} className="border-t border-border">
-              <td className="py-2 font-mono text-xs">{p.id}</td>
-              <td>{p.name}</td>
-              <td className="text-muted-foreground">{p.dx}</td>
-              <td>{p.ward}</td>
-              <td><span className={`rounded-full px-2 py-0.5 text-[10px] ${p.acuity === "watch" ? "bg-warning/20 text-warning-foreground" : "bg-success/15 text-success"}`}>{p.acuity}</span></td>
-              <td><button className="text-xs text-primary hover:underline">Open chart</button></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto min-w-0 max-w-full">
+        <table className="w-full min-w-[500px] text-sm">
+          <thead className="text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+            <tr><th className="py-2">MRN</th><th>Patient</th><th>Diagnosis</th><th>Bed</th><th>Acuity</th><th></th></tr>
+          </thead>
+          <tbody>
+            {pts.map(p => (
+              <tr key={p.id} className="border-t border-border">
+                <td className="py-2 font-mono text-xs">{p.id}</td>
+                <td>{p.name}</td>
+                <td className="text-muted-foreground">{p.dx}</td>
+                <td>{p.ward}</td>
+                <td><span className={`rounded-full px-2 py-0.5 text-[10px] ${p.acuity === "watch" ? "bg-warning/20 text-warning-foreground" : "bg-success/15 text-success"}`}>{p.acuity}</span></td>
+                <td><button className="text-xs text-primary hover:underline">Open chart</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
